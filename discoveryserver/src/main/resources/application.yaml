@@ -1,3 +1,15 @@
 spring:
   application:
     name: discoveryserver
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false   # không tự đăng ký bản thân
+    fetch-registry: false         # không fetch registry từ chính nó
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

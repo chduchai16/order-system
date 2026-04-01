@@ -1,4 +1,5 @@
 services:
+  # Postgres
   postgres-user:
     image: postgres:15
     container_name: postgres-user
@@ -77,7 +78,7 @@ services:
       - postgres-payment
       - postgres-notification
 
-  # ─── Redis ───────────────────────────────────────────────
+  # Redis
   redis:
     image: redis:7-alpine
     container_name: order-system-redis
@@ -87,7 +88,7 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
 
-  # ─── Zookeeper ───────────────────────────────────────────
+  # Zookeeper
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
     container_name: order-system-zookeeper
@@ -100,7 +101,7 @@ services:
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_log:/var/lib/zookeeper/log
 
-  # ─── Kafka ───────────────────────────────────────────────
+  # Kafka
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: order-system-kafka
@@ -117,7 +118,7 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
-  # ─── Keycloak DB ─────────────────────────────────────────
+  # Keycloak DB
   postgres-keycloak:
     image: postgres:15
     container_name: order-system-postgres-keycloak
@@ -130,7 +131,7 @@ services:
     volumes:
       - keycloak_db_data:/var/lib/postgresql/data
 
-  # ─── Keycloak ─────────────────────────────────────────────
+  # Keycloak
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: order-system-keycloak
