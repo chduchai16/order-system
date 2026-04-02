@@ -38,10 +38,6 @@
 
 	<build>
 		<plugins>
-			<!--
-				Bỏ spring-boot-maven-plugin (fat JAR).
-				Library chỉ cần plain JAR để các service khác import được.
-			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
