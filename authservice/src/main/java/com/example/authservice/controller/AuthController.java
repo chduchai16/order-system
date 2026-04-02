@@ -35,12 +35,14 @@ public class AuthController {
                 .body(Map.of("message", "User registered successfully"));
     }
 
+    // truyền refresh token
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestBody Map<String, String> body) {
         TokenResponse token = keycloakService.refresh(body.get("refresh_token"));
         return ResponseEntity.ok(token);
     }
 
+    // truyền refresh token
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody Map<String, String> body) {
         keycloakService.logout(body.get("refresh_token"));

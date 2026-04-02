@@ -22,7 +22,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(auth -> auth
-                        .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .anyExchange().authenticated()
                 )
