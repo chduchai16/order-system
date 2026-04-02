@@ -14,6 +14,7 @@ public class UserProfile {
 
     private String keycloakId;
     private UUID userId;
+    private String email;
     private FullName fullName;
     private PhoneNumber phoneNumber;
     private UserStatus status;
@@ -22,12 +23,12 @@ public class UserProfile {
     private List<DomainEvent> domainEvents = new ArrayList<>();
 
     // CREATE
-    public static UserProfile create(UUID id, String keycloakId, FullName name, PhoneNumber phone) {
+    public static UserProfile create(UUID id, String keycloakId, String email, FullName name) {
         UserProfile user = new UserProfile();
         user.userId = id;
         user.keycloakId = keycloakId;
+        user.email = email;
         user.fullName = name;
-        user.phoneNumber = phone;
         user.status = UserStatus.ACTIVE;
 
         user.addEvent(new UserProfileCreatedEvent(id));
@@ -92,6 +93,10 @@ public class UserProfile {
 
     public String getKeycloakId() {
         return keycloakId;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public FullName getFullName() {
