@@ -30,11 +30,6 @@ spring:
             predicates:
               - Path=/api/notifications/**
 
-          - id: authservice
-            uri: lb://authservice
-            predicates:
-              - Path=/api/auth/**
-
 server:
   port: 8080
 

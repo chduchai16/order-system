@@ -60,18 +60,6 @@ services:
     volumes:
       - notification_db_data:/var/lib/postgresql/data
 
-  postgres-auth:
-    image: postgres:15
-    container_name: postgres-auth
-    environment:
-      POSTGRES_DB: auth_db
-      POSTGRES_USER: auth
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5437:5432"
-    volumes:
-      - auth_db_data:/var/lib/postgresql/data
-
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -89,7 +77,6 @@ services:
       - postgres-order
       - postgres-payment
       - postgres-notification
-      - postgres-auth
 
   # Redis
   redis:
@@ -168,7 +155,6 @@ volumes:
   order_db_data:
   payment_db_data:
   notification_db_data:
-  auth_db_data:
   pgadmin_data:
   redis_data:
   zookeeper_data:
