@@ -3,7 +3,6 @@ spring:
     name: apigateway
   cloud:
     gateway:
-      mvc:
         routes:
           - id: userservice
             uri: lb://userservice
@@ -29,6 +28,11 @@ spring:
             uri: lb://notificationservice
             predicates:
               - Path=/api/notifications/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/order
 
 server:
   port: 8080
