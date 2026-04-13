@@ -9,7 +9,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create   
+      ddl-auto: update   
     show-sql: true
     properties:
       hibernate:
@@ -24,6 +24,9 @@ spring:
       properties:
         spring.json.type.mapping: userRegisteredIntegrationEvent:com.example.commonlib.events.UserRegisteredIntegrationEvent
         spring.json.trusted.packages: com.example.commonlib.events
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 server:
   port: 8081

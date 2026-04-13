@@ -43,7 +43,15 @@ public class AuthController {
                     request.getFirstName(),
                     request.getLastName()
             );
-            kafkaTemplate.send("user-registration-events", keycloakId, event);
+
+            try {
+                if (kafkaTemplate != null) {
+                    kafkaTemplate.send("user-registration-events", keycloakId, event);
+                }
+            } catch (Exception e) {
+                // Log nhưng không fail - event sẽ bị mất nếu Kafka down
+                System.err.println("Warning: Failed to publish user registration event: " + e.getMessage());
+            }
         }
 
         return ResponseEntity.status(HttpStatus.CREATED)
