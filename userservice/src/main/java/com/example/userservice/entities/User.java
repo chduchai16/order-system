@@ -44,6 +44,9 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
