@@ -2,7 +2,7 @@ spring:
   application:
     name: notificationservice
   datasource:
-    url: jdbc:postgresql://localhost:5435/notification_db
+    url: jdbc:postgresql://localhost:5432/notification_db
     username: notification
     password: password
     driver-class-name: org.postgresql.Driver

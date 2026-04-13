@@ -1,19 +1,20 @@
 spring:
   application:
     name: userservice
+
   datasource:
-    url: jdbc:postgresql://localhost:5431/user_db
-    username: user
+    url: jdbc:postgresql://localhost:5432/user_db
+    username: postgres
     password: password
-    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create   
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -21,8 +22,8 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.type.mapping: "userRegisteredIntegrationEvent:com.example.commonlib.events.UserRegisteredIntegrationEvent"
-        spring.json.trusted.packages: "com.example.commonlib.events"
+        spring.json.type.mapping: userRegisteredIntegrationEvent:com.example.commonlib.events.UserRegisteredIntegrationEvent
+        spring.json.trusted.packages: com.example.commonlib.events
 
 server:
   port: 8081
