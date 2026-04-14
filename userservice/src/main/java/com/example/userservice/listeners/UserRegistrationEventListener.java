@@ -16,7 +16,6 @@ public class UserRegistrationEventListener {
 
     @KafkaListener(
         topics = "user-registration-events",
-        groupId = "userservice-group",
         containerFactory = "kafkaListenerContainerFactory"
     )
     public void handleUserRegistrationEvent(UserRegisteredIntegrationEvent event) {

@@ -16,17 +16,8 @@ spring:
         format_sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
     consumer:
       group-id: userservice-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.type.mapping: userRegisteredIntegrationEvent:com.example.commonlib.events.UserRegisteredIntegrationEvent
-        spring.json.trusted.packages: com.example.commonlib.events
-
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 server:
   port: 8081

@@ -1,16 +1,6 @@
 spring:
   application:
     name: authservice
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all
-      retries: 3
-
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 server:
   port: 8086 # Default to 8086
@@ -27,3 +17,4 @@ keycloak:
   realm: order
   client-id: order
   client-secret: CJPgXLLB4ha8bIVTvRyQflm1LZKf1NcY
+
