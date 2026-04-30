@@ -1,0 +1,15 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/npm-debug.log
+**/yarn-error.log
+**/README.md
+**/.DS_Store
+**/target
+**/bin
+**/obj
+**/dist
+**/.vscode
+**/.idea
+**/*.iml
+**/dependency-reduced-pom.xml

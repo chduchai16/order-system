@@ -18,6 +18,13 @@ services:
       - "shared_buffers=256MB"
       - "-c"
       - "max_connections=200"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - order-network
 
   # Zookeeper
   zookeeper:
@@ -31,6 +38,8 @@ services:
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_log:/var/lib/zookeeper/log
+    networks:
+      - order-network
 
   # Kafka
   kafka:
@@ -53,21 +62,8 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka_data:/var/lib/kafka/data
-
-  # Confluent Control Center
-  control-center:
-    image: confluentinc/cp-enterprise-control-center:7.6.0
-    container_name: order-system-control-center
-    depends_on:
-      - kafka
-    ports:
-      - "9021:9021"
-    environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:29092'
-      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      CONTROL_CENTER_REPLICATION_FACTOR: 1
-      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
-      PORT: 9021
+    networks:
+      - order-network
 
   # Keycloak DB
   postgres-keycloak:
@@ -81,6 +77,8 @@ services:
       - "5436:5432"
     volumes:
       - keycloak_db_data:/var/lib/postgresql/data
+    networks:
+      - order-network
 
   # Keycloak
   keycloak:
@@ -99,6 +97,211 @@ services:
       - "9090:8080"
     depends_on:
       - postgres-keycloak
+    networks:
+      - order-network
+
+  # ==================== MICROSERVICES ====================
+
+  # Eureka Discovery Server
+  discoveryserver:
+    build:
+      context: .
+      dockerfile: ./discoveryserver/Dockerfile
+    container_name: order-system-discoveryserver
+    ports:
+      - "8061:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    depends_on:
+      - keycloak
+    networks:
+      - order-network
+
+  # API Gateway
+  apigateway:
+    build:
+      context: .
+      dockerfile: ./apigateway/Dockerfile
+    container_name: order-system-apigateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+      KEYCLOAK_SERVER_URL: "http://keycloak:8080"
+    depends_on:
+      - discoveryserver
+      - keycloak
+    networks:
+      - order-network
+
+  # Auth Service
+  authservice:
+    build:
+      context: .
+      dockerfile: ./authservice/Dockerfile
+    container_name: order-system-authservice
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+      KEYCLOAK_SERVER_URL: "http://keycloak:8080"
+    depends_on:
+      - discoveryserver
+      - keycloak
+    networks:
+      - order-network
+
+  # User Service
+  userservice:
+    build:
+      context: .
+      dockerfile: ./userservice/Dockerfile
+    container_name: order-system-userservice
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/user_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+    networks:
+      - order-network
+
+  # Product Service
+  productservice:
+    build:
+      context: .
+      dockerfile: ./productservice/Dockerfile
+    container_name: order-system-productservice
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/product_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+    networks:
+      - order-network
+
+  # Order Service
+  orderservice:
+    build:
+      context: .
+      dockerfile: ./orderservice/Dockerfile
+    container_name: order-system-orderservice
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+    networks:
+      - order-network
+
+  # Payment Service
+  paymentservice:
+    build:
+      context: .
+      dockerfile: ./paymentservice/Dockerfile
+    container_name: order-system-paymentservice
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/payment_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+    networks:
+      - order-network
+
+  # Notification Service
+  notificationservice:
+    build:
+      context: .
+      dockerfile: ./notificationservice/Dockerfile
+    container_name: order-system-notificationservice
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/notification_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "password"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+    networks:
+      - order-network
+
+  # Frontend (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: order-system-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_GATEWAY_URL: "http://apigateway:8080"
+      NEXT_PUBLIC_KEYCLOAK_URL: "http://keycloak:8080"
+    depends_on:
+      apigateway:
+        condition: service_started
+    networks:
+      - order-network
 
 volumes:
   postgres_data:
@@ -106,3 +309,7 @@ volumes:
   zookeeper_log:
   kafka_data:
   keycloak_db_data:
+
+networks:
+  order-network:
+    driver: bridge
