@@ -33,8 +33,8 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md">
-      <div className="mb-5">
-        <label htmlFor="username" className="block text-sm font-medium mb-2 text-gray-300 tracking-wide">
+      <div className="mb-4">
+        <label htmlFor="username" className="block text-sm font-medium mb-1 text-gray-700">
           Username
         </label>
         <input
@@ -44,12 +44,12 @@ export default function LoginForm() {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter your username"
           required
-          className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300 backdrop-blur-sm"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       <div className="mb-6">
-        <label htmlFor="password" className="block text-sm font-medium mb-2 text-gray-300 tracking-wide">
+        <label htmlFor="password" className="block text-sm font-medium mb-1 text-gray-700">
           Password
         </label>
         <input
@@ -59,31 +59,27 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
           required
-          className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300 backdrop-blur-sm"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 text-sm backdrop-blur-sm flex items-start gap-2">
-          <span className="mt-0.5">⚠️</span>
-          <span>{error}</span>
+        <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-md text-sm">
+          {error}
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="group relative w-full px-4 py-3.5 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 disabled:bg-white/20 disabled:text-white/50 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] overflow-hidden"
+        className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
       >
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {loading ? 'Authenticating...' : 'Sign In'}
-        </span>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {loading ? 'Logging in...' : 'Login'}
       </button>
 
-      <p className="mt-6 text-center text-sm text-gray-400 font-light">
+      <p className="mt-4 text-center text-sm text-gray-600">
         Don't have an account?{' '}
-        <Link href="/auth/register" className="text-white hover:text-blue-300 hover:underline font-medium transition-colors">
+        <Link href="/register" className="text-blue-600 hover:underline font-medium">
           Register here
         </Link>
       </p>

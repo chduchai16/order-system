@@ -17,16 +17,10 @@ export default function CheckoutPage() {
 
   if (items.length === 0 && !success) {
     return (
-      <div className="text-center py-20 bg-[#111111]/80 border border-white/10 rounded-3xl backdrop-blur-xl shadow-lg max-w-2xl mx-auto mt-10">
-        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)] text-4xl">
-          💳
-        </div>
-        <h1 className="text-3xl font-bold mb-4 text-white">Checkout</h1>
-        <p className="text-gray-400 mb-8 font-light">Your cart is empty. Please add items to proceed.</p>
-        <Link 
-          href="/dashboard/products" 
-          className="inline-flex px-8 py-4 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
-        >
+      <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <h1 className="text-2xl font-bold mb-4 text-gray-900">Checkout</h1>
+        <p className="text-gray-600 mb-6">Your cart is empty</p>
+        <Link href="/dashboard/products" className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block">
           Continue Shopping
         </Link>
       </div>
@@ -51,7 +45,7 @@ export default function CheckoutPage() {
       
       setTimeout(() => {
         router.push('/dashboard/orders');
-      }, 2500);
+      }, 1500);
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Failed to create order';
       setError(errorMsg);
@@ -66,120 +60,86 @@ export default function CheckoutPage() {
 
   if (success) {
     return (
-      <div className="text-center py-20 bg-[#111111]/80 border border-emerald-500/20 rounded-3xl backdrop-blur-xl shadow-[0_0_50px_rgba(16,185,129,0.1)] max-w-2xl mx-auto mt-10 overflow-hidden relative">
-        <div className="absolute top-[-20%] left-1/2 transform -translate-x-1/2 w-[80%] h-[80%] rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none"></div>
-        <div className="inline-flex items-center justify-center w-24 h-24 bg-emerald-500/20 text-emerald-400 rounded-full mb-8 border border-emerald-500/30 text-5xl shadow-[0_0_30px_rgba(16,185,129,0.3)] animate-bounce">
-          ✓
-        </div>
-        <h1 className="text-4xl font-extrabold mb-4 text-white tracking-tight">Order Placed Successfully!</h1>
-        <p className="text-gray-400 mb-6 font-light text-lg">Thank you for your purchase. We are processing it right away.</p>
-        <div className="mt-8 flex items-center justify-center gap-3 text-gray-500 text-sm">
-          <div className="w-4 h-4 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin"></div>
-          Redirecting to your orders...
-        </div>
+      <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="inline-block mb-4 text-5xl text-green-500">✓</div>
+        <h1 className="text-2xl font-bold mb-4 text-gray-900">Order Placed Successfully!</h1>
+        <p className="text-gray-600 mb-6">Redirecting to your orders...</p>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="text-4xl font-extrabold mb-8 text-white tracking-tight">Secure Checkout</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-900">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[#111111]/80 border border-white/10 rounded-2xl p-6 lg:p-8 backdrop-blur-xl shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] pointer-events-none"></div>
-            <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-bold border border-blue-500/30">1</span>
-              Order Review
-            </h2>
+        <div className="lg:col-span-2">
+          <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4 text-gray-900">Order Review</h2>
             <div className="space-y-4">
               {items.map(item => (
-                <div key={item.productId} className="flex justify-between items-center border-b border-white/5 pb-4 last:border-0 last:pb-0">
+                <div key={item.productId} className="flex justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                   <div>
-                    <p className="font-bold text-gray-100 text-lg">{item.name}</p>
-                    <p className="text-sm text-gray-400 font-medium">Qty: <span className="text-gray-300">{item.quantity}</span></p>
+                    <p className="font-medium text-gray-900">{item.name}</p>
+                    <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                   </div>
-                  <p className="font-bold text-white text-lg">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-[#111111]/80 border border-white/10 rounded-2xl p-6 lg:p-8 backdrop-blur-xl shadow-lg relative overflow-hidden">
-            <div className="absolute bottom-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[80px] pointer-events-none"></div>
-            <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
-              <span className="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm font-bold border border-purple-500/30">2</span>
-              Shipping Information
-            </h2>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4 text-gray-900">Shipping Information</h2>
             {keycloakId ? (
-              <div className="space-y-4">
-                <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                  <p className="mb-2 font-medium text-gray-300 text-sm">Account ID</p>
-                  <p className="font-mono bg-black/50 px-3 py-2 rounded-lg text-gray-400 text-sm border border-white/5 break-all">{keycloakId}</p>
-                </div>
-                <div className="flex items-start gap-3 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-200/80 text-sm">
-                  <span className="text-xl leading-none">ℹ️</span>
-                  <p>Shipping details will be processed securely by our fulfillment team after order confirmation.</p>
-                </div>
+              <div className="text-sm text-gray-600">
+                <p className="mb-2 font-medium">User ID: <span className="font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 break-all">{keycloakId}</span></p>
+                <p className="text-gray-500">Shipping details will be processed by our team after order confirmation.</p>
               </div>
             ) : (
-              <div className="flex items-center gap-3 text-gray-400 p-4 bg-white/5 rounded-xl border border-white/5">
-                <div className="w-4 h-4 border-2 border-gray-500/50 border-t-gray-400 rounded-full animate-spin"></div>
-                Loading account information...
-              </div>
+              <p className="text-gray-500 text-sm">Loading user information...</p>
             )}
           </div>
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-[#111111]/80 border border-white/10 rounded-2xl p-6 lg:p-8 backdrop-blur-xl shadow-lg sticky top-28">
-            <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">Summary</h2>
-            <div className="space-y-4 border-t border-white/10 pt-6">
-              <div className="flex justify-between text-gray-400 font-light">
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
+            <h2 className="text-lg font-bold mb-4 text-gray-900">Order Summary</h2>
+            <div className="space-y-3 border-t border-gray-200 pt-4">
+              <div className="flex justify-between text-sm text-gray-600">
                 <span>Subtotal</span>
-                <span className="text-gray-200">${getTotalPrice().toFixed(2)}</span>
+                <span>${getTotalPrice().toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-400 font-light">
+              <div className="flex justify-between text-sm text-gray-600">
                 <span>Shipping</span>
-                <span className="text-emerald-400 font-medium">Free</span>
+                <span>$0.00</span>
               </div>
-              <div className="flex justify-between font-extrabold text-xl text-white border-t border-white/10 pt-6 mt-6">
+              <div className="flex justify-between font-bold text-lg text-gray-900 border-t border-gray-200 pt-4 mt-2">
                 <span>Total</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">${getTotalPrice().toFixed(2)}</span>
+                <span>${getTotalPrice().toFixed(2)}</span>
               </div>
             </div>
 
             {error && (
-              <div className="mt-6 p-4 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 text-sm backdrop-blur-sm flex items-start gap-2">
-                <span className="mt-0.5">⚠️</span>
-                <span>{error}</span>
+              <div className="mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded-md text-sm">
+                {error}
               </div>
             )}
 
-            <div className="mt-8 space-y-3">
-              <button
-                onClick={handleSubmitOrder}
-                disabled={loading}
-                className="w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl hover:from-emerald-400 hover:to-teal-400 disabled:from-gray-800 disabled:to-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] disabled:shadow-none"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Processing...
-                  </span>
-                ) : (
-                  'Confirm & Pay'
-                )}
-              </button>
+            <button
+              onClick={handleSubmitOrder}
+              disabled={loading}
+              className="w-full mt-6 flex justify-center py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? 'Processing...' : 'Place Order'}
+            </button>
 
-              <Link
-                href="/dashboard/cart"
-                className="w-full flex items-center justify-center px-6 py-4 bg-white/5 text-gray-300 font-medium hover:bg-white/10 hover:text-white rounded-xl border border-white/10 transition-all duration-300"
-              >
-                Return to Cart
-              </Link>
-            </div>
+            <Link
+              href="/dashboard/cart"
+              className="w-full mt-3 flex justify-center py-2.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              Back to Cart
+            </Link>
           </div>
         </div>
       </div>
