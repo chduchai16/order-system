@@ -1,0 +1,42 @@
+name: Cleanup
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly on Sunday at 3 AM
+  workflow_dispatch:
+
+jobs:
+  cleanup-artifacts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Delete old artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            java-test-reports
+            frontend-build
+            dependency-check-report
+            owasp-scan-results
+            npm-audit-report
+            performance-test-results
+          minAgeDays: 30
+
+  cleanup-images:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Clean up old container images
+        run: |
+          echo "Cleaning up container images older than 30 days"
+          # Use github-container-registry's cleanup policies or manual deletion
+          # This is a placeholder for your actual cleanup logic

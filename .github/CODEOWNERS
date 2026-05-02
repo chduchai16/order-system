@@ -1,0 +1,28 @@
+# This file auto-assigns code reviewers based on changed files
+
+# Default owners for all files
+* @owner
+
+# Java Services
+/apigateway/ @owner
+/authservice/ @owner
+/userservice/ @owner
+/productservice/ @owner
+/orderservice/ @owner
+/paymentservice/ @owner
+/notificationservice/ @owner
+/discoveryserver/ @owner
+/commonlib/ @owner
+
+# Frontend
+/frontend/ @owner
+
+# Configuration and CI/CD
+/.github/ @owner
+/docker-compose.yml @owner
+/Dockerfile @owner
+/init-databases.sql @owner
+/pom.xml @owner
+
+# Documentation
+/README.md @owner

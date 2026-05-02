@@ -20,6 +20,24 @@ export interface Product {
   price: number;
   stock: number;
   description?: string;
+  image?: string;
+  category?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  icon?: string;
+  slug?: string;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle: string;
+  discount?: number;
+  image: string;
+  link?: string;
 }
 
 export interface Order {
