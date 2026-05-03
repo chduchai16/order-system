@@ -22,8 +22,6 @@ jobs:
           project: 'order-system'
           path: '.'
           format: 'JSON'
-          args: >
-            --enable-retired
       
       - name: Upload dependency-check results
         uses: actions/upload-artifact@v4
