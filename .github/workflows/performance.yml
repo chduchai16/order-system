@@ -30,9 +30,11 @@ jobs:
         image: confluentinc/cp-kafka:7.5.0
         env:
           KAFKA_BROKER_ID: 1
-          KAFKA_ZOOKEEPER_CONNECT: 127.0.0.1:2181
-          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
           KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        ports:
+          - 9092:9092
         options: >-
           --health-cmd bin/kafka-broker-api-versions.sh
           --health-interval 10s
