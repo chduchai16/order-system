@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   # Dependency check with OWASP
   dependency-check:
@@ -107,7 +112,7 @@ jobs:
           output: '${{ matrix.service }}-trivy-result.sarif'
       
       - name: Upload Trivy results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: '${{ matrix.service }}-trivy-result.sarif'
