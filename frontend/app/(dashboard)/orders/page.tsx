@@ -15,8 +15,9 @@ export default function OrdersPage() {
       try {
         const data = await orderService.getMyOrders();
         setOrders(data);
-      } catch (err: any) {
-        const errorMsg = err.response?.data?.message || err.message || 'Failed to load orders';
+      } catch (err: unknown) {
+        const e = err as { response?: { data?: { message?: string } }; message?: string };
+        const errorMsg = e.response?.data?.message || e.message || 'Failed to load orders';
         setError(errorMsg);
         console.error('Fetch orders error:', err);
       } finally {
@@ -41,7 +42,7 @@ export default function OrdersPage() {
 
       {!loading && orders.length === 0 && !error && (
         <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <p className="text-gray-600 mb-4">You haven't placed any orders yet</p>
+          <p className="text-gray-600 mb-4">You haven&apos;t placed any orders yet</p>
           <Link href="/products" className="text-blue-600 hover:underline font-medium">
             Start Shopping
           </Link>

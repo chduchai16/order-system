@@ -1,5 +1,5 @@
 export const jwtDecoder = {
-  decodeToken: (token: string): Record<string, any> => {
+  decodeToken: (token: string): Record<string, unknown> => {
     try {
       const parts = token.split('.');
       if (parts.length !== 3) return {};
@@ -21,16 +21,16 @@ export const jwtDecoder = {
 
   getKeycloakId: (token: string): string | null => {
     const decoded = jwtDecoder.decodeToken(token);
-    return decoded.sub || null;
+    return (decoded.sub as string) || null;
   },
 
   getTokenExpiry: (token: string): number => {
     const decoded = jwtDecoder.decodeToken(token);
-    return (decoded.exp || 0) * 1000;
+    return ((decoded.exp as number) || 0) * 1000;
   },
 
   getTokenRoles: (token: string): string[] => {
     const decoded = jwtDecoder.decodeToken(token);
-    return decoded.realm_access?.roles || [];
+    return ((decoded.realm_access as { roles?: string[] })?.roles) || [];
   },
 };

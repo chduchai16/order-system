@@ -20,7 +20,7 @@ export default function ProductsPage() {
         const data = await productService.getProducts();
         setProducts(data);
         setFilteredProducts(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError('Failed to load products. Please try again later.');
         console.error('Fetch products error:', err);
       } finally {

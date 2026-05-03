@@ -18,7 +18,8 @@ export default function DashboardLayout({
     if (!accessToken) {
       router.push('/login');
     } else {
-      setIsChecking(false);
+      const timeoutId = setTimeout(() => setIsChecking(false), 0);
+      return () => clearTimeout(timeoutId);
     }
   }, [router]);
 

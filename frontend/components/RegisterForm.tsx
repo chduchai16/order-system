@@ -52,8 +52,9 @@ export default function RegisterForm() {
       // Auto-login after successful registration
       tokenManager.setTokens(response.access_token, response.refresh_token);
       router.push('/products');
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } }; message?: string };
+      const errorMsg = e.response?.data?.message || e.message || 'Registration failed. Please try again.';
       setError(errorMsg);
       console.error('Registration error:', err);
     } finally {

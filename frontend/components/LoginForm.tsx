@@ -22,8 +22,11 @@ export default function LoginForm() {
       const response = await authService.login(username, password);
       tokenManager.setTokens(response.access_token, response.refresh_token);
       router.push('/products');
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || err.message || 'Login failed. Please try again.';
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } }; message?: string };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const errAny = err as any;
+      const errorMsg = e.response?.data?.message || e.message || 'Login failed. Please try again.';
       setError(errorMsg);
       console.error('Login error:', err);
     } finally {
@@ -78,7 +81,7 @@ export default function LoginForm() {
       </button>
 
       <p className="mt-4 text-center text-sm text-gray-600">
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <Link href="/register" className="text-blue-600 hover:underline font-medium">
           Register here
         </Link>

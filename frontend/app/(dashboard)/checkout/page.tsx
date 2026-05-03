@@ -46,8 +46,9 @@ export default function CheckoutPage() {
       setTimeout(() => {
         router.push('/orders');
       }, 1500);
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || err.message || 'Failed to create order';
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } }; message?: string };
+      const errorMsg = e.response?.data?.message || e.message || 'Failed to create order';
       setError(errorMsg);
       console.error('Order creation error:', err);
     } finally {
