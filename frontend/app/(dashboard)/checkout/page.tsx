@@ -14,6 +14,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'VNPAY'>('COD');
 
   if (items.length === 0 && !success) {
     return (
@@ -37,7 +38,15 @@ export default function CheckoutPage() {
         await orderService.createOrder({
           productId: item.productId,
           quantity: item.quantity,
+          // TODO: Pass paymentMethod to backend when supported
+          // paymentMethod: paymentMethod 
         });
+      }
+
+      if (paymentMethod === 'VNPAY') {
+        alert('Đang mở cổng thanh toán VNPay... (Tính năng đang được tích hợp)');
+        // Simulate opening payment page
+        window.open('https://sandbox.vnpayment.vn/apis/vnpay-demo/', '_blank');
       }
 
       setSuccess(true);
@@ -100,6 +109,43 @@ export default function CheckoutPage() {
             ) : (
               <p className="text-gray-500 text-sm">Loading user information...</p>
             )}
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4 text-gray-900">Payment Method</h2>
+            <div className="space-y-4">
+              <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="COD"
+                  checked={paymentMethod === 'COD'}
+                  onChange={() => setPaymentMethod('COD')}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+                <div className="ml-3">
+                  <span className="block text-sm font-medium text-gray-900">Cash on Delivery (COD)</span>
+                  <span className="block text-sm text-gray-500">Pay when you receive the order</span>
+                </div>
+              </label>
+
+              <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="VNPAY"
+                  checked={paymentMethod === 'VNPAY'}
+                  onChange={() => setPaymentMethod('VNPAY')}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+                <div className="ml-3 flex items-center gap-2">
+                  <span className="block text-sm font-medium text-gray-900">VNPay Gateway</span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    Online
+                  </span>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
 
