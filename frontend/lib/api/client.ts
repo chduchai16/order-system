@@ -15,13 +15,18 @@ apiClient.interceptors.request.use(
     const accessToken = tokenManager.getAccessToken();
     
     if (accessToken) {
-      config.headers.Authorization = accessToken;
+      // Don't send Authorization header for auth endpoints (login/register)
+      const isAuthEndpoint = config.url?.includes('/api/auth/login') || config.url?.includes('/api/auth/register');
       
-      // Extract keycloakId from token and add as header
-      const tokenWithoutBearer = accessToken.replace('Bearer ', '');
-      const keycloakId = jwtDecoder.getKeycloakId(tokenWithoutBearer);
-      if (keycloakId) {
-        config.headers['X-User-KeycloakId'] = keycloakId;
+      if (!isAuthEndpoint) {
+        config.headers.Authorization = accessToken;
+        
+        // Extract keycloakId from token and add as header
+        const tokenWithoutBearer = accessToken.replace('Bearer ', '');
+        const keycloakId = jwtDecoder.getKeycloakId(tokenWithoutBearer);
+        if (keycloakId) {
+          config.headers['X-User-KeycloakId'] = keycloakId;
+        }
       }
     }
 

@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
-    command: 
+    command:
       - "postgres"
       - "-c"
       - "shared_buffers=256MB"
@@ -131,6 +131,7 @@ services:
       SERVER_PORT: 8080
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
       KEYCLOAK_SERVER_URL: "http://keycloak:8080"
+      KEYCLOAK_ISSUER_URI: "http://keycloak:8080/realms/order"
     depends_on:
       - discoveryserver
       - keycloak
@@ -150,9 +151,15 @@ services:
       SERVER_PORT: 8080
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
       KEYCLOAK_SERVER_URL: "http://keycloak:8080"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+      KEYCLOAK_CLIENT_SECRET: "CJPgXLLB4ha8bIVTvRyQflm1LZKf1NcY"
     depends_on:
-      - discoveryserver
-      - keycloak
+      keycloak:
+        condition: service_started
+      discoveryserver:
+        condition: service_started
+      kafka:
+        condition: service_started
     networks:
       - order-network
 

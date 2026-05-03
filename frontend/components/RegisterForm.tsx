@@ -51,7 +51,7 @@ export default function RegisterForm() {
       
       // Auto-login after successful registration
       tokenManager.setTokens(response.access_token, response.refresh_token);
-      router.push('/dashboard/products');
+      router.push('/products');
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
       setError(errorMsg);

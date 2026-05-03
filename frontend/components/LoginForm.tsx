@@ -21,7 +21,7 @@ export default function LoginForm() {
     try {
       const response = await authService.login(username, password);
       tokenManager.setTokens(response.access_token, response.refresh_token);
-      router.push('/dashboard/products');
+      router.push('/products');
     } catch (err: any) {
       const errorMsg = err.response?.data?.message || err.message || 'Login failed. Please try again.';
       setError(errorMsg);

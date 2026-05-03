@@ -42,7 +42,7 @@ export default function OrdersPage() {
       {!loading && orders.length === 0 && !error && (
         <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
           <p className="text-gray-600 mb-4">You haven't placed any orders yet</p>
-          <Link href="/dashboard/products" className="text-blue-600 hover:underline font-medium">
+          <Link href="/products" className="text-blue-600 hover:underline font-medium">
             Start Shopping
           </Link>
         </div>

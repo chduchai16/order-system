@@ -12,7 +12,7 @@ export default function CartPage() {
         <h1 className="text-2xl font-bold mb-4 text-gray-900">Shopping Cart</h1>
         <p className="text-gray-600 mb-6">Your cart is empty</p>
         <Link 
-          href="/dashboard/products" 
+          href="/products" 
           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block"
         >
           Continue Shopping
@@ -92,7 +92,7 @@ export default function CartPage() {
             </div>
             
             <Link
-              href="/dashboard/checkout"
+              href="/checkout"
               className="w-full mt-6 flex justify-center py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Proceed to Checkout
