@@ -19,6 +19,7 @@ jobs:
       - name: Run dependency-check
         uses: dependency-check/Dependency-Check_Action@main
         with:
+          project: 'order-system'
           path: '.'
           format: 'JSON'
           args: >
