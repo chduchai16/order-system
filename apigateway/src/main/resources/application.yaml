@@ -29,10 +29,7 @@ spring:
             predicates:
               - Path=/api/payments/**
 
-          - id: notificationservice
-            uri: lb://notificationservice
-            predicates:
-              - Path=/api/notifications/**
+
   security:
     oauth2:
       resourceserver:

@@ -22,7 +22,7 @@
         <module>productservice</module>
         <module>orderservice</module>
         <module>paymentservice</module>
-        <module>notificationservice</module>
+
     </modules>
 
     <properties>

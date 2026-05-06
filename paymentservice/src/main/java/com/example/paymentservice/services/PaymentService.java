@@ -3,7 +3,7 @@ package com.example.paymentservice.services;
 import com.example.commonlib.events.OrderCreatedEvent;
 import com.example.paymentservice.entities.Payment;
 import com.example.paymentservice.entities.PaymentStatus;
-import com.example.paymentservice.producers.PaymentEventProducer;
+
 import com.example.paymentservice.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final PaymentEventProducer paymentEventProducer;
+
 
     @Transactional
     public void processPayment(OrderCreatedEvent event) {
@@ -45,7 +45,6 @@ public class PaymentService {
         Payment saved = paymentRepository.save(payment);
         log.info("Payment saved: id={}, status={}", saved.getId(), saved.getStatus());
 
-        // Publish event thông báo đã thanh toán thành công
-        paymentEventProducer.publishPaymentProcessed(event);
+
     }
 }
