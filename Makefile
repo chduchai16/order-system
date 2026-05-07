@@ -5,7 +5,7 @@ JAVA_VERSION=17
 MAVEN_OPTS=-Xmx1024m
 DOCKER_REGISTRY=ghcr.io
 IMAGE_NAME=order-system
-SERVICES=apigateway authservice userservice productservice orderservice paymentservice discoveryserver
+SERVICES=apigateway userservice productservice orderservice paymentservice discoveryserver
 
 help:
 	@echo "Order System - Development Tasks"

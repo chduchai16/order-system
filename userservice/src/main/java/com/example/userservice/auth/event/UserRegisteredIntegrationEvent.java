@@ -1,4 +1,4 @@
-package com.example.authservice.event;
+package com.example.userservice.auth.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

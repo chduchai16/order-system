@@ -1,11 +1,13 @@
-package com.example.authservice.service;
+package com.example.userservice.auth.service;
 
-import com.example.authservice.dto.RegisterRequest;
+import org.springframework.stereotype.Service;
+
 import com.example.commonlib.events.UserRegisteredIntegrationEvent;
-import com.example.authservice.producers.UserEventProducer;
+import com.example.userservice.auth.dto.RegisterRequest;
+import com.example.userservice.auth.producers.UserEventProducer;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -38,4 +40,3 @@ public class AuthService {
         }
     }
 }
-

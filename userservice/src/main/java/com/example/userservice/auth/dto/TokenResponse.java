@@ -1,6 +1,7 @@
-package com.example.authservice.dto;
+package com.example.userservice.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

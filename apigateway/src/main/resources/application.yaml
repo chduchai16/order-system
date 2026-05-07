@@ -5,7 +5,7 @@ spring:
     gateway:
         routes:
           - id: authservice
-            uri: lb://authservice
+            uri: lb://userservice
             predicates:
               - Path=/api/auth/**
 

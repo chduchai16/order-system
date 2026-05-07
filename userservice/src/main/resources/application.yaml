@@ -16,8 +16,14 @@ spring:
         format_sql: true
 
   kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: userservice-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
 
 server:
   port: 8081
@@ -29,3 +35,9 @@ eureka:
   instance:
     hostname: host.docker.internal
     prefer-ip-address: false
+
+keycloak:
+  server-url: ${KEYCLOAK_SERVER_URL:http://localhost:9090}
+  realm: order
+  client-id: order
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:V8TIkxbK17PLOJPwa3MUETNjlz4c9mC}

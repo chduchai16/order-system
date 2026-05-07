@@ -1,12 +1,8 @@
-package com.example.authservice.controller;
+package com.example.userservice.auth.controller;
 
 
-import com.example.authservice.dto.LoginRequest;
-import com.example.authservice.dto.RegisterRequest;
-import com.example.authservice.dto.TokenResponse;
-import com.example.authservice.service.AuthService;
-import com.example.authservice.service.KeycloakService;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import com.example.userservice.auth.dto.LoginRequest;
+import com.example.userservice.auth.dto.RegisterRequest;
+import com.example.userservice.auth.dto.TokenResponse;
+import com.example.userservice.auth.service.AuthService;
+import com.example.userservice.auth.service.KeycloakService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
