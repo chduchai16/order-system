@@ -1,4 +1,4 @@
-package com.example.userservice.auth.service;
+package com.example.userservice.auth.services;
 
 import java.util.List;
 import java.util.Map;
@@ -14,9 +14,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.example.userservice.auth.dto.LoginRequest;
-import com.example.userservice.auth.dto.RegisterRequest;
-import com.example.userservice.auth.dto.TokenResponse;
+import com.example.userservice.auth.dtos.LoginRequest;
+import com.example.userservice.auth.dtos.RegisterRequest;
+import com.example.userservice.auth.dtos.TokenResponse;
 
 @Service
 public class KeycloakService {

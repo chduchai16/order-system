@@ -1,17 +1,25 @@
 package com.example.orderservice.controllers;
 
-import com.example.orderservice.Exceptions.OrderNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.orderservice.dtos.OrderRequest;
 import com.example.orderservice.dtos.OrderResponse;
 import com.example.orderservice.entities.Order;
+import com.example.orderservice.exceptions.OrderNotFoundException;
 import com.example.orderservice.services.OrderService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/orders")

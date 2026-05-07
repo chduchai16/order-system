@@ -1,9 +1,9 @@
-package com.example.userservice.auth.service;
+package com.example.userservice.auth.services;
 
 import org.springframework.stereotype.Service;
 
 import com.example.commonlib.events.UserRegisteredIntegrationEvent;
-import com.example.userservice.auth.dto.RegisterRequest;
+import com.example.userservice.auth.dtos.RegisterRequest;
 import com.example.userservice.auth.producers.UserEventProducer;
 
 import lombok.RequiredArgsConstructor;

@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: productservice
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/product_db
+    username: postgres
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: productservice-group
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discoveryserver:8080/eureka/
+  instance:
+    hostname: productservice
+    prefer-ip-address: false

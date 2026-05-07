@@ -1,4 +1,4 @@
-package com.example.apigateway.config;
+package com.example.apigateway.configs;
 
 import java.util.Arrays;
 

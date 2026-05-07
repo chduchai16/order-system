@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      routes:
+        - id: authservice
+          uri: lb://userservice
+          predicates:
+            - Path=/api/auth/**
+
+        - id: userservice
+          uri: lb://userservice
+          predicates:
+            - Path=/api/users/**
+
+        - id: productservice
+          uri: lb://productservice
+          predicates:
+            - Path=/api/products/**
+
+        - id: orderservice
+          uri: lb://orderservice
+          predicates:
+            - Path=/api/orders/**
+
+        - id: paymentservice
+          uri: lb://paymentservice
+          predicates:
+            - Path=/api/payments/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/order}
+          jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/order}/protocol/openid-connect/certs
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discoveryserver:8080/eureka/
+  instance:
+    hostname: apigateway
+    prefer-ip-address: false

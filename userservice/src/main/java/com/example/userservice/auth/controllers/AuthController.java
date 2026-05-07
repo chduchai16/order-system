@@ -1,4 +1,4 @@
-package com.example.userservice.auth.controller;
+package com.example.userservice.auth.controllers;
 
 
 import java.util.Map;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.userservice.auth.dto.LoginRequest;
-import com.example.userservice.auth.dto.RegisterRequest;
-import com.example.userservice.auth.dto.TokenResponse;
-import com.example.userservice.auth.service.AuthService;
-import com.example.userservice.auth.service.KeycloakService;
+import com.example.userservice.auth.dtos.LoginRequest;
+import com.example.userservice.auth.dtos.RegisterRequest;
+import com.example.userservice.auth.dtos.TokenResponse;
+import com.example.userservice.auth.services.AuthService;
+import com.example.userservice.auth.services.KeycloakService;
 
 import lombok.RequiredArgsConstructor;
 

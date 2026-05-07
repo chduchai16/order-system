@@ -112,7 +112,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_URL:-http://discoveryserver:8080/eureka}"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
       KEYCLOAK_SERVER_URL: "${KEYCLOAK_URL:-http://keycloak:8080}"
       KEYCLOAK_ISSUER_URI: "${KEYCLOAK_URL:-http://keycloak:8080}/realms/order"
     depends_on:
@@ -140,7 +140,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER:-postgres}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "${KAFKA_SERVERS:-kafka:29092}"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_URL:-http://discoveryserver:8080/eureka}"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
       KEYCLOAK_SERVER_URL: "${KEYCLOAK_URL:-http://keycloak:8080}"
       KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
     depends_on:
@@ -174,7 +174,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER:-postgres}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "${KAFKA_SERVERS:-kafka:29092}"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_URL:-http://discoveryserver:8080/eureka}"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
     depends_on:
       postgres:
         condition: service_healthy
@@ -204,7 +204,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER:-postgres}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "${KAFKA_SERVERS:-kafka:29092}"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_URL:-http://discoveryserver:8080/eureka}"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
     depends_on:
       postgres:
         condition: service_healthy
@@ -234,7 +234,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER:-postgres}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD:-password}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "${KAFKA_SERVERS:-kafka:29092}"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "${EUREKA_URL:-http://discoveryserver:8080/eureka}"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://discoveryserver:8080/eureka"
     depends_on:
       postgres:
         condition: service_healthy

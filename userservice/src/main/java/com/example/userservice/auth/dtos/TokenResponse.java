@@ -1,4 +1,4 @@
-package com.example.userservice.auth.dto;
+package com.example.userservice.auth.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

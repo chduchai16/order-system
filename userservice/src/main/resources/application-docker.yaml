@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: userservice
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/user_db
+    username: postgres
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update   
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: userservice-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discoveryserver:8080/eureka/
+  instance:
+    hostname: userservice
+    prefer-ip-address: false
+
+keycloak:
+  server-url: http://keycloak:8080
+  realm: order
+  client-id: order
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:V8TIkxbK17PLOJPwa3MUETNjlz4c9mC}
