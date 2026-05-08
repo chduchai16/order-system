@@ -1,11 +1,9 @@
-package com.example.productservice.controllers;
+package com.example.productservice.web;
 
-
-import com.example.productservice.dtos.ProductRequest;
-import com.example.productservice.dtos.ProductResponse;
-import com.example.productservice.entities.Product;
-import com.example.productservice.exceptions.ProductNotFoundException;
-import com.example.productservice.services.ProductService;
+import com.example.productservice.application.dtos.ProductRequest;
+import com.example.productservice.application.dtos.ProductResponse;
+import com.example.productservice.application.services.ProductApplicationService;
+import com.example.productservice.domain.models.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService productService;
+    private final ProductApplicationService productService;
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
@@ -30,7 +28,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return productService.getProductById(id)
                 .map(p -> ResponseEntity.ok(toResponse(p)))
-                .orElseThrow(() -> new ProductNotFoundException("Product not found: " + id));
+                .orElseThrow(() -> new RuntimeException("Product not found: " + id));
     }
 
     @GetMapping
@@ -42,7 +40,6 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    // trừ tồn kho
     @PostMapping("/{id}/deduct-stock")
     public ResponseEntity<ProductResponse> deductStock(
             @PathVariable Long id,
@@ -51,7 +48,14 @@ public class ProductController {
         return ResponseEntity.ok(toResponse(product));
     }
 
-    // hàm chuyển đổi từ entity sang response
+    @PostMapping("/{id}/release-stock")
+    public ResponseEntity<ProductResponse> releaseStock(
+            @PathVariable Long id,
+            @RequestParam Integer quantity) {
+        Product product = productService.releaseStock(id, quantity);
+        return ResponseEntity.ok(toResponse(product));
+    }
+
     private ProductResponse toResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
