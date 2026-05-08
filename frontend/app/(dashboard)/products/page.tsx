@@ -32,12 +32,15 @@ export default function ProductsPage() {
   }, []);
 
   const handleCategoryClick = (category: Category) => {
-    if (selectedCategory === category.slug) {
+    if (selectedCategory === category.name) {
+
       setSelectedCategory(null);
       setFilteredProducts(products);
     } else {
-      setSelectedCategory(category.slug || null);
-      const filtered = products.filter(p => p.category === category.slug);
+      setSelectedCategory(category.name || null);
+
+      const filtered = products.filter(p => p.categoryName === category.name);
+
       setFilteredProducts(filtered.length > 0 ? filtered : products);
     }
   };

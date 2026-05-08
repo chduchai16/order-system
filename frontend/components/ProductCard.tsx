@@ -48,6 +48,11 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
           </h3>
 
           <div className="space-y-2">
+            {product.categoryName && (
+              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] rounded uppercase font-bold tracking-wider mb-1">
+                {product.categoryName}
+              </span>
+            )}
             <div className="flex items-baseline gap-2">
               <span className="text-lg font-bold text-gray-900">
                 ${product.price.toFixed(2)}
@@ -81,21 +86,32 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
       {/* Image Container */}
-      {product.image && (
-        <div className="relative bg-gray-100 aspect-video">
+      <div className="relative bg-gray-100 aspect-video">
+        {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
             className="object-cover"
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400">
+            <div className="text-4xl">📦</div>
+          </div>
+        )}
+      </div>
 
       <div className="p-4 flex-grow flex flex-col">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate" title={product.name}>
-          {product.name}
-        </h3>
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 truncate" title={product.name}>
+            {product.name}
+          </h3>
+          {product.categoryName && (
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] rounded uppercase font-bold tracking-wider">
+              {product.categoryName}
+            </span>
+          )}
+        </div>
 
         <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
           {product.description}

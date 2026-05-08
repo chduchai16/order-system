@@ -8,7 +8,8 @@ export const orderService = {
   },
 
   getMyOrders: async (): Promise<Order[]> => {
-    const response = await apiClient.get<Order[]>('/api/orders/my-orders');
+    const response = await apiClient.get<Order[]>('/api/orders');
+
     return response.data;
   },
 

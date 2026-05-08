@@ -7,6 +7,7 @@ import { useCartStore } from '@/lib/store/cartStore';
 import { orderService } from '@/lib/api/orderService';
 import { tokenManager } from '@/lib/auth/tokenManager';
 import { jwtDecoder } from '@/lib/auth/jwtDecoder';
+import { CreateOrderRequest } from '@/lib/utils/types';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -15,6 +16,14 @@ export default function CheckoutPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'VNPAY'>('COD');
+  
+  // Address State
+  const [address, setAddress] = useState({
+    street: '',
+    city: '',
+    district: '',
+    country: 'Vietnam'
+  });
 
   if (items.length === 0 && !success) {
     return (
@@ -28,24 +37,44 @@ export default function CheckoutPage() {
     );
   }
 
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddress({ ...address, [e.target.name]: e.target.value });
+  };
+
   const handleSubmitOrder = async () => {
+    if (!address.street || !address.city || !address.district) {
+      setError('Please fill in all shipping fields');
+      return;
+    }
+
     setError('');
     setLoading(true);
 
     try {
-      // Create order for each cart item
-      for (const item of items) {
-        await orderService.createOrder({
+      const accessToken = tokenManager.getAccessToken();
+      const keycloakId = accessToken ? jwtDecoder.getKeycloakId(accessToken.replace('Bearer ', '')) : '';
+      
+      const orderRequest: CreateOrderRequest = {
+        userId: 1, // Default or fetch from user context if available
+        keycloakId: keycloakId || '',
+
+        items: items.map(item => ({
           productId: item.productId,
+          productName: item.name,
           quantity: item.quantity,
-          // TODO: Pass paymentMethod to backend when supported
-          // paymentMethod: paymentMethod 
-        });
-      }
+          unitPrice: item.price
+        })),
+        totalPrice: getTotalPrice(),
+        street: address.street,
+        city: address.city,
+        district: address.district,
+        country: address.country
+      };
+
+      await orderService.createOrder(orderRequest);
 
       if (paymentMethod === 'VNPAY') {
         alert('Đang mở cổng thanh toán VNPay... (Tính năng đang được tích hợp)');
-        // Simulate opening payment page
         window.open('https://sandbox.vnpayment.vn/apis/vnpay-demo/', '_blank');
       }
 
@@ -65,9 +94,6 @@ export default function CheckoutPage() {
     }
   };
 
-  const accessToken = tokenManager.getAccessToken();
-  const keycloakId = accessToken ? jwtDecoder.getKeycloakId(accessToken.replace('Bearer ', '')) : null;
-
   if (success) {
     return (
       <div className="text-center py-12 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -84,14 +110,18 @@ export default function CheckoutPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
+          {/* Order Review */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
-            <h2 className="text-lg font-bold mb-4 text-gray-900">Order Review</h2>
+            <h2 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Order Review</h2>
             <div className="space-y-4">
               {items.map(item => (
                 <div key={item.productId} className="flex justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                  <div>
-                    <p className="font-medium text-gray-900">{item.name}</p>
-                    <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">IMG</div>
+                    <div>
+                      <p className="font-medium text-gray-900">{item.name}</p>
+                      <p className="text-sm text-gray-500">Quantity: {item.quantity} x ${item.price.toFixed(2)}</p>
+                    </div>
                   </div>
                   <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
                 </div>
@@ -99,20 +129,52 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-bold mb-4 text-gray-900">Shipping Information</h2>
-            {keycloakId ? (
-              <div className="text-sm text-gray-600">
-                <p className="mb-2 font-medium">User ID: <span className="font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 break-all">{keycloakId}</span></p>
-                <p className="text-gray-500">Shipping details will be processed by our team after order confirmation.</p>
+          {/* Shipping Address */}
+          <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Shipping Address</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                <input
+                  type="text"
+                  name="street"
+                  value={address.street}
+                  onChange={handleAddressChange}
+                  placeholder="123 Street Name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  required
+                />
               </div>
-            ) : (
-              <p className="text-gray-500 text-sm">Loading user information...</p>
-            )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
+                <input
+                  type="text"
+                  name="district"
+                  value={address.district}
+                  onChange={handleAddressChange}
+                  placeholder="District 1"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={address.city}
+                  onChange={handleAddressChange}
+                  placeholder="Ho Chi Minh"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6 shadow-sm">
-            <h2 className="text-lg font-bold mb-4 text-gray-900">Payment Method</h2>
+          {/* Payment Method */}
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h2 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Payment Method</h2>
             <div className="space-y-4">
               <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
                 <input
@@ -154,12 +216,12 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-bold mb-4 text-gray-900">Order Summary</h2>
             <div className="space-y-3 border-t border-gray-200 pt-4">
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Subtotal</span>
+                <span>Subtotal ({items.length} items)</span>
                 <span>${getTotalPrice().toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Shipping</span>
-                <span>$0.00</span>
+                <span className="text-green-600 font-medium">Free</span>
               </div>
               <div className="flex justify-between font-bold text-lg text-gray-900 border-t border-gray-200 pt-4 mt-2">
                 <span>Total</span>

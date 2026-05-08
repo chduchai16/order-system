@@ -55,9 +55,9 @@ export default function OrdersPage() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
               </tr>
@@ -65,18 +65,31 @@ export default function OrdersPage() {
             <tbody className="divide-y divide-gray-200">
               {orders.map(order => (
                 <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">{order.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.productId}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.quantity}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">#{order.id}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    <div className="flex flex-col">
+                      <span className="font-medium">{order.items?.length || 0} items</span>
+                      <span className="text-xs text-gray-500 truncate max-w-[150px]">
+                        {order.items?.map(i => i.productName).join(', ')}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    <div className="max-w-[200px] truncate" title={order.fullAddress}>
+                      {order.fullAddress || 'N/A'}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${order.totalPrice.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         order.status === 'COMPLETED'
                           ? 'bg-green-100 text-green-800'
+                          : order.status === 'STOCK_RESERVED' || order.status === 'PAID'
+                          ? 'bg-blue-100 text-blue-800'
                           : order.status === 'PENDING'
                           ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
+                          : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {order.status}
@@ -86,9 +99,7 @@ export default function OrdersPage() {
                     {new Date(order.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                      day: 'numeric'
                     })}
                   </td>
                 </tr>

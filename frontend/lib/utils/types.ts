@@ -21,7 +21,7 @@ export interface Product {
   stock: number;
   description?: string;
   image?: string;
-  category?: string;
+  categoryName?: string;
 }
 
 export interface Category {
@@ -40,13 +40,21 @@ export interface Banner {
   link?: string;
 }
 
+export interface OrderItem {
+  id?: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+}
+
 export interface Order {
   id: string;
   keycloakId: string;
-  productId: string;
-  quantity: number;
+  items: OrderItem[];
   totalPrice: number;
   status: string;
+  fullAddress: string;
   createdAt: string;
 }
 
@@ -70,7 +78,20 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface CreateOrderRequest {
+export interface CreateOrderItemRequest {
   productId: string;
+  productName: string;
   quantity: number;
+  unitPrice: number;
+}
+
+export interface CreateOrderRequest {
+  userId: number;
+  keycloakId: string;
+  items: CreateOrderItemRequest[];
+  totalPrice: number;
+  street: string;
+  city: string;
+  district: string;
+  country: string;
 }
