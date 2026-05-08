@@ -1,6 +1,9 @@
 package com.example.productservice.infrastructure.mappers;
 
+import com.example.productservice.domain.models.Category;
+import com.example.productservice.domain.models.Money;
 import com.example.productservice.domain.models.Product;
+import com.example.productservice.infrastructure.persistence.entities.CategoryEntity;
 import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
 
 public class ProductMapper {
@@ -11,11 +14,21 @@ public class ProductMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
-                .price(entity.getPrice())
+                .category(categoryToDomain(entity.getCategory()))
+                .price(new Money(entity.getPrice()))
                 .stock(entity.getStock())
                 .active(entity.isActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+
+    private static Category categoryToDomain(CategoryEntity entity) {
+        if (entity == null) return null;
+        return Category.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .description(entity.getDescription())
                 .build();
     }
 
@@ -25,9 +38,21 @@ public class ProductMapper {
         entity.setId(domain.getId());
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());
-        entity.setPrice(domain.getPrice());
+        entity.setCategory(categoryToEntity(domain.getCategory()));
+        if (domain.getPrice() != null) {
+            entity.setPrice(domain.getPrice().getAmount());
+        }
         entity.setStock(domain.getStock());
         entity.setActive(domain.isActive());
+        return entity;
+    }
+
+    private static CategoryEntity categoryToEntity(Category domain) {
+        if (domain == null) return null;
+        CategoryEntity entity = new CategoryEntity();
+        entity.setId(domain.getId());
+        entity.setName(domain.getName());
+        entity.setDescription(domain.getDescription());
         return entity;
     }
 }

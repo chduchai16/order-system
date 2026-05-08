@@ -23,11 +23,14 @@ public class OrderSagaOrchestrator {
         log.info("Starting Saga for order {}", order.getId());
 
         try {
-            // Step 1: Reserve Stock
-            inventoryService.reserveStock(order.getProductId(), order.getQuantity());
+            // Step 1: Reserve Stock for all items
+            for (var item : order.getItems()) {
+                inventoryService.reserveStock(item.getProductId(), item.getQuantity());
+            }
             order.markAsStockReserved();
             orderRepository.save(order);
             log.info("Step 1 (Stock Reserved) completed for order {}", order.getId());
+
 
             // Step 2: Payment
             paymentService.processPayment(order);
@@ -62,14 +65,16 @@ public class OrderSagaOrchestrator {
 
         // If stock was reserved, release it
         if (order.getStatus() == OrderStatus.STOCK_RESERVED || order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.COMPLETED) {
-
             try {
-                inventoryService.releaseStock(order.getProductId(), order.getQuantity());
-                log.info("Stock compensation: released stock for product {}", order.getProductId());
+                for (var item : order.getItems()) {
+                    inventoryService.releaseStock(item.getProductId(), item.getQuantity());
+                }
+                log.info("Stock compensation: released stock for all items in order {}", order.getId());
             } catch (Exception e) {
                 log.error("CRITICAL: Failed to release stock during compensation for order {}", order.getId(), e);
             }
         }
+
 
         order.markAsCancelled();
         orderRepository.save(order);

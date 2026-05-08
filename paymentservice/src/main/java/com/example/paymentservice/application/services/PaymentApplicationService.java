@@ -1,7 +1,9 @@
 package com.example.paymentservice.application.services;
 
 import com.example.paymentservice.application.dtos.PaymentRequest;
+import com.example.paymentservice.domain.models.Money;
 import com.example.paymentservice.domain.models.Payment;
+
 import com.example.paymentservice.domain.models.PaymentStatus;
 import com.example.paymentservice.domain.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +30,10 @@ public class PaymentApplicationService {
                             .orderId(request.getOrderId())
                             .userId(request.getUserId())
                             .keycloakId(request.getKeycloakId())
-                            .amount(request.getAmount())
+                            .amount(new Money(request.getAmount()))
                             .status(PaymentStatus.PENDING)
                             .build();
+
 
                     // Simulate external payment gateway call
                     payment.complete(); 

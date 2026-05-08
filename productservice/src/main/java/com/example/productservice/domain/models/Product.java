@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,13 +15,14 @@ public class Product {
     private Long id;
     private String name;
     private String description;
-    private BigDecimal price;
+    private Category category;
+    private Money price;
+
     private Integer stock;
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Domain logic
     public boolean hasStock(int quantity) {
         return stock >= quantity;
     }
@@ -36,5 +36,9 @@ public class Product {
 
     public void releaseStock(int quantity) {
         this.stock += quantity;
+    }
+
+    public void deactivate() {
+        this.active = false;
     }
 }

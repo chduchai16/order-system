@@ -22,7 +22,12 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
+
     @Column(length = 1000)
+
     private String description;
 
     @Column(nullable = false)

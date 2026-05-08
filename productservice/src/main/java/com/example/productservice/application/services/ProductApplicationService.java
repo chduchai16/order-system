@@ -1,7 +1,10 @@
 package com.example.productservice.application.services;
 
 import com.example.productservice.application.dtos.ProductRequest;
+import com.example.productservice.domain.models.Category;
+import com.example.productservice.domain.models.Money;
 import com.example.productservice.domain.models.Product;
+import com.example.productservice.domain.repositories.CategoryRepository;
 import com.example.productservice.domain.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +18,29 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductApplicationService {
-    private final ProductRepository productRepository;
 
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+
+    @Transactional
     public Product createProduct(ProductRequest productRequest) {
+        log.info("Creating product: {}", productRequest.getName());
+        
+        Category category = null;
+        if (productRequest.getCategoryId() != null) {
+            category = categoryRepository.findById(productRequest.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found: " + productRequest.getCategoryId()));
+        }
+
         Product product = Product.builder()
                 .name(productRequest.getName())
                 .description(productRequest.getDescription())
-                .price(productRequest.getPrice())
+                .category(category)
+                .price(new Money(productRequest.getPrice()))
                 .stock(productRequest.getStock())
                 .active(true)
                 .build();
+
         return productRepository.save(product);
     }
 
@@ -32,31 +48,23 @@ public class ProductApplicationService {
         return productRepository.findById(id);
     }
 
-    public List<Product> getAllActiveProducts() {
-        return productRepository.findActiveProducts();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Transactional
-    public Product deductStock(Long productId, Integer quantity) {
+    public void reserveStock(Long productId, Integer quantity) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
-
-        product.reserveStock(quantity); // Use domain logic
-        
-        log.info("Stock deducted: productId={}, quantity={}, remaining={}",
-                productId, quantity, product.getStock());
-        return productRepository.save(product);
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.reserveStock(quantity);
+        productRepository.save(product);
     }
 
     @Transactional
-    public Product releaseStock(Long productId, Integer quantity) {
+    public void releaseStock(Long productId, Integer quantity) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
-
+                .orElseThrow(() -> new RuntimeException("Product not found"));
         product.releaseStock(quantity);
-        
-        log.info("Stock released: productId={}, quantity={}, new_stock={}",
-                productId, quantity, product.getStock());
-        return productRepository.save(product);
+        productRepository.save(product);
     }
 }

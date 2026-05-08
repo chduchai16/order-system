@@ -1,5 +1,7 @@
 package com.example.userservice.infrastructure.mappers;
 
+import com.example.userservice.domain.models.Email;
+import com.example.userservice.domain.models.FullName;
 import com.example.userservice.domain.models.User;
 import com.example.userservice.infrastructure.persistence.entities.UserEntity;
 
@@ -12,9 +14,8 @@ public class UserMapper {
                 .id(entity.getId())
                 .keycloakId(entity.getKeycloakId())
                 .username(entity.getUsername())
-                .email(entity.getEmail())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
+                .email(new Email(entity.getEmail()))
+                .fullName(new FullName(entity.getFirstName(), entity.getLastName()))
                 .active(entity.isActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
@@ -27,11 +28,14 @@ public class UserMapper {
         entity.setId(domain.getId());
         entity.setKeycloakId(domain.getKeycloakId());
         entity.setUsername(domain.getUsername());
-        entity.setEmail(domain.getEmail());
-        entity.setFirstName(domain.getFirstName());
-        entity.setLastName(domain.getLastName());
+        if (domain.getEmail() != null) {
+            entity.setEmail(domain.getEmail().getValue());
+        }
+        if (domain.getFullName() != null) {
+            entity.setFirstName(domain.getFullName().getFirstName());
+            entity.setLastName(domain.getFullName().getLastName());
+        }
         entity.setActive(domain.isActive());
         return entity;
     }
 }
-

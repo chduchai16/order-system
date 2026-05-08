@@ -15,18 +15,17 @@ public class User {
     private Long id;
     private String keycloakId;
     private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
+    private Email email;
+    private FullName fullName;
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public boolean isValid() {
-        return email != null && email.contains("@");
-    }
-
     public void deactivate() {
         this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
     }
 }

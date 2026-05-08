@@ -33,27 +33,27 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllActiveProducts()
+        List<ProductResponse> products = productService.getAllProducts()
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping("/{id}/deduct-stock")
-    public ResponseEntity<ProductResponse> deductStock(
+    @PostMapping("/{id}/reserve-stock")
+    public ResponseEntity<Void> reserveStock(
             @PathVariable Long id,
             @RequestParam Integer quantity) {
-        Product product = productService.deductStock(id, quantity);
-        return ResponseEntity.ok(toResponse(product));
+        productService.reserveStock(id, quantity);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/release-stock")
-    public ResponseEntity<ProductResponse> releaseStock(
+    public ResponseEntity<Void> releaseStock(
             @PathVariable Long id,
             @RequestParam Integer quantity) {
-        Product product = productService.releaseStock(id, quantity);
-        return ResponseEntity.ok(toResponse(product));
+        productService.releaseStock(id, quantity);
+        return ResponseEntity.ok().build();
     }
 
     private ProductResponse toResponse(Product product) {
@@ -61,7 +61,8 @@ public class ProductController {
                 .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
-                .price(product.getPrice())
+                .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
+                .price(product.getPrice() != null ? product.getPrice().getAmount() : null)
                 .stock(product.getStock())
                 .active(product.isActive())
                 .createdAt(product.getCreatedAt())

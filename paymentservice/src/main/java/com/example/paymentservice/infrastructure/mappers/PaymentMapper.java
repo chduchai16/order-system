@@ -1,5 +1,6 @@
 package com.example.paymentservice.infrastructure.mappers;
 
+import com.example.paymentservice.domain.models.Money;
 import com.example.paymentservice.domain.models.Payment;
 import com.example.paymentservice.infrastructure.persistence.entities.PaymentEntity;
 
@@ -12,7 +13,7 @@ public class PaymentMapper {
                 .orderId(entity.getOrderId())
                 .userId(entity.getUserId())
                 .keycloakId(entity.getKeycloakId())
-                .amount(entity.getAmount())
+                .amount(new Money(entity.getAmount()))
                 .status(entity.getStatus())
                 .processedAt(entity.getProcessedAt())
                 .createdAt(entity.getCreatedAt())
@@ -26,7 +27,9 @@ public class PaymentMapper {
         entity.setOrderId(domain.getOrderId());
         entity.setUserId(domain.getUserId());
         entity.setKeycloakId(domain.getKeycloakId());
-        entity.setAmount(domain.getAmount());
+        if (domain.getAmount() != null) {
+            entity.setAmount(domain.getAmount().getAmount());
+        }
         entity.setStatus(domain.getStatus());
         entity.setProcessedAt(domain.getProcessedAt());
         return entity;

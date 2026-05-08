@@ -41,14 +41,23 @@ public class OrderController {
     }
 
     private OrderResponse toResponse(Order order) {
+        List<OrderResponse.OrderItemResponse> items = order.getItems().stream()
+                .map(item -> OrderResponse.OrderItemResponse.builder()
+                        .id(item.getId())
+                        .productId(item.getProductId())
+                        .productName(item.getProductName())
+                        .quantity(item.getQuantity())
+                        .unitPrice(item.getUnitPrice())
+                        .build())
+                .collect(Collectors.toList());
+
         return OrderResponse.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
-                .productId(order.getProductId())
-                .quantity(order.getQuantity())
+                .items(items)
                 .totalPrice(order.getTotalPrice())
                 .status(order.getStatus())
-
+                .fullAddress(order.getShippingAddress() != null ? order.getShippingAddress().getFullAddress() : null)
                 .createdAt(order.getCreatedAt())
                 .build();
     }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Entity
 @Table(name = "orders")
@@ -25,16 +27,27 @@ public class OrderEntity {
     @Column(nullable = false)
     private String keycloakId;
 
-    @Column(nullable = false)
-    private Long productId;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItemEntity> items;
 
     @Column(nullable = false)
-    private Integer quantity;
 
-    @Column(nullable = false)
     private BigDecimal totalPrice;
 
+    @Column(name = "shipping_street")
+    private String shippingStreet;
+
+    @Column(name = "shipping_city")
+    private String shippingCity;
+
+    @Column(name = "shipping_district")
+    private String shippingDistrict;
+
+    @Column(name = "shipping_country")
+    private String shippingCountry;
+
     @Enumerated(EnumType.STRING)
+
     @Column(nullable = false)
     private OrderStatus status;
 

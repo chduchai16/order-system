@@ -51,12 +51,13 @@ public class UserController {
                 .id(user.getId())
                 .keycloakId(user.getKeycloakId())
                 .username(user.getUsername())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .email(user.getEmail() != null ? user.getEmail().getValue() : null)
+                .firstName(user.getFullName() != null ? user.getFullName().getFirstName() : null)
+                .lastName(user.getFullName() != null ? user.getFullName().getLastName() : null)
                 .active(user.isActive())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
+
 }
 

@@ -1,6 +1,9 @@
 package com.example.userservice.application.services;
 
+import com.example.userservice.domain.models.Email;
+import com.example.userservice.domain.models.FullName;
 import com.example.userservice.domain.models.User;
+
 import com.example.userservice.domain.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +28,11 @@ public class UserApplicationService {
                     User newUser = User.builder()
                             .keycloakId(keycloakId)
                             .username(username)
-                            .email(email)
-                            .firstName(firstName)
-                            .lastName(lastName)
+                            .email(new Email(email))
+                            .fullName(new FullName(firstName, lastName))
                             .active(true)
                             .build();
+
                     return userRepository.save(newUser);
                 });
     }
