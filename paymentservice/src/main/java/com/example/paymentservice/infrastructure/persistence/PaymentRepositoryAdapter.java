@@ -1,7 +1,8 @@
 package com.example.paymentservice.infrastructure.persistence;
 
 import com.example.paymentservice.domain.models.Payment;
-import com.example.paymentservice.domain.repositories.PaymentRepository;
+import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
+
 import com.example.paymentservice.infrastructure.mappers.PaymentMapper;
 import com.example.paymentservice.infrastructure.persistence.entities.PaymentEntity;
 import lombok.RequiredArgsConstructor;

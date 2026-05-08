@@ -1,7 +1,8 @@
 package com.example.userservice.infrastructure.persistence;
 
 import com.example.userservice.domain.models.User;
-import com.example.userservice.domain.repositories.UserRepository;
+import com.example.userservice.domain.ports.persistence.UserRepository;
+
 import com.example.userservice.infrastructure.mappers.UserMapper;
 import com.example.userservice.infrastructure.persistence.entities.UserEntity;
 

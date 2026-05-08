@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.repositories;
+package com.example.orderservice.domain.ports.external;
 
 public interface InventoryService {
     void reserveStock(Long productId, Integer quantity);

@@ -1,4 +1,4 @@
-package com.example.productservice.domain.repositories;
+package com.example.productservice.domain.ports.persistence;
 
 import com.example.productservice.domain.models.Category;
 import java.util.Optional;

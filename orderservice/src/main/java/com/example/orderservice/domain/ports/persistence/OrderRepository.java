@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.repositories;
+package com.example.orderservice.domain.ports.persistence;
 
 import com.example.orderservice.domain.models.Order;
 import java.util.Optional;

@@ -6,7 +6,8 @@ import com.example.orderservice.domain.models.Address;
 import com.example.orderservice.domain.models.Order;
 import com.example.orderservice.domain.models.OrderItem;
 import com.example.orderservice.domain.models.OrderStatus;
-import com.example.orderservice.domain.repositories.OrderRepository;
+import com.example.orderservice.domain.ports.persistence.OrderRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

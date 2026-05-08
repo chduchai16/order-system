@@ -1,7 +1,8 @@
 package com.example.productservice.infrastructure.persistence;
 
 import com.example.productservice.domain.models.Product;
-import com.example.productservice.domain.repositories.ProductRepository;
+import com.example.productservice.domain.ports.persistence.ProductRepository;
+
 import com.example.productservice.infrastructure.mappers.ProductMapper;
 import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
 import lombok.RequiredArgsConstructor;

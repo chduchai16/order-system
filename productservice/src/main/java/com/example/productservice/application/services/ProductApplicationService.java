@@ -4,8 +4,9 @@ import com.example.productservice.application.dtos.ProductRequest;
 import com.example.productservice.domain.models.Category;
 import com.example.productservice.domain.models.Money;
 import com.example.productservice.domain.models.Product;
-import com.example.productservice.domain.repositories.CategoryRepository;
-import com.example.productservice.domain.repositories.ProductRepository;
+import com.example.productservice.domain.ports.persistence.CategoryRepository;
+import com.example.productservice.domain.ports.persistence.ProductRepository;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.productservice.domain.repositories;
+package com.example.productservice.domain.ports.persistence;
 
 import com.example.productservice.domain.models.Product;
 import java.util.Optional;
@@ -11,4 +11,3 @@ public interface ProductRepository {
     List<Product> findActiveProducts();
     void deleteById(Long id);
 }
-

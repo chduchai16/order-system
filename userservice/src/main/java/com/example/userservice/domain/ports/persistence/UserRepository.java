@@ -1,4 +1,4 @@
-package com.example.userservice.domain.repositories;
+package com.example.userservice.domain.ports.persistence;
 
 import com.example.userservice.domain.models.User;
 import java.util.Optional;

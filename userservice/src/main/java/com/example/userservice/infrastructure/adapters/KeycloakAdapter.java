@@ -14,7 +14,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.example.userservice.domain.repositories.IdentityService;
+import com.example.userservice.domain.ports.external.IdentityService;
+
 import com.example.userservice.application.dtos.LoginRequest;
 import com.example.userservice.application.dtos.RegisterRequest;
 import com.example.userservice.application.dtos.TokenResponse;
@@ -43,8 +44,6 @@ public class KeycloakAdapter implements IdentityService {
 
     @Override
     public TokenResponse login (LoginRequest request) {
-        // ... (existing logic)
-
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add("grant_type","password");

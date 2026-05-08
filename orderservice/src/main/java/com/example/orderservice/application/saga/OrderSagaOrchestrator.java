@@ -2,9 +2,10 @@ package com.example.orderservice.application.saga;
 
 import com.example.orderservice.domain.models.Order;
 import com.example.orderservice.domain.models.OrderStatus;
-import com.example.orderservice.domain.repositories.InventoryService;
-import com.example.orderservice.domain.repositories.OrderRepository;
-import com.example.orderservice.domain.repositories.PaymentService;
+import com.example.orderservice.domain.ports.external.InventoryService;
+import com.example.orderservice.domain.ports.persistence.OrderRepository;
+import com.example.orderservice.domain.ports.external.PaymentService;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class OrderSagaOrchestrator {
         log.info("Starting Saga for order {}", order.getId());
 
         try {
-            // Step 1: Reserve Stock for all items
+            // giảm số lượng tồn kho
             for (var item : order.getItems()) {
                 inventoryService.reserveStock(item.getProductId(), item.getQuantity());
             }
@@ -32,13 +33,13 @@ public class OrderSagaOrchestrator {
             log.info("Step 1 (Stock Reserved) completed for order {}", order.getId());
 
 
-            // Step 2: Payment
+            // thanh toán
             paymentService.processPayment(order);
             order.markAsPaid();
             orderRepository.save(order);
             log.info("Step 2 (Payment Completed) completed for order {}", order.getId());
             
-            // Step 3: Complete
+            // Hoàn thành đơn hàng
             order.markAsCompleted();
             orderRepository.save(order);
             log.info("Saga completed successfully for order {}", order.getId());
@@ -53,7 +54,7 @@ public class OrderSagaOrchestrator {
     private void compensate(Order order) {
         log.info("Compensating order {}", order.getId());
         
-        // If payment was completed, refund it
+        // Nếu thanh toán thành công thì hoàn tiền
         if (order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.COMPLETED) {
             try {
                 paymentService.refundPayment(order.getId());
@@ -63,7 +64,7 @@ public class OrderSagaOrchestrator {
             }
         }
 
-        // If stock was reserved, release it
+        // Nếu đã giảm số lượng tồn kho thì hoàn trả lại
         if (order.getStatus() == OrderStatus.STOCK_RESERVED || order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.COMPLETED) {
             try {
                 for (var item : order.getItems()) {
@@ -74,7 +75,6 @@ public class OrderSagaOrchestrator {
                 log.error("CRITICAL: Failed to release stock during compensation for order {}", order.getId(), e);
             }
         }
-
 
         order.markAsCancelled();
         orderRepository.save(order);

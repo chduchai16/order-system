@@ -1,7 +1,8 @@
 package com.example.orderservice.infrastructure.adapters;
 
 import com.example.orderservice.domain.models.Order;
-import com.example.orderservice.domain.repositories.PaymentService;
+import com.example.orderservice.domain.ports.external.PaymentService;
+
 import com.example.orderservice.infrastructure.adapters.clients.PaymentClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

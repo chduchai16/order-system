@@ -1,4 +1,4 @@
-package com.example.paymentservice.domain.repositories;
+package com.example.paymentservice.domain.ports.persistence;
 
 import com.example.paymentservice.domain.models.Payment;
 import java.util.Optional;

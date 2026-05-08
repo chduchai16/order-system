@@ -1,6 +1,7 @@
 package com.example.userservice.application.services;
 
-import com.example.userservice.domain.repositories.IdentityService;
+import com.example.userservice.domain.ports.external.IdentityService;
+
 import com.example.userservice.application.dtos.LoginRequest;
 import com.example.userservice.application.dtos.RegisterRequest;
 import com.example.userservice.application.dtos.TokenResponse;

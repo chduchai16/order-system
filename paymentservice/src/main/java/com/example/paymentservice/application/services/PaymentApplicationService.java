@@ -5,7 +5,8 @@ import com.example.paymentservice.domain.models.Money;
 import com.example.paymentservice.domain.models.Payment;
 
 import com.example.paymentservice.domain.models.PaymentStatus;
-import com.example.paymentservice.domain.repositories.PaymentRepository;
+import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

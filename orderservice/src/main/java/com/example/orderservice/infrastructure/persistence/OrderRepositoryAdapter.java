@@ -1,7 +1,8 @@
 package com.example.orderservice.infrastructure.persistence;
 
 import com.example.orderservice.domain.models.Order;
-import com.example.orderservice.domain.repositories.OrderRepository;
+import com.example.orderservice.domain.ports.persistence.OrderRepository;
+
 import com.example.orderservice.infrastructure.mappers.OrderMapper;
 import com.example.orderservice.infrastructure.persistence.entities.OrderEntity;
 import lombok.RequiredArgsConstructor;
