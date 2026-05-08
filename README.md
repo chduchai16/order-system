@@ -6,17 +6,17 @@ Hệ thống đặt hàng demo xây dựng theo kiến trúc microservice, mục
 
 ## Tech Stack
 
-| | Công nghệ |
+| Thành phần | Công nghệ |
 |---|---|
+| Language | Java 17 |
 | Framework | Spring Boot 3.5.0, Spring Cloud 2025.0.0 |
 | API Gateway | Spring Cloud Gateway |
 | Auth | Keycloak, OAuth2, JWT |
 | Service Discovery | Eureka |
 | Messaging | Apache Kafka |
 | Database | PostgreSQL |
-| Resilience | Resilience4j |
-| Monitoring | Prometheus, Grafana, Zipkin |
 | Container | Docker, Docker Compose |
+
 
 ---
 
@@ -55,20 +55,28 @@ Infrastructure:
 
 ---
 
-## User Service - Endpoints
+## Key API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Đăng ký tài khoản
-- `POST /api/auth/login` - Đăng nhập
-- `POST /api/auth/refresh` - Làm mới access token
-- `POST /api/auth/logout` - Đăng xuất
+### User & Auth Service
+- `POST /api/auth/register` - Đăng ký tài khoản mới
+- `POST /api/auth/login` - Đăng nhập & nhận JWT Token
+- `GET /api/users/me` - Lấy thông tin user hiện tại
 
-### User Management
-- `GET /api/users` - Danh sách users
-- `GET /api/users/{id}` - Lấy user theo ID
-- `GET /api/users/keycloak/{keycloakId}` - Lấy user theo Keycloak ID
+### Product Service
+- `GET /api/products` - Danh sách sản phẩm (hỗ trợ lọc theo category)
+- `GET /api/products/{id}` - Chi tiết sản phẩm
+- `GET /api/categories` - Danh sách danh mục sản phẩm
+
+### Order Service
+- `POST /api/orders` - Đặt hàng (Saga Orchestration)
+- `GET /api/orders` - Lịch sử đơn hàng của người dùng
+- `GET /api/orders/{id}` - Chi tiết trạng thái đơn hàng
+
+### Payment Service
+- `GET /api/payments/order/{orderId}` - Kiểm tra trạng thái thanh toán của đơn hàng
 
 ---
+
 
 ## Chạy project
 
@@ -102,57 +110,8 @@ mvn clean package -DskipTests
 
 ---
 
-## Lộ trình phát triển
-
-- [x] Phase 1 — Infrastructure (Docker Compose)
-- [x] Phase 2 — API Gateway + Auth
-- [x] Phase 2.1 — **Merge Auth Service → User Service** (Consolidation)
-- [ ] Phase 3 — Business Services
-- [ ] Phase 4 — Resilience & Service Discovery
-- [ ] Phase 5 — Observability (Prometheus, Grafana, Zipkin)
-- [ ] Phase 6 — CI/CD & Deploy
-
----
-
-## Kiến trúc Messaging
-
-**User Registration Flow:**
-```
-1. Client → POST /api/auth/register
-   ↓
-2. User Service → Keycloak (create user)
-   ↓
-3. User Service → Kafka (publish UserRegisteredIntegrationEvent)
-   ↓
-4. Other Services (listening) ← consume event
-```
-
----
-
-## Cấu trúc Project
-
-```
-order-system/
-├── commonlib/              # Shared libraries & events
-├── apigateway/             # Spring Cloud Gateway
-├── userservice/            # User + Auth (merged)
-│   ├── auth/
-│   │   ├── controller/     # AuthController
-│   │   ├── service/        # AuthService, KeycloakService
-│   │   ├── dto/            # LoginRequest, RegisterRequest, TokenResponse
-│   │   ├── producers/      # UserEventProducer (Kafka)
-│   │   └── event/
-│   └── user/
-│       ├── controller/     # UserController
-│       ├── service/        # UserService
-│       ├── entities/       # User entity
-│       ├── listeners/      # UserRegistrationEventListener (Kafka)
-│       └── repositories/   # UserRepository
-├── productservice/         # Product management
-├── orderservice/           # Order management
-├── paymentservice/         # Payment processing
-├── discoveryserver/        # Eureka
-├── frontend/               # Next.js React app
-├── docker-compose.yml      # Infrastructure
-└── Makefile               # Build commands
-```
+## Kiến trúc & Pattern
+Hệ thống được thiết kế theo các nguyên tắc hiện đại để đảm bảo khả năng mở rộng và bảo trì:
+- **Clean Architecture & DDD**: Tách biệt rõ ràng các lớp Domain, Application, Infrastructure. Sử dụng mô hình Port-Adapter.
+- **Saga Pattern (Orchestration)**: Quản lý giao dịch phân tán giữa các service Order, Inventory và Payment.
+- **Database per Service**: Mỗi service sở hữu database riêng để đảm bảo tính độc lập.
