@@ -1,5 +1,6 @@
-package com.example.paymentservice.entities;
+package com.example.paymentservice.infrastructure.persistence.entities;
 
+import com.example.paymentservice.domain.models.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
