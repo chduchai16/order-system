@@ -4,6 +4,7 @@ import com.example.orderservice.domain.models.Order;
 import com.example.orderservice.domain.ports.external.PaymentService;
 
 import com.example.orderservice.infrastructure.adapters.clients.PaymentClient;
+import com.example.orderservice.infrastructure.adapters.clients.dtos.PaymentRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,13 @@ public class PaymentServiceAdapter implements PaymentService {
     @Override
     public void processPayment(Order order) {
         log.info("Processing payment for order {}", order.getId());
-        PaymentClient.PaymentRequest request = PaymentClient.PaymentRequest.builder()
+        PaymentRequest request = PaymentRequest.builder()
                 .orderId(order.getId())
                 .userId(order.getUserId())
                 .keycloakId(order.getKeycloakId())
                 .amount(order.getTotalPrice())
                 .build();
+
         
         paymentClient.processPayment(request);
     }

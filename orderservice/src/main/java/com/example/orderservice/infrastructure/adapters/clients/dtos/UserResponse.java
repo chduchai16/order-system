@@ -1,4 +1,4 @@
-package com.example.orderservice.infrastructure.adapters.clients;
+package com.example.orderservice.infrastructure.adapters.clients.dtos;
 
 import lombok.Data;
 
@@ -9,4 +9,3 @@ public class UserResponse {
     private String username ;
     private boolean active ;
 }
-
