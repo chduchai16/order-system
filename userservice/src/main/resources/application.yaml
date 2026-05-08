@@ -28,13 +28,7 @@ spring:
 server:
   port: 8081
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8061/eureka/
-  instance:
-    hostname: host.docker.internal
-    prefer-ip-address: false
+
 
 keycloak:
   server-url: ${KEYCLOAK_SERVER_URL:http://localhost:9090}

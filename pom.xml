@@ -15,7 +15,7 @@
 
     <modules>
         <module>commonlib</module>
-        <module>discoveryserver</module>
+
         <module>apigateway</module>
         <module>userservice</module>
         <module>productservice</module>

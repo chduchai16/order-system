@@ -5,27 +5,27 @@ spring:
     gateway:
       routes:
         - id: authservice
-          uri: lb://userservice
+          uri: ${USER_SERVICE_URL:http://userservice:8080}
           predicates:
             - Path=/api/auth/**
 
         - id: userservice
-          uri: lb://userservice
+          uri: ${USER_SERVICE_URL:http://userservice:8080}
           predicates:
             - Path=/api/users/**
 
         - id: productservice
-          uri: lb://productservice
+          uri: ${PRODUCT_SERVICE_URL:http://productservice:8080}
           predicates:
             - Path=/api/products/**
 
         - id: orderservice
-          uri: lb://orderservice
+          uri: ${ORDER_SERVICE_URL:http://orderservice:8080}
           predicates:
             - Path=/api/orders/**
 
         - id: paymentservice
-          uri: lb://paymentservice
+          uri: ${PAYMENT_SERVICE_URL:http://paymentservice:8080}
           predicates:
             - Path=/api/payments/**
 
@@ -38,11 +38,3 @@ spring:
 
 server:
   port: 8080
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://discoveryserver:8080/eureka/
-  instance:
-    hostname: apigateway
-    prefer-ip-address: false

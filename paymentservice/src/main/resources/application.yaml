@@ -33,10 +33,4 @@ spring:
 server:
   port: 8084
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8061/eureka/
-  instance:
-    hostname: host.docker.internal
-    prefer-ip-address: false
+
