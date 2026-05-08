@@ -1,4 +1,4 @@
-package com.example.orderservice.producers;
+package com.example.orderservice.infrastructure.adapters.producers;
 
 
 import com.example.commonlib.events.OrderCreatedEvent;
