@@ -1,4 +1,4 @@
-package com.example.userservice.services;
+package com.example.userservice.infrastructure.adapters;
 
 import java.util.List;
 import java.util.Map;
@@ -14,14 +14,15 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import com.example.userservice.dtos.LoginRequest;
-import com.example.userservice.dtos.RegisterRequest;
-import com.example.userservice.dtos.TokenResponse;
+import com.example.userservice.domain.repositories.IdentityService;
+import com.example.userservice.application.dtos.LoginRequest;
+import com.example.userservice.application.dtos.RegisterRequest;
+import com.example.userservice.application.dtos.TokenResponse;
 
 @Service
-public class KeycloakService {
+public class KeycloakAdapter implements IdentityService {
 
-    private static final Logger logger = LoggerFactory.getLogger(KeycloakService.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeycloakAdapter.class);
     private final WebClient webClient;
 
     @Value("${keycloak.server-url}")
@@ -36,12 +37,14 @@ public class KeycloakService {
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
-    public KeycloakService(WebClient.Builder webClientBuilder) {
+    public KeycloakAdapter(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
-    // login
+    @Override
     public TokenResponse login (LoginRequest request) {
+        // ... (existing logic)
+
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add("grant_type","password");
@@ -68,7 +71,7 @@ public class KeycloakService {
         }
     }
 
-    // refresh token
+    @Override
     public TokenResponse refresh(String refreshToken) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("grant_type",    "refresh_token");
@@ -85,7 +88,7 @@ public class KeycloakService {
                 .block();
     }
 
-    // register
+    @Override
     public String register(RegisterRequest request) {
         try {
             // Bước 1: lấy admin token
@@ -136,7 +139,7 @@ public class KeycloakService {
         }
     }
 
-    // logout
+    @Override
     public void logout(String refreshToken) {
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();

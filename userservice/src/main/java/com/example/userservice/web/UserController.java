@@ -1,10 +1,9 @@
-package com.example.userservice.controllers;
+package com.example.userservice.web;
 
+import com.example.userservice.application.services.UserApplicationService;
+import com.example.userservice.domain.models.User;
+import com.example.userservice.application.dtos.UserResponse;
 
-import com.example.userservice.dtos.UserResponse;
-import com.example.userservice.entities.User;
-import com.example.userservice.exceptions.UserNotFoundException;
-import com.example.userservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,25 +20,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final UserService userService ;
+    private final UserApplicationService userApplicationService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
+        return userApplicationService.getUserById(id)
                 .map(user -> ResponseEntity.ok(toResponse(user)))
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
     }
 
     @GetMapping("/keycloak/{keycloakId}")
     public ResponseEntity<UserResponse> getUserByKeycloakId(@PathVariable String keycloakId) {
-        return userService.getUserByKeycloakId(keycloakId)
+        return userApplicationService.getUserByKeycloakId(keycloakId)
                 .map(user -> ResponseEntity.ok(toResponse(user)))
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + keycloakId));
+                .orElseThrow(() -> new RuntimeException("User not found: " + keycloakId));
     }
+
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsers()
+        List<UserResponse> users = userApplicationService.getAllUsers()
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
@@ -59,3 +59,4 @@ public class UserController {
                 .build();
     }
 }
+
