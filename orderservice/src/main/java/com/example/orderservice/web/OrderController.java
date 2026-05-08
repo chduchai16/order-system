@@ -2,7 +2,7 @@ package com.example.orderservice.web;
 
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.application.dtos.OrderResponse;
-import com.example.orderservice.application.services.OrderApplicationService;
+import com.example.orderservice.application.services.IOrderService;
 import com.example.orderservice.domain.models.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderApplicationService orderService;
+    private final IOrderService orderService;
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {

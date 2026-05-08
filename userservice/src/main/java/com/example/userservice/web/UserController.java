@@ -1,6 +1,6 @@
 package com.example.userservice.web;
 
-import com.example.userservice.application.services.UserApplicationService;
+import com.example.userservice.application.services.IUserService;
 import com.example.userservice.domain.models.User;
 import com.example.userservice.application.dtos.UserResponse;
 
@@ -20,18 +20,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final UserApplicationService userApplicationService;
+    private final IUserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        return userApplicationService.getUserById(id)
+        return userService.getUserById(id)
                 .map(user -> ResponseEntity.ok(toResponse(user)))
                 .orElseThrow(() -> new RuntimeException("User not found: " + id));
     }
 
     @GetMapping("/keycloak/{keycloakId}")
     public ResponseEntity<UserResponse> getUserByKeycloakId(@PathVariable String keycloakId) {
-        return userApplicationService.getUserByKeycloakId(keycloakId)
+        return userService.getUserByKeycloakId(keycloakId)
                 .map(user -> ResponseEntity.ok(toResponse(user)))
                 .orElseThrow(() -> new RuntimeException("User not found: " + keycloakId));
     }
@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userApplicationService.getAllUsers()
+        List<UserResponse> users = userService.getAllUsers()
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
@@ -58,6 +58,4 @@ public class UserController {
                 .createdAt(user.getCreatedAt())
                 .build();
     }
-
 }
-

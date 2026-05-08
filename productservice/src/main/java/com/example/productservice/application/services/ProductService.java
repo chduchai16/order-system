@@ -18,11 +18,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProductApplicationService {
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+    @Override
     @Transactional
     public Product createProduct(ProductRequest productRequest) {
         log.info("Creating product: {}", productRequest.getName());
@@ -45,14 +46,17 @@ public class ProductApplicationService {
         return productRepository.save(product);
     }
 
+    @Override
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
+    @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
+    @Override
     @Transactional
     public void reserveStock(Long productId, Integer quantity) {
         Product product = productRepository.findById(productId)
@@ -61,6 +65,7 @@ public class ProductApplicationService {
         productRepository.save(product);
     }
 
+    @Override
     @Transactional
     public void releaseStock(Long productId, Integer quantity) {
         Product product = productRepository.findById(productId)

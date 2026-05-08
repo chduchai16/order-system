@@ -1,11 +1,9 @@
 package com.example.userservice.application.services;
 
 import com.example.userservice.domain.ports.external.IdentityService;
-
 import com.example.userservice.application.dtos.LoginRequest;
 import com.example.userservice.application.dtos.RegisterRequest;
 import com.example.userservice.application.dtos.TokenResponse;
-
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,18 +12,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthApplicationService {
+public class AuthService implements IAuthService {
 
     private final IdentityService identityService;
-    private final UserApplicationService userApplicationService;
+    private final IUserService userService;
 
+    @Override
     public void register(RegisterRequest request) {
         try {
             String keycloakId = identityService.register(request);
             log.info("Identity created in Keycloak: keycloakId={}, username={}", keycloakId, request.getUsername());
 
             if (keycloakId != null) {
-                userApplicationService.createLocalUser(
+                userService.createLocalUser(
                         keycloakId,
                         request.getUsername(),
                         request.getEmail(),
@@ -40,18 +39,18 @@ public class AuthApplicationService {
         }
     }
 
+    @Override
     public TokenResponse login(LoginRequest request) {
         return identityService.login(request);
     }
 
+    @Override
     public TokenResponse refresh(String refreshToken) {
         return identityService.refresh(refreshToken);
     }
 
+    @Override
     public void logout(String refreshToken) {
         identityService.logout(refreshToken);
     }
 }
-
-
-

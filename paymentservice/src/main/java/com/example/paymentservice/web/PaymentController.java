@@ -2,7 +2,7 @@ package com.example.paymentservice.web;
 
 import com.example.paymentservice.application.dtos.PaymentRequest;
 import com.example.paymentservice.application.dtos.PaymentResponse;
-import com.example.paymentservice.application.services.PaymentApplicationService;
+import com.example.paymentservice.application.services.IPaymentService;
 import com.example.paymentservice.domain.models.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PaymentApplicationService paymentService;
+    private final IPaymentService paymentService;
 
     @PostMapping
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {

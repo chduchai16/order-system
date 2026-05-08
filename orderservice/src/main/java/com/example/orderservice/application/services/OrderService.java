@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OrderApplicationService {
+public class OrderService implements IOrderService {
 
     private final OrderRepository orderRepository;
     private final OrderSagaOrchestrator sagaOrchestrator;
 
+    @Override
     public Order createOrder(OrderRequest request) {
         log.info("Creating initial order for user {}", request.getUserId());
 
@@ -61,10 +62,12 @@ public class OrderApplicationService {
         return savedOrder;
     }
 
+    @Override
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
     }
 
+    @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }

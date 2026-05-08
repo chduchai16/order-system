@@ -3,7 +3,6 @@ package com.example.userservice.application.services;
 import com.example.userservice.domain.models.Email;
 import com.example.userservice.domain.models.FullName;
 import com.example.userservice.domain.models.User;
-
 import com.example.userservice.domain.ports.persistence.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +15,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserApplicationService {
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
 
+    @Override
     public User createLocalUser(String keycloakId, String username, String email,
                                 String firstName, String lastName) {
         log.info("Application layer: Creating local user for keycloakId={}", keycloakId);
@@ -38,16 +38,18 @@ public class UserApplicationService {
                 });
     }
 
+    @Override
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
+    @Override
     public Optional<User> getUserByKeycloakId(String keycloakId) {
         return userRepository.findByKeycloakId(keycloakId);
     }
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 }
-

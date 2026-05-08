@@ -3,7 +3,6 @@ package com.example.paymentservice.application.services;
 import com.example.paymentservice.application.dtos.PaymentRequest;
 import com.example.paymentservice.domain.models.Money;
 import com.example.paymentservice.domain.models.Payment;
-
 import com.example.paymentservice.domain.models.PaymentStatus;
 import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
 
@@ -17,10 +16,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PaymentApplicationService {
+public class PaymentService implements IPaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    @Override
     @Transactional
     public Payment processPayment(PaymentRequest request) {
         log.info("Processing payment for orderId={}", request.getOrderId());
@@ -35,7 +35,6 @@ public class PaymentApplicationService {
                             .status(PaymentStatus.PENDING)
                             .build();
 
-
                     // Simulate external payment gateway call
                     payment.complete(); 
                     
@@ -43,6 +42,7 @@ public class PaymentApplicationService {
                 });
     }
 
+    @Override
     @Transactional
     public void refundPayment(Long orderId) {
         log.info("Refunding payment for orderId={}", orderId);
@@ -53,6 +53,7 @@ public class PaymentApplicationService {
         });
     }
 
+    @Override
     public Optional<Payment> getPaymentByOrderId(Long orderId) {
         return paymentRepository.findByOrderId(orderId);
     }
