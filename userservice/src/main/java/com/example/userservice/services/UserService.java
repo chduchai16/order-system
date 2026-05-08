@@ -18,10 +18,10 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    // tạo mới user bắt từ sự kiện đăng ký từ Keycloak
-    public User createUserFromEvent(String keycloakId, String username, String email,
-                                    String firstName, String lastName) {
-        log.info("Creating user from registration event: keycloakId={}, username={}, email={}",
+    // tạo mới user sau khi đăng ký thành công từ Keycloak
+    public User createLocalUser(String keycloakId, String username, String email,
+                                     String firstName, String lastName) {
+        log.info("Creating local user: keycloakId={}, username={}, email={}",
                 keycloakId, username, email);
 
         Optional<User> existing = userRepository.findByKeycloakId(keycloakId);

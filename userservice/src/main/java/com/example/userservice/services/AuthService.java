@@ -1,10 +1,8 @@
-package com.example.userservice.auth.services;
+package com.example.userservice.services;
 
 import org.springframework.stereotype.Service;
 
-import com.example.commonlib.events.UserRegisteredIntegrationEvent;
-import com.example.userservice.auth.dtos.RegisterRequest;
-import com.example.userservice.auth.producers.UserEventProducer;
+import com.example.userservice.dtos.RegisterRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthService {
 
     private final KeycloakService keycloakService;
-    private final UserEventProducer userEventProducer;
+    private final UserService userService;
 
     public void register(RegisterRequest request) {
         try {
@@ -23,16 +21,14 @@ public class AuthService {
             log.info("User registered in Keycloak: keycloakId={}, username={}", keycloakId, request.getUsername());
 
             if (keycloakId != null) {
-                UserRegisteredIntegrationEvent event = new UserRegisteredIntegrationEvent(
+                userService.createLocalUser(
                         keycloakId,
                         request.getUsername(),
                         request.getEmail(),
                         request.getFirstName(),
                         request.getLastName()
                 );
-
-                userEventProducer.publishUserRegistered(event);
-                log.info("User registration event published: keycloakId={}", keycloakId);
+                log.info("Local user created successfully: keycloakId={}", keycloakId);
             }
         } catch (Exception e) {
             log.error("Registration failed for user: {}", request.getUsername(), e);
@@ -40,3 +36,4 @@ public class AuthService {
         }
     }
 }
+
