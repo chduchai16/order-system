@@ -1,10 +1,11 @@
-package com.example.orderservice.infrastructure.persistence;
+package com.example.orderservice.infrastructure.persistence.adapters;
 
 import com.example.orderservice.domain.models.Order;
 import com.example.orderservice.domain.ports.persistence.OrderRepository;
 
 import com.example.orderservice.infrastructure.mappers.OrderMapper;
 import com.example.orderservice.infrastructure.persistence.entities.OrderEntity;
+import com.example.orderservice.infrastructure.persistence.jpas.JpaOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

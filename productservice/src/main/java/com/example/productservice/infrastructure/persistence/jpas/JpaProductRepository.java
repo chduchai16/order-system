@@ -1,4 +1,4 @@
-package com.example.productservice.infrastructure.persistence;
+package com.example.productservice.infrastructure.persistence.jpas;
 
 import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

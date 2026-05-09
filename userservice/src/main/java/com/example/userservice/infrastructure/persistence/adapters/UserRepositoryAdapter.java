@@ -1,4 +1,4 @@
-package com.example.userservice.infrastructure.persistence;
+package com.example.userservice.infrastructure.persistence.adapters;
 
 import com.example.userservice.domain.models.User;
 import com.example.userservice.domain.ports.persistence.UserRepository;
@@ -6,6 +6,7 @@ import com.example.userservice.domain.ports.persistence.UserRepository;
 import com.example.userservice.infrastructure.mappers.UserMapper;
 import com.example.userservice.infrastructure.persistence.entities.UserEntity;
 
+import com.example.userservice.infrastructure.persistence.jpas.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

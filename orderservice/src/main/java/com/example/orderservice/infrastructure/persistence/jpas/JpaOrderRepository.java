@@ -1,4 +1,4 @@
-package com.example.orderservice.infrastructure.persistence;
+package com.example.orderservice.infrastructure.persistence.jpas;
 
 import com.example.orderservice.infrastructure.persistence.entities.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

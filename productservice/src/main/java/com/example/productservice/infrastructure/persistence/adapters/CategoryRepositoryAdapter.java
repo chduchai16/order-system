@@ -1,9 +1,9 @@
-package com.example.productservice.infrastructure.persistence;
+package com.example.productservice.infrastructure.persistence.adapters;
 
 import com.example.productservice.domain.models.Category;
 import com.example.productservice.domain.ports.persistence.CategoryRepository;
 
-import com.example.productservice.infrastructure.mappers.ProductMapper;
+import com.example.productservice.infrastructure.persistence.jpas.JpaCategoryRepository;
 import com.example.productservice.infrastructure.persistence.entities.CategoryEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

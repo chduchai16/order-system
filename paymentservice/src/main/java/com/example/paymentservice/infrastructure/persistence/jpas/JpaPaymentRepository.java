@@ -1,4 +1,4 @@
-package com.example.paymentservice.infrastructure.persistence;
+package com.example.paymentservice.infrastructure.persistence.jpas;
 
 import com.example.paymentservice.infrastructure.persistence.entities.PaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
