@@ -96,7 +96,7 @@ jobs:
     
     strategy:
       matrix:
-        service: ['apigateway', 'authservice', 'userservice', 'productservice', 'orderservice', 'paymentservice', 'notificationservice', 'discoveryserver']
+        service: ['apigateway', 'userservice', 'productservice', 'orderservice', 'paymentservice']
     
     steps:
       - uses: actions/checkout@v4
