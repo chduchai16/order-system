@@ -1,6 +1,6 @@
 package com.example.productservice.application.services;
 
-import com.example.productservice.application.dtos.ProductRequest;
+import com.example.productservice.application.dtos.product.ProductRequest;
 import com.example.productservice.domain.models.Product;
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.example.productservice.web;
 
-import com.example.productservice.application.dtos.ProductRequest;
-import com.example.productservice.application.dtos.ProductResponse;
+import com.example.productservice.application.dtos.product.ProductRequest;
+import com.example.productservice.application.dtos.product.ProductResponse;
 import com.example.productservice.application.services.IProductService;
 import com.example.productservice.domain.models.Product;
 import lombok.RequiredArgsConstructor;

@@ -53,4 +53,19 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaCategoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Category> findByName(String name) {
+        return jpaCategoryRepository.findByName(name)
+                .map(entity -> Category.builder()
+                        .id(entity.getId())
+                        .name(entity.getName())
+                        .description(entity.getDescription())
+                        .build());
+    }
 }
