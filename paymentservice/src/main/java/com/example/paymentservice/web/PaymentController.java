@@ -39,6 +39,7 @@ public class PaymentController {
                 .id(payment.getId())
                 .orderId(payment.getOrderId())
                 .amount(payment.getAmount() != null ? payment.getAmount().getAmount() : null)
+                .paymentMethod(payment.getPaymentMethod())
                 .status(payment.getStatus())
                 .processedAt(payment.getProcessedAt())
                 .build();

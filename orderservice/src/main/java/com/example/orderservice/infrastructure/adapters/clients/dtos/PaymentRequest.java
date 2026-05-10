@@ -15,4 +15,5 @@ public class PaymentRequest {
     private Long userId;
     private String keycloakId;
     private BigDecimal amount;
+    private String paymentMethod;
 }

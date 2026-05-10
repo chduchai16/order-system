@@ -1,6 +1,7 @@
 package com.example.paymentservice.application.dtos;
 
 import com.example.paymentservice.domain.models.PaymentStatus;
+import com.example.paymentservice.domain.models.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class PaymentResponse {
     private Long id;
     private Long orderId;
     private BigDecimal amount;
+    private PaymentMethod paymentMethod;
     private PaymentStatus status;
     private LocalDateTime processedAt;
 }

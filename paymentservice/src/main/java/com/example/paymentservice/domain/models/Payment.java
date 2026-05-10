@@ -17,6 +17,7 @@ public class Payment {
     private Long userId;
     private String keycloakId;
     private Money amount;
+    private PaymentMethod paymentMethod;
     private PaymentStatus status;
     private LocalDateTime processedAt;
     private LocalDateTime createdAt;

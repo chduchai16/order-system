@@ -5,6 +5,9 @@ import com.example.orderservice.domain.models.OrderStatus;
 import com.example.orderservice.domain.ports.external.InventoryService;
 import com.example.orderservice.domain.ports.persistence.OrderRepository;
 import com.example.orderservice.domain.ports.external.PaymentService;
+import com.example.orderservice.infrastructure.adapters.producers.OrderEventProducer;
+import com.example.commonlib.events.OrderCompletedEvent;
+import com.example.commonlib.events.OrderCancelledEvent;
 
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class OrderSagaOrchestrator {
     private final OrderRepository orderRepository;
     private final InventoryService inventoryService;
     private final PaymentService paymentService;
+    private final OrderEventProducer orderEventProducer;
 
     public void execute(Order order) {
         log.info("Starting Saga for order {}", order.getId());
@@ -42,6 +46,10 @@ public class OrderSagaOrchestrator {
             // Hoàn thành đơn hàng
             order.markAsCompleted();
             orderRepository.save(order);
+            
+            OrderCompletedEvent event = new OrderCompletedEvent(order.getId(), order.getOrderNumber().getValue(), order.getUserId());
+            orderEventProducer.publishOrderCompleted(event);
+            
             log.info("Saga completed successfully for order {}", order.getId());
 
         } catch (Exception e) {
@@ -78,5 +86,8 @@ public class OrderSagaOrchestrator {
 
         order.markAsCancelled();
         orderRepository.save(order);
+        
+        OrderCancelledEvent event = new OrderCancelledEvent(order.getId(), order.getOrderNumber().getValue(), "Saga failed and compensated");
+        orderEventProducer.publishOrderCancelled(event);
     }
 }

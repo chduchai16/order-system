@@ -1,5 +1,6 @@
 package com.example.paymentservice.infrastructure.persistence.entities;
 
+import com.example.paymentservice.domain.models.PaymentMethod;
 import com.example.paymentservice.domain.models.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class PaymentEntity {
 
     @Column(nullable = false)
     private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false)
+    private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -14,6 +14,7 @@ public class PaymentMapper {
                 .userId(entity.getUserId())
                 .keycloakId(entity.getKeycloakId())
                 .amount(new Money(entity.getAmount()))
+                .paymentMethod(entity.getPaymentMethod())
                 .status(entity.getStatus())
                 .processedAt(entity.getProcessedAt())
                 .createdAt(entity.getCreatedAt())
@@ -30,6 +31,7 @@ public class PaymentMapper {
         if (domain.getAmount() != null) {
             entity.setAmount(domain.getAmount().getAmount());
         }
+        entity.setPaymentMethod(domain.getPaymentMethod());
         entity.setStatus(domain.getStatus());
         entity.setProcessedAt(domain.getProcessedAt());
         return entity;

@@ -10,13 +10,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentCompletedEvent {
+public class RefundIssuedEvent {
     private Long paymentId;
     private Long orderId;
     private Long userId;
-    private String keycloakId;
     private BigDecimal amount;
-    private String paymentMethod;
-    private String status; // SUCCESS, FAILED
     private LocalDateTime processedAt;
 }

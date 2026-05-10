@@ -2,6 +2,8 @@ package com.example.orderservice.infrastructure.adapters.producers;
 
 
 import com.example.commonlib.events.OrderCreatedEvent;
+import com.example.commonlib.events.OrderCompletedEvent;
+import com.example.commonlib.events.OrderCancelledEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,6 +27,18 @@ public class OrderEventProducer {
             kafkaTemplate.send(TOPIC, String.valueOf(event.getOrderId()), event);
         } catch (Exception e) {
             log.error("Failed to publish event: {}", e.getMessage());
+        }
+    }
+
+    public void publishOrderCompleted(OrderCompletedEvent event) {
+        if (kafkaTemplate != null) {
+            kafkaTemplate.send("order-completed", String.valueOf(event.getOrderId()), event);
+        }
+    }
+
+    public void publishOrderCancelled(OrderCancelledEvent event) {
+        if (kafkaTemplate != null) {
+            kafkaTemplate.send("order-cancelled", String.valueOf(event.getOrderId()), event);
         }
     }
 }

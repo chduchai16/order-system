@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import com.example.paymentservice.domain.models.PaymentMethod;
 
 @Data
 @Builder
@@ -16,4 +17,5 @@ public class PaymentRequest {
     private Long userId;
     private String keycloakId;
     private BigDecimal amount;
+    private PaymentMethod paymentMethod;
 }

@@ -12,12 +12,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import com.example.commonlib.events.UserRegisteredIntegrationEvent;
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     public User createLocalUser(String keycloakId, String username, String email,
@@ -33,8 +39,19 @@ public class UserService implements IUserService {
                             .fullName(new FullName(firstName, lastName))
                             .active(true)
                             .build();
-
-                    return userRepository.save(newUser);
+                            
+                    User savedUser = userRepository.save(newUser);
+                    
+                    UserRegisteredIntegrationEvent event = new UserRegisteredIntegrationEvent(
+                        savedUser.getKeycloakId(),
+                        savedUser.getUsername(),
+                        savedUser.getEmail().getValue(),
+                        savedUser.getFullName().getFirstName(),
+                        savedUser.getFullName().getLastName()
+                    );
+                    kafkaTemplate.send("user.registered", event);
+                    
+                    return savedUser;
                 });
     }
 

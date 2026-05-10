@@ -24,6 +24,7 @@ public class PaymentServiceAdapter implements PaymentService {
                 .userId(order.getUserId())
                 .keycloakId(order.getKeycloakId())
                 .amount(order.getTotalPrice())
+                .paymentMethod("BANK_TRANSFER")
                 .build();
 
         
