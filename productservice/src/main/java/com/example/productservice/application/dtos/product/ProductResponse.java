@@ -14,11 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ProductResponse {
     private Long id;
+    private String sku;
     private String name;
     private String description;
     private String categoryName;
     private BigDecimal price;
     private Integer stock;
+    private Integer reservedStock;
+    private Integer availableStock;
     private boolean active;
     private LocalDateTime createdAt;
 }

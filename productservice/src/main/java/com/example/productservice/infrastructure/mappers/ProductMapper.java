@@ -3,20 +3,23 @@ package com.example.productservice.infrastructure.mappers;
 import com.example.productservice.domain.models.Category;
 import com.example.productservice.domain.models.Money;
 import com.example.productservice.domain.models.Product;
+import com.example.productservice.domain.models.SKU;
 import com.example.productservice.infrastructure.persistence.entities.CategoryEntity;
 import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
 
 public class ProductMapper {
-    
+
     public static Product toDomain(ProductEntity entity) {
         if (entity == null) return null;
         return Product.builder()
                 .id(entity.getId())
+                .sku(entity.getSku() != null ? new SKU(entity.getSku()) : null)
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .category(categoryToDomain(entity.getCategory()))
                 .price(new Money(entity.getPrice()))
                 .stock(entity.getStock())
+                .reservedStock(entity.getReservedStock())
                 .active(entity.isActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
@@ -36,6 +39,7 @@ public class ProductMapper {
         if (domain == null) return null;
         ProductEntity entity = new ProductEntity();
         entity.setId(domain.getId());
+        entity.setSku(domain.getSku() != null ? domain.getSku().getValue() : SKU.generate().getValue());
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());
         entity.setCategory(categoryToEntity(domain.getCategory()));
@@ -43,6 +47,7 @@ public class ProductMapper {
             entity.setPrice(domain.getPrice().getAmount());
         }
         entity.setStock(domain.getStock());
+        entity.setReservedStock(domain.getReservedStock() != null ? domain.getReservedStock() : 0);
         entity.setActive(domain.isActive());
         return entity;
     }

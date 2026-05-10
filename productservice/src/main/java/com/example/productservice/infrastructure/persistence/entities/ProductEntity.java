@@ -19,6 +19,9 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String sku;
+
     @Column(nullable = false)
     private String name;
 
@@ -27,7 +30,6 @@ public class ProductEntity {
     private CategoryEntity category;
 
     @Column(length = 1000)
-
     private String description;
 
     @Column(nullable = false)
@@ -36,8 +38,14 @@ public class ProductEntity {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(name = "reserved_stock", nullable = false)
+    private Integer reservedStock = 0;
+
     @Column(nullable = false)
     private boolean active = true;
+
+    @Version
+    private Long version;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,14 +57,25 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<ProductResponse> updatePrice(
+            @PathVariable Long id,
+            @RequestParam BigDecimal price) {
+        Product product = productService.updatePrice(id, price);
+        return ResponseEntity.ok(toResponse(product));
+    }
+
     private ProductResponse toResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
+                .sku(product.getSku() != null ? product.getSku().getValue() : null)
                 .name(product.getName())
                 .description(product.getDescription())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
                 .price(product.getPrice() != null ? product.getPrice().getAmount() : null)
                 .stock(product.getStock())
+                .reservedStock(product.getReservedStock())
+                .availableStock(product.getAvailableStock())
                 .active(product.isActive())
                 .createdAt(product.getCreatedAt())
                 .build();
