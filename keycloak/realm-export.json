@@ -729,7 +729,7 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
+      "authorizationServicesEnabled": false,
       "publicClient": false,
       "frontchannelLogout": true,
       "protocol": "openid-connect",
@@ -804,50 +804,7 @@
         "phone",
         "offline_access",
         "microprofile-jwt"
-      ],
-      "authorizationSettings": {
-        "allowRemoteResourceManagement": true,
-        "policyEnforcementMode": "ENFORCING",
-        "resources": [
-          {
-            "name": "Default Resource",
-            "type": "urn:order:resources:default",
-            "ownerManagedAccess": false,
-            "attributes": {},
-            "_id": "82b4907e-4a76-4ce3-baee-e66b1d0e8052",
-            "uris": [
-              "/*"
-            ]
-          }
-        ],
-        "policies": [
-          {
-            "id": "a4671acb-35e7-4b31-9c35-2c2a11a5e322",
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "id": "ed4c3e32-47d3-426e-8806-1f33beb2a282",
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:order:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
-          }
-        ],
-        "scopes": [],
-        "decisionStrategy": "UNANIMOUS"
-      }
+      ]
     },
     {
       "id": "fce45a50-c968-4488-9c77-0dfebc05e195",

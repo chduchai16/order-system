@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 
 services:
   postgres:
@@ -43,6 +43,17 @@ services:
     networks:
       - order-network
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: order-system-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - order-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: order-system-keycloak
@@ -52,16 +63,23 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
       KC_HTTP_PORT: 8080
+
       JAVA_OPTS: "-Xms128m -Xmx256m -XX:MaxMetaspaceSize=128m"
+
     ports:
       - "9090:8080"
+
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm.json:ro
+
     depends_on:
       - postgres
+
     networks:
       - order-network
 
@@ -74,13 +92,15 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      KEYCLOAK_SERVER_URL: "${KEYCLOAK_URL}"
-      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_URL}/realms/order"
-      PRODUCT_SERVICE_URL: "${PRODUCT_SERVICE_URL}"
-      USER_SERVICE_URL: "${USER_SERVICE_URL}"
-      ORDER_SERVICE_URL: "${ORDER_SERVICE_URL}"
-      PAYMENT_SERVICE_URL: "${PAYMENT_SERVICE_URL}"
+      KEYCLOAK_SERVER_URL: "http://host.docker.internal:9090"
+      KEYCLOAK_ISSUER_URI: "http://host.docker.internal:9090/realms/order"
+      PRODUCT_SERVICE_URL: "http://host.docker.internal:8082"
+      USER_SERVICE_URL: "http://host.docker.internal:8081"
+      ORDER_SERVICE_URL: "http://host.docker.internal:8083"
+      PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx192M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - keycloak
     networks:
@@ -98,10 +118,12 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/user_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      KEYCLOAK_SERVER_URL: "${KEYCLOAK_URL}"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      KEYCLOAK_SERVER_URL: "http://host.docker.internal:9090"
       KEYCLOAK_CLIENT_SECRET: "${KEYCLOAK_CLIENT_SECRET}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - postgres
       - kafka
@@ -121,8 +143,10 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/product_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - postgres
       - kafka
@@ -141,11 +165,13 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      PRODUCT_SERVICE_URL: "${PRODUCT_SERVICE_URL}"
-      PAYMENT_SERVICE_URL: "${PAYMENT_SERVICE_URL}"
-      USER_SERVICE_URL: "${USER_SERVICE_URL}"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      PRODUCT_SERVICE_URL: "http://host.docker.internal:8082"
+      PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
+      USER_SERVICE_URL: "http://host.docker.internal:8081"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - postgres
       - kafka
@@ -164,10 +190,50 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/payment_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - postgres
+      - kafka
+    networks:
+      - order-network
+
+  cartservice:
+    build:
+      context: .
+      dockerfile: ./cartservice/Dockerfile
+    container_name: order-system-cartservice
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
+      - kafka
+    networks:
+      - order-network
+
+  notificationservice:
+    build:
+      context: .
+      dockerfile: ./notificationservice/Dockerfile
+    container_name: order-system-notificationservice
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
       - kafka
     networks:
       - order-network
@@ -188,6 +254,7 @@ services:
 volumes:
   postgres_data:
   kafka_data:
+  redis_data:
 
 networks:
   order-network:
