@@ -1,16 +1,13 @@
 package com.example.orderservice.infrastructure.mappers;
 
-import com.example.orderservice.domain.models.Address;
-import com.example.orderservice.domain.models.Order;
-import com.example.orderservice.domain.models.OrderItem;
-import com.example.orderservice.infrastructure.persistence.entities.OrderEntity;
-import com.example.orderservice.infrastructure.persistence.entities.OrderItemEntity;
+import com.example.orderservice.domain.models.*;
+import com.example.orderservice.infrastructure.persistence.entities.*;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
-    
+
     public static Order toDomain(OrderEntity entity) {
         if (entity == null) return null;
         Address address = null;
@@ -25,10 +22,14 @@ public class OrderMapper {
 
         return Order.builder()
                 .id(entity.getId())
+                .orderNumber(entity.getOrderNumber() != null ? new OrderNumber(entity.getOrderNumber()) : null)
                 .userId(entity.getUserId())
                 .keycloakId(entity.getKeycloakId())
-                .items(entity.getItems() != null ? 
-                    entity.getItems().stream().map(OrderMapper::itemToDomain).collect(Collectors.toList()) : 
+                .items(entity.getItems() != null ?
+                    entity.getItems().stream().map(OrderMapper::itemToDomain).collect(Collectors.toList()) :
+                    new ArrayList<>())
+                .statusHistory(entity.getStatusHistory() != null ?
+                    entity.getStatusHistory().stream().map(OrderMapper::historyToDomain).collect(Collectors.toList()) :
                     new ArrayList<>())
                 .totalPrice(entity.getTotalPrice())
                 .status(entity.getStatus())
@@ -48,15 +49,26 @@ public class OrderMapper {
                 .build();
     }
 
+    private static OrderStatusHistory historyToDomain(OrderStatusHistoryEntity entity) {
+        return OrderStatusHistory.builder()
+                .id(entity.getId())
+                .fromStatus(entity.getFromStatus())
+                .toStatus(entity.getToStatus())
+                .reason(entity.getReason())
+                .changedAt(entity.getChangedAt())
+                .build();
+    }
+
     public static OrderEntity toEntity(Order domain) {
         if (domain == null) return null;
         OrderEntity entity = new OrderEntity();
         entity.setId(domain.getId());
+        entity.setOrderNumber(domain.getOrderNumber() != null ? domain.getOrderNumber().getValue() : OrderNumber.generate().getValue());
         entity.setUserId(domain.getUserId());
         entity.setKeycloakId(domain.getKeycloakId());
         entity.setTotalPrice(domain.getTotalPrice());
         entity.setStatus(domain.getStatus());
-        
+
         if (domain.getShippingAddress() != null) {
             entity.setShippingStreet(domain.getShippingAddress().getStreet());
             entity.setShippingCity(domain.getShippingAddress().getCity());
@@ -72,7 +84,16 @@ public class OrderMapper {
                     return itemEntity;
                 }).collect(Collectors.toList()));
         }
-        
+
+        if (domain.getStatusHistory() != null) {
+            entity.setStatusHistory(domain.getStatusHistory().stream()
+                .map(h -> {
+                    OrderStatusHistoryEntity histEntity = historyToEntity(h);
+                    histEntity.setOrder(entity);
+                    return histEntity;
+                }).collect(Collectors.toList()));
+        }
+
         return entity;
     }
 
@@ -83,6 +104,16 @@ public class OrderMapper {
         entity.setProductName(domain.getProductName());
         entity.setQuantity(domain.getQuantity());
         entity.setUnitPrice(domain.getUnitPrice());
+        return entity;
+    }
+
+    private static OrderStatusHistoryEntity historyToEntity(OrderStatusHistory domain) {
+        OrderStatusHistoryEntity entity = new OrderStatusHistoryEntity();
+        entity.setId(domain.getId());
+        entity.setFromStatus(domain.getFromStatus());
+        entity.setToStatus(domain.getToStatus());
+        entity.setReason(domain.getReason());
+        entity.setChangedAt(domain.getChangedAt());
         return entity;
     }
 }

@@ -24,6 +24,7 @@ public class OrderRequest {
     private String country;
 
     @Data
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class OrderItemRequest {

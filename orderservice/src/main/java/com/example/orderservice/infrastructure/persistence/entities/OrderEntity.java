@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Entity
 @Table(name = "orders")
 @Data
@@ -21,6 +20,9 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "order_number", nullable = false, unique = true)
+    private String orderNumber;
+
     @Column(nullable = false)
     private Long userId;
 
@@ -30,8 +32,10 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> items;
 
-    @Column(nullable = false)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderStatusHistoryEntity> statusHistory;
 
+    @Column(nullable = false)
     private BigDecimal totalPrice;
 
     @Column(name = "shipping_street")
@@ -47,7 +51,6 @@ public class OrderEntity {
     private String shippingCountry;
 
     @Enumerated(EnumType.STRING)
-
     @Column(nullable = false)
     private OrderStatus status;
 

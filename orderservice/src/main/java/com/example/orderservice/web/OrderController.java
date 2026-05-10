@@ -48,16 +48,30 @@ public class OrderController {
                         .productName(item.getProductName())
                         .quantity(item.getQuantity())
                         .unitPrice(item.getUnitPrice())
+                        .subTotal(item.getSubTotal())
                         .build())
                 .collect(Collectors.toList());
 
+        List<OrderResponse.StatusHistoryResponse> history = order.getStatusHistory() != null
+                ? order.getStatusHistory().stream()
+                    .map(h -> OrderResponse.StatusHistoryResponse.builder()
+                            .fromStatus(h.getFromStatus())
+                            .toStatus(h.getToStatus())
+                            .reason(h.getReason())
+                            .changedAt(h.getChangedAt())
+                            .build())
+                    .collect(Collectors.toList())
+                : List.of();
+
         return OrderResponse.builder()
                 .id(order.getId())
+                .orderNumber(order.getOrderNumber() != null ? order.getOrderNumber().getValue() : null)
                 .userId(order.getUserId())
                 .items(items)
                 .totalPrice(order.getTotalPrice())
                 .status(order.getStatus())
                 .fullAddress(order.getShippingAddress() != null ? order.getShippingAddress().getFullAddress() : null)
+                .statusHistory(history)
                 .createdAt(order.getCreatedAt())
                 .build();
     }

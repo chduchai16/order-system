@@ -16,12 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Order {
     private Long id;
+    private OrderNumber orderNumber;
     private Long userId;
     private String keycloakId;
     private List<OrderItem> items;
     private BigDecimal totalPrice;
     private OrderStatus status;
     private Address shippingAddress;
+    private List<OrderStatusHistory> statusHistory;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -37,26 +39,35 @@ public class Order {
         calculateTotalPrice();
     }
 
-    // Business Methods
+    private void transitionStatus(OrderStatus newStatus, String reason) {
+        if (statusHistory == null) statusHistory = new ArrayList<>();
+        statusHistory.add(OrderStatusHistory.record(this.status, newStatus, reason));
+        this.status = newStatus;
+    }
+
     public void markAsStockReserved() {
         if (this.status != OrderStatus.PENDING) {
             throw new RuntimeException("Invalid status transition to STOCK_RESERVED from " + status);
         }
-        this.status = OrderStatus.STOCK_RESERVED;
+        transitionStatus(OrderStatus.STOCK_RESERVED, "Stock reserved successfully");
     }
 
     public void markAsPaid() {
         if (this.status != OrderStatus.STOCK_RESERVED) {
             throw new RuntimeException("Cannot pay for order that hasn't reserved stock");
         }
-        this.status = OrderStatus.PAID;
+        transitionStatus(OrderStatus.PAID, "Payment completed");
     }
 
     public void markAsCompleted() {
-        this.status = OrderStatus.COMPLETED;
+        transitionStatus(OrderStatus.COMPLETED, "Order fulfilled");
     }
 
     public void markAsCancelled() {
-        this.status = OrderStatus.CANCELLED;
+        markAsCancelled("Cancelled");
+    }
+
+    public void markAsCancelled(String reason) {
+        transitionStatus(OrderStatus.CANCELLED, reason);
     }
 }
