@@ -75,8 +75,8 @@ export default function OrdersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    <div className="max-w-[200px] truncate" title={order.fullAddress}>
-                      {order.fullAddress || 'N/A'}
+                    <div className="max-w-[200px] truncate" title={`${order.shippingAddress?.street}, ${order.shippingAddress?.district}, ${order.shippingAddress?.city}`}>
+                      {order.shippingAddress?.street}, {order.shippingAddress?.district}, {order.shippingAddress?.city}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${order.totalPrice.toFixed(2)}</td>

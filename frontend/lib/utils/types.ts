@@ -165,4 +165,6 @@ export interface CreateOrderRequest {
   city: string;
   district: string;
   country: string;
+  shippingCarrier?: string;
+  discountCode?: string;
 }
