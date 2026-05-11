@@ -61,8 +61,15 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updatePrice(
             @PathVariable Long id,
             @RequestParam BigDecimal price) {
+        // cập nhật giá
         Product product = productService.updatePrice(id, price);
         return ResponseEntity.ok(toResponse(product));
+    }
+
+    @GetMapping("/{id}/stock-movements")
+    public ResponseEntity<List<com.example.productservice.domain.models.StockMovement>> getStockMovements(@PathVariable Long id) {
+        // lấy lịch sử kho
+        return ResponseEntity.ok(productService.getStockMovements(id));
     }
 
     private ProductResponse toResponse(Product product) {

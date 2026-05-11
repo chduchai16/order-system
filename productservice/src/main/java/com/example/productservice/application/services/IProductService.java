@@ -13,4 +13,5 @@ public interface IProductService {
     void reserveStock(Long productId, Integer quantity);
     void releaseStock(Long productId, Integer quantity);
     Product updatePrice(Long productId, BigDecimal newPrice);
+    java.util.List<com.example.productservice.domain.models.StockMovement> getStockMovements(Long productId);
 }

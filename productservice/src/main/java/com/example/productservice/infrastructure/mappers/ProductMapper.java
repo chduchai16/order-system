@@ -1,11 +1,8 @@
 package com.example.productservice.infrastructure.mappers;
 
-import com.example.productservice.domain.models.Category;
-import com.example.productservice.domain.models.Money;
-import com.example.productservice.domain.models.Product;
-import com.example.productservice.domain.models.SKU;
-import com.example.productservice.infrastructure.persistence.entities.CategoryEntity;
-import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
+import com.example.productservice.domain.models.*;
+import com.example.productservice.infrastructure.persistence.entities.*;
+import java.util.stream.Collectors;
 
 public class ProductMapper {
 
@@ -21,8 +18,30 @@ public class ProductMapper {
                 .stock(entity.getStock())
                 .reservedStock(entity.getReservedStock())
                 .active(entity.isActive())
+                .variants(entity.getVariants() != null ? entity.getVariants().stream().map(ProductMapper::variantToDomain).collect(Collectors.toList()) : null)
+                .attributes(entity.getAttributes() != null ? entity.getAttributes().stream().map(ProductMapper::attributeToDomain).collect(Collectors.toList()) : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+
+    private static ProductVariant variantToDomain(ProductVariantEntity entity) {
+        if (entity == null) return null;
+        return ProductVariant.builder()
+                .id(entity.getId())
+                .skuCode(entity.getSkuCode())
+                .name(entity.getName())
+                .price(entity.getPrice())
+                .totalStock(entity.getTotalStock())
+                .reservedStock(entity.getReservedStock())
+                .build();
+    }
+
+    private static ProductAttribute attributeToDomain(ProductAttributeEmbeddable entity) {
+        if (entity == null) return null;
+        return ProductAttribute.builder()
+                .name(entity.getName())
+                .value(entity.getValue())
                 .build();
     }
 
@@ -49,7 +68,40 @@ public class ProductMapper {
         entity.setStock(domain.getStock());
         entity.setReservedStock(domain.getReservedStock() != null ? domain.getReservedStock() : 0);
         entity.setActive(domain.isActive());
+        
+        if (domain.getVariants() != null) {
+            entity.setVariants(domain.getVariants().stream().map(v -> {
+                ProductVariantEntity ve = variantToEntity(v);
+                ve.setProduct(entity);
+                return ve;
+            }).collect(Collectors.toList()));
+        }
+        
+        if (domain.getAttributes() != null) {
+            entity.setAttributes(domain.getAttributes().stream().map(ProductMapper::attributeToEntity).collect(Collectors.toList()));
+        }
+        
         return entity;
+    }
+
+    private static ProductVariantEntity variantToEntity(ProductVariant domain) {
+        if (domain == null) return null;
+        return ProductVariantEntity.builder()
+                .id(domain.getId())
+                .skuCode(domain.getSkuCode())
+                .name(domain.getName())
+                .price(domain.getPrice())
+                .totalStock(domain.getTotalStock())
+                .reservedStock(domain.getReservedStock())
+                .build();
+    }
+
+    private static ProductAttributeEmbeddable attributeToEntity(ProductAttribute domain) {
+        if (domain == null) return null;
+        return ProductAttributeEmbeddable.builder()
+                .name(domain.getName())
+                .value(domain.getValue())
+                .build();
     }
 
     private static CategoryEntity categoryToEntity(Category domain) {
@@ -59,5 +111,18 @@ public class ProductMapper {
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());
         return entity;
+    }
+
+    public static StockMovement toDomain(StockMovementEntity entity) {
+        if (entity == null) return null;
+        return StockMovement.builder()
+                .id(entity.getId())
+                .productId(entity.getProductId())
+                .variantId(entity.getVariantId())
+                .quantity(entity.getQuantity())
+                .type(StockMovement.MovementType.valueOf(entity.getType().name()))
+                .reason(entity.getReason())
+                .createdAt(entity.getCreatedAt())
+                .build();
     }
 }
