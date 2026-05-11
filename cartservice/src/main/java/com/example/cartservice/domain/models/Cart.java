@@ -17,7 +17,38 @@ import java.util.Optional;
 public class Cart {
     private String id; // usually userId or keycloakId
     private List<CartItem> items;
+    private List<CartItem> savedItems;
     private BigDecimal totalPrice;
+
+    public void saveForLater(Long productId) {
+        // di chuyển item từ giỏ hàng sang danh sách lưu lại
+        if (items != null) {
+            items.stream()
+                    .filter(item -> item.getProductId().equals(productId))
+                    .findFirst()
+                    .ifPresent(item -> {
+                        if (savedItems == null) savedItems = new java.util.ArrayList<>();
+                        savedItems.add(item);
+                        items.remove(item);
+                    });
+            calculateTotalPrice();
+        }
+    }
+
+    public void moveToCart(Long productId) {
+        // di chuyển item từ danh sách lưu lại vào giỏ hàng
+        if (savedItems != null) {
+            savedItems.stream()
+                    .filter(item -> item.getProductId().equals(productId))
+                    .findFirst()
+                    .ifPresent(item -> {
+                        if (items == null) items = new java.util.ArrayList<>();
+                        items.add(item);
+                        savedItems.remove(item);
+                    });
+            calculateTotalPrice();
+        }
+    }
 
     public void calculateTotalPrice() {
         if (items == null) {

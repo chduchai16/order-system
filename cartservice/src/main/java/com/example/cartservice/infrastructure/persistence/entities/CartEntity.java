@@ -21,6 +21,7 @@ public class CartEntity {
     private String id; // userId or keycloakId
     
     private List<CartItemEntity> items;
+    private List<CartItemEntity> savedItems;
     private BigDecimal totalPrice;
 
     @Data
