@@ -170,11 +170,11 @@ export default function CheckoutPage() {
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">IMG</div>
                     <div>
-                      <p className="font-medium text-gray-900">{item.name}</p>
-                      <p className="text-sm text-gray-500">Quantity: {item.quantity} x ${item.price.toFixed(2)}</p>
+                      <p className="font-medium text-gray-900">{item.productName}</p>
+                      <p className="text-sm text-gray-500">Quantity: {item.quantity} x ${(item.unitPrice || 0).toFixed(2)}</p>
                     </div>
                   </div>
-                  <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">${((item.unitPrice || 0) * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
