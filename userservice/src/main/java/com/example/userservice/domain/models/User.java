@@ -30,4 +30,17 @@ public class User {
     public void activate() {
         this.active = true;
     }
+
+    public void addAddress(AddressBookEntry entry) {
+        if (this.addresses == null) this.addresses = new java.util.ArrayList<>();
+        if (entry.isDefault()) {
+            this.addresses.forEach(a -> a.setDefault(false));
+        }
+        this.addresses.add(entry);
+    }
+
+    public void addToWishlist(UserWishlistEntry item) {
+        if (this.wishlist == null) this.wishlist = new java.util.ArrayList<>();
+        this.wishlist.add(item);
+    }
 }

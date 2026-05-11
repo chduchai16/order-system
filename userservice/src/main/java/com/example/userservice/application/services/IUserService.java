@@ -10,4 +10,7 @@ public interface IUserService {
     Optional<User> getUserById(Long id);
     Optional<User> getUserByKeycloakId(String keycloakId);
     List<User> getAllUsers();
+    
+    User addAddress(Long userId, com.example.userservice.application.dtos.AddressRequest request);
+    User addToWishlist(Long userId, Long productId, String productName);
 }

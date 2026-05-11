@@ -69,4 +69,34 @@ public class UserService implements IUserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    @Override
+    public User addAddress(Long userId, com.example.userservice.application.dtos.AddressRequest request) {
+        User user = getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        
+        user.addAddress(com.example.userservice.domain.models.AddressBookEntry.builder()
+                .label(request.getLabel())
+                .street(request.getStreet())
+                .city(request.getCity())
+                .district(request.getDistrict())
+                .country(request.getCountry())
+                .isDefault(request.isDefault())
+                .build());
+        
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User addToWishlist(Long userId, Long productId, String productName) {
+        User user = getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        
+        user.addToWishlist(com.example.userservice.domain.models.UserWishlistEntry.builder()
+                .productId(productId)
+                .productName(productName)
+                .build());
+        
+        return userRepository.save(user);
+    }
 }

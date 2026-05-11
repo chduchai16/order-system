@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationLogRepository extends JpaRepository<NotificationLogEntity, Long> {
+    java.util.List<NotificationLogEntity> findByUserId(Long userId);
 }

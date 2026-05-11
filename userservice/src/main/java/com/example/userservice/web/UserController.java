@@ -46,6 +46,20 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PostMapping("/{id}/addresses")
+    public ResponseEntity<UserResponse> addAddress(@PathVariable Long id, @RequestBody com.example.userservice.application.dtos.AddressRequest request) {
+        // thêm địa chỉ mới
+        User user = userService.addAddress(id, request);
+        return ResponseEntity.ok(toResponse(user));
+    }
+
+    @PostMapping("/{id}/wishlist")
+    public ResponseEntity<UserResponse> addToWishlist(@PathVariable Long id, @RequestParam Long productId, @RequestParam String productName) {
+        // thêm vào wishlist
+        User user = userService.addToWishlist(id, productId, productName);
+        return ResponseEntity.ok(toResponse(user));
+    }
+
     private UserResponse toResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -55,6 +69,25 @@ public class UserController {
                 .firstName(user.getFullName() != null ? user.getFullName().getFirstName() : null)
                 .lastName(user.getFullName() != null ? user.getFullName().getLastName() : null)
                 .active(user.isActive())
+                .addresses(user.getAddresses() != null ? user.getAddresses().stream()
+                        .map(a -> com.example.userservice.application.dtos.AddressResponse.builder()
+                                .id(a.getId())
+                                .label(a.getLabel())
+                                .street(a.getStreet())
+                                .city(a.getCity())
+                                .district(a.getDistrict())
+                                .country(a.getCountry())
+                                .isDefault(a.isDefault())
+                                .build())
+                        .collect(Collectors.toList()) : null)
+                .wishlist(user.getWishlist() != null ? user.getWishlist().stream()
+                        .map(w -> com.example.userservice.application.dtos.WishlistResponse.builder()
+                                .id(w.getId())
+                                .productId(w.getProductId())
+                                .productName(w.getProductName())
+                                .addedAt(w.getAddedAt())
+                                .build())
+                        .collect(Collectors.toList()) : null)
                 .createdAt(user.getCreatedAt())
                 .build();
     }
