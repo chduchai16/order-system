@@ -7,10 +7,7 @@ import com.example.userservice.application.dtos.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,10 +70,10 @@ public class UserController {
                         .map(a -> com.example.userservice.application.dtos.AddressResponse.builder()
                                 .id(a.getId())
                                 .label(a.getLabel())
-                                .street(a.getStreet())
-                                .city(a.getCity())
-                                .district(a.getDistrict())
-                                .country(a.getCountry())
+                                .street(a.getAddress() != null ? a.getAddress().getStreet() : null)
+                                .city(a.getAddress() != null ? a.getAddress().getCity() : null)
+                                .district(a.getAddress() != null ? a.getAddress().getDistrict() : null)
+                                .country(a.getAddress() != null ? a.getAddress().getCountry() : null)
                                 .isDefault(a.isDefault())
                                 .build())
                         .collect(Collectors.toList()) : null)

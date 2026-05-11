@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,8 +67,9 @@ public class OrderService implements IOrderService {
         // Calculate tax (10% VAT)
         BigDecimal taxAmount = order.getTotalPrice().multiply(new BigDecimal("0.1"));
         order.setTax(TaxInfo.builder()
-                .taxAmount(taxAmount)
-                .taxType("VAT10")
+                .amount(taxAmount)
+                .type("VAT10")
+                .rate(new BigDecimal("0.1"))
                 .build());
 
         Order savedOrder = orderRepository.save(order);

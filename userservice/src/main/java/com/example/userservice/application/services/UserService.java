@@ -77,10 +77,12 @@ public class UserService implements IUserService {
         
         user.addAddress(com.example.userservice.domain.models.AddressBookEntry.builder()
                 .label(request.getLabel())
-                .street(request.getStreet())
-                .city(request.getCity())
-                .district(request.getDistrict())
-                .country(request.getCountry())
+                .address(com.example.userservice.domain.models.Address.builder()
+                        .street(request.getStreet())
+                        .city(request.getCity())
+                        .district(request.getDistrict())
+                        .country(request.getCountry())
+                        .build())
                 .isDefault(request.isDefault())
                 .build());
         
