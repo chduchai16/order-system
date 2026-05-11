@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store/cartStore';
 import { orderService } from '@/lib/api/orderService';
+import { userService } from '@/lib/api/userService';
 import { tokenManager } from '@/lib/auth/tokenManager';
 import { jwtDecoder } from '@/lib/auth/jwtDecoder';
-import { CreateOrderRequest } from '@/lib/utils/types';
+import { CreateOrderRequest, Address } from '@/lib/utils/types';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -17,13 +18,51 @@ export default function CheckoutPage() {
   const [success, setSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'VNPAY'>('COD');
   
-  // Address State
+  // User Data
+  const [userAddresses, setUserAddresses] = useState<Address[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+
+  // Address State (for manual entry or selected)
   const [address, setAddress] = useState({
     street: '',
     city: '',
     district: '',
     country: 'Vietnam'
   });
+
+  const subtotal = getTotalPrice();
+  const shippingFee = 30000; // VND
+  const taxAmount = subtotal * 0.1; // 10% VAT
+  const total = subtotal + shippingFee + taxAmount;
+
+  useEffect(() => {
+    const fetchUserAddresses = async () => {
+      const accessToken = tokenManager.getAccessToken();
+      if (!accessToken) return;
+      
+      try {
+        // In this demo, we assume user ID 1 or fetch from profile
+        const profile = await userService.getProfile();
+        if (profile.addresses) {
+          setUserAddresses(profile.addresses);
+          const defaultAddr = profile.addresses.find(a => a.isDefault);
+          if (defaultAddr) {
+            setSelectedAddressId(defaultAddr.id || null);
+            setAddress({
+              street: defaultAddr.street,
+              city: defaultAddr.city,
+              district: defaultAddr.district,
+              country: defaultAddr.country
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch addresses', err);
+      }
+    };
+
+    fetchUserAddresses();
+  }, []);
 
   if (items.length === 0 && !success) {
     return (
@@ -37,7 +76,18 @@ export default function CheckoutPage() {
     );
   }
 
+  const handleSelectAddress = (addr: Address) => {
+    setSelectedAddressId(addr.id || null);
+    setAddress({
+      street: addr.street,
+      city: addr.city,
+      district: addr.district,
+      country: addr.country
+    });
+  };
+
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAddressId(null);
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
@@ -55,20 +105,21 @@ export default function CheckoutPage() {
       const keycloakId = accessToken ? jwtDecoder.getKeycloakId(accessToken.replace('Bearer ', '')) : '';
       
       const orderRequest: CreateOrderRequest = {
-        userId: 1, // Default or fetch from user context if available
+        userId: 1, 
         keycloakId: keycloakId || '',
-
         items: items.map(item => ({
           productId: item.productId,
-          productName: item.name,
+          productName: item.productName,
           quantity: item.quantity,
-          unitPrice: item.price
+          unitPrice: item.unitPrice
         })),
-        totalPrice: getTotalPrice(),
+        totalPrice: total,
         street: address.street,
         city: address.city,
         district: address.district,
-        country: address.country
+        country: address.country,
+        shippingCarrier: 'Giao Hang Nhanh',
+        discountCode: ''
       };
 
       await orderService.createOrder(orderRequest);
@@ -132,6 +183,37 @@ export default function CheckoutPage() {
           {/* Shipping Address */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
             <h2 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Shipping Address</h2>
+            
+            {userAddresses.length > 0 && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Select from saved addresses:</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {userAddresses.map((addr) => (
+                    <div 
+                      key={addr.id}
+                      onClick={() => handleSelectAddress(addr)}
+                      className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                        selectedAddressId === addr.id 
+                          ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold uppercase text-blue-600">{addr.label}</span>
+                        {addr.isDefault && <span className="text-[10px] bg-gray-100 px-1 rounded">Default</span>}
+                      </div>
+                      <p className="text-sm mt-1 text-gray-800 line-clamp-1">{addr.street}</p>
+                      <p className="text-xs text-gray-500">{addr.district}, {addr.city}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center"><span className="w-full border-t"></span></div>
+                  <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-500">Or enter manually</span></div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
@@ -217,15 +299,19 @@ export default function CheckoutPage() {
             <div className="space-y-3 border-t border-gray-200 pt-4">
               <div className="flex justify-between text-sm text-gray-600">
                 <span>Subtotal ({items.length} items)</span>
-                <span>${getTotalPrice().toFixed(2)}</span>
+                <span>${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Shipping</span>
-                <span className="text-green-600 font-medium">Free</span>
+                <span>Shipping Fee</span>
+                <span>${shippingFee.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Tax (VAT 10%)</span>
+                <span>${taxAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg text-gray-900 border-t border-gray-200 pt-4 mt-2">
                 <span>Total</span>
-                <span>${getTotalPrice().toFixed(2)}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
             </div>
 

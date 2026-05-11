@@ -40,7 +40,21 @@ export default function Navbar() {
             href="/orders" 
             className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
           >
-            My Orders
+            Orders
+          </Link>
+
+          <Link 
+            href="/wishlist" 
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Wishlist
+          </Link>
+
+          <Link 
+            href="/addresses" 
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Addresses
           </Link>
           
           <div className="w-px h-6 bg-gray-300 mx-2 hidden sm:block"></div>

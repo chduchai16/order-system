@@ -5,6 +5,23 @@ export interface TokenResponse {
   token_type: string;
 }
 
+export interface Address {
+  id?: number;
+  label: string;
+  street: string;
+  city: string;
+  district: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export interface WishlistItem {
+  id: number;
+  productId: string;
+  productName: string;
+  addedAt: string;
+}
+
 export interface User {
   id?: string;
   keycloakId: string;
@@ -12,16 +29,35 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  addresses?: Address[];
+  wishlist?: WishlistItem[];
+}
+
+export interface ProductVariant {
+  id: number;
+  skuCode: string;
+  name: string;
+  price: number;
+  stock: number;
+}
+
+export interface ProductAttribute {
+  name: string;
+  value: string;
 }
 
 export interface Product {
   id: string;
+  sku?: string;
   name: string;
   price: number;
   stock: number;
+  availableStock?: number;
   description?: string;
   image?: string;
   categoryName?: string;
+  variants?: ProductVariant[];
+  attributes?: ProductAttribute[];
 }
 
 export interface Category {
@@ -48,21 +84,56 @@ export interface OrderItem {
   unitPrice: number;
 }
 
+export interface ShippingInfo {
+  carrier?: string;
+  trackingNumber?: string;
+  estimatedDelivery?: string;
+  shippingFee: number;
+}
+
+export interface TaxInfo {
+  type: string;
+  amount: number;
+}
+
+export interface DiscountInfo {
+  code?: string;
+  amount: number;
+}
+
 export interface Order {
   id: string;
+  orderNumber?: string;
   keycloakId: string;
   items: OrderItem[];
   totalPrice: number;
   status: string;
-  fullAddress: string;
+  shippingAddress: {
+    street: string;
+    city: string;
+    district: string;
+    country: string;
+  };
+  shippingInfo?: ShippingInfo;
+  tax?: TaxInfo;
+  discount?: DiscountInfo;
   createdAt: string;
 }
 
 export interface CartItem {
   productId: string;
+  productName: string;
+  sku?: string;
   quantity: number;
-  name: string;
-  price: number;
+  unitPrice: number;
+  subTotal?: number;
+}
+
+export interface Cart {
+  id: string;
+  items: CartItem[];
+  savedItems?: CartItem[];
+  totalPrice: number;
 }
 
 export interface LoginRequest {
