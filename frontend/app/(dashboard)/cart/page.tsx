@@ -29,23 +29,28 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             {items.length > 0 ? (
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <table className="w-full text-gray-900">
+              <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                <table className="w-full text-gray-900 border-collapse">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Price</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Qty</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Total</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {items.map(item => (
                       <tr key={item.productId} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{item.productName}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${(item.unitPrice || 0).toFixed(2)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td className="px-4 py-4 text-sm font-medium text-gray-900 leading-tight">
+                          {/* Cho phép xuống dòng tự nhiên */}
+                          <div className="min-w-[150px]">{item.productName}</div>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
+                          ${(item.unitPrice || 0).toFixed(2)}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                           <input
                             type="number"
                             min="1"
@@ -54,25 +59,27 @@ export default function CartPage() {
                             onChange={(e) =>
                               updateQuantity(item.productId, parseInt(e.target.value) || 1)
                             }
-                            className="w-16 px-2 py-1 border border-gray-300 rounded-md bg-white text-gray-900"
+                            className="w-16 px-2 py-1 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-1 focus:ring-blue-500 outline-none"
                           />
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm font-semibold">
                           ${((item.unitPrice || 0) * item.quantity).toFixed(2)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
-                          <button
-                            onClick={() => saveForLater(item.productId)}
-                            className="text-blue-600 hover:text-blue-900 font-medium"
-                          >
-                            Save for later
-                          </button>
-                          <button
-                            onClick={() => removeFromCart(item.productId)}
-                            className="text-red-600 hover:text-red-900 font-medium"
-                          >
-                            Remove
-                          </button>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-right">
+                          <div className="flex justify-end gap-3">
+                            <button
+                              onClick={() => saveForLater(item.productId)}
+                              className="text-blue-600 hover:text-blue-900 transition-colors"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => removeFromCart(item.productId)}
+                              className="text-red-600 hover:text-red-900 transition-colors"
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -136,7 +143,11 @@ export default function CartPage() {
               <tbody className="divide-y divide-gray-200">
                 {savedItems.map(item => (
                   <tr key={item.productId} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
+                    <td className="px-6 py-4 text-sm font-medium max-w-[300px]">
+                      <p className="truncate" title={item.productName}>
+                        {item.productName}
+                      </p>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${(item.unitPrice || 0).toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3 text-right">
                       <button
