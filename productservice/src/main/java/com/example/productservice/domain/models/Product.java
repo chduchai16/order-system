@@ -21,6 +21,8 @@ public class Product {
     private Integer stock;
     private Integer reservedStock;
     private boolean active;
+    private java.util.List<ProductVariant> variants;
+    private java.util.List<ProductAttribute> attributes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

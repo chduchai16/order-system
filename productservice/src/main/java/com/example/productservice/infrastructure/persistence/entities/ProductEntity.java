@@ -47,6 +47,13 @@ public class ProductEntity {
     @Version
     private Long version;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<ProductVariantEntity> variants = new java.util.ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "product_attributes", joinColumns = @JoinColumn(name = "product_id"))
+    private java.util.List<ProductAttributeEmbeddable> attributes = new java.util.ArrayList<>();
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
