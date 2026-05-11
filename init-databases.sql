@@ -223,33 +223,6 @@ CREATE TABLE IF NOT EXISTS user_wishlists (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 
--- ---- SEED: Users ----
-INSERT INTO users (keycloak_id, username, email, first_name, last_name, active, created_at, updated_at) VALUES
-    ('kc-uuid-user-001', 'nguyen.van.an', 'an.nguyen@gmail.com', 'Nguyễn', 'Văn An', true, NOW(), NOW()),
-    ('kc-uuid-user-002', 'tran.thi.binh', 'binh.tran@gmail.com', 'Trần', 'Thị Bình', true, NOW(), NOW()),
-    ('kc-uuid-user-003', 'le.quoc.cuong', 'cuong.le@gmail.com', 'Lê', 'Quốc Cường', true, NOW(), NOW()),
-    ('kc-uuid-user-004', 'pham.hoang.dung', 'dung.pham@outlook.com', 'Phạm', 'Hoàng Dũng', true, NOW(), NOW()),
-    ('kc-uuid-user-005', 'vo.thi.em', 'em.vo@gmail.com', 'Võ', 'Thị Em', true, NOW(), NOW());
-
--- ---- SEED: User Addresses ----
-INSERT INTO user_addresses (label, street, city, district, country, is_default, user_id) VALUES
-    ('Nhà riêng', '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', true, 1),
-    ('Công ty', '456 Lê Lợi', 'Hồ Chí Minh', 'Quận 3', 'Việt Nam', false, 1),
-    ('Nhà riêng', '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', true, 2),
-    ('Nhà riêng', '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', true, 3),
-    ('Nhà riêng', '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', true, 4),
-    ('Căn hộ', '200 Nguyễn Văn Linh', 'Hồ Chí Minh', 'Quận 7', 'Việt Nam', true, 5);
-
--- ---- SEED: User Wishlists ----
-INSERT INTO user_wishlists (product_id, product_name, added_at, user_id) VALUES
-    (1, 'iPhone 15 Pro 256GB', NOW() - INTERVAL '5 days', 1),
-    (3, 'MacBook Pro M3 14 inch', NOW() - INTERVAL '3 days', 1),
-    (2, 'Samsung Galaxy S24 Ultra', NOW() - INTERVAL '10 days', 2),
-    (5, 'Apple AirPods Pro (2nd Gen)', NOW() - INTERVAL '7 days', 2),
-    (7, 'Apple Watch Ultra 2', NOW() - INTERVAL '2 days', 3),
-    (6, 'iPad Pro M4 11 inch', NOW() - INTERVAL '1 day', 4),
-    (8, 'Sony WH-1000XM5', NOW() - INTERVAL '4 days', 5);
-
 
 -- ================================================================
 -- ORDER SERVICE SCHEMA & SEED DATA
