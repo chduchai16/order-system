@@ -18,6 +18,8 @@ public class User {
     private Email email;
     private FullName fullName;
     private boolean active;
+    private java.util.List<AddressBookEntry> addresses;
+    private java.util.List<UserWishlistEntry> wishlist;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

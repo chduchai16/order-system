@@ -48,9 +48,10 @@ public class UserEntity {
     @Column(nullable = false)
     private boolean active = true;
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<AddressBookEntity> addresses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserWishlistEntity> wishlist;
 }
 
