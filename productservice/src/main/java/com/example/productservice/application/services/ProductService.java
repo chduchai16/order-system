@@ -74,7 +74,33 @@ public class ProductService implements IProductService {
                     .collect(Collectors.toList()));
         }
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+
+        // ghi log nhập kho ban đầu
+        if (savedProduct.getStock() > 0) {
+            stockMovementRepository.save(StockMovementEntity.builder()
+                    .productId(savedProduct.getId())
+                    .quantity(savedProduct.getStock())
+                    .type(StockMovementEntity.MovementType.IMPORT)
+                    .reason("Initial stock import on creation")
+                    .build());
+        }
+
+        if (savedProduct.getVariants() != null) {
+            savedProduct.getVariants().forEach(v -> {
+                if (v.getTotalStock() > 0) {
+                    stockMovementRepository.save(StockMovementEntity.builder()
+                            .productId(savedProduct.getId())
+                            .variantId(v.getId())
+                            .quantity(v.getTotalStock())
+                            .type(StockMovementEntity.MovementType.IMPORT)
+                            .reason("Initial variant stock import")
+                            .build());
+                }
+            });
+        }
+
+        return savedProduct;
     }
 
     @Override

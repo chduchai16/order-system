@@ -49,6 +49,20 @@ public class CartService {
         cartRepository.deleteById(keycloakId);
     }
 
+    public Cart saveForLater(String keycloakId, Long productId) {
+        // chuyển sản phẩm vào danh sách lưu lại
+        Cart cart = getCart(keycloakId);
+        cart.saveForLater(productId);
+        return cartRepository.save(cart);
+    }
+
+    public Cart moveToCart(String keycloakId, Long productId) {
+        // chuyển sản phẩm từ danh sách lưu lại vào giỏ hàng
+        Cart cart = getCart(keycloakId);
+        cart.moveToCart(productId);
+        return cartRepository.save(cart);
+    }
+
     public void checkout(String keycloakId, Long userId, String street, String city, String district, String country, String paymentMethod) {
         Cart cart = getCart(keycloakId);
         if (cart.getItems() == null || cart.getItems().isEmpty()) {

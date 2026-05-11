@@ -53,6 +53,20 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/items/{productId}/save-for-later")
+    public ResponseEntity<Cart> saveForLater(@RequestHeader("X-User-Id") String keycloakId,
+            @PathVariable Long productId) {
+        // lưu lại mua sau
+        return ResponseEntity.ok(cartService.saveForLater(keycloakId, productId));
+    }
+
+    @PostMapping("/items/{productId}/move-to-cart")
+    public ResponseEntity<Cart> moveToCart(@RequestHeader("X-User-Id") String keycloakId,
+            @PathVariable Long productId) {
+        // chuyển vào giỏ hàng
+        return ResponseEntity.ok(cartService.moveToCart(keycloakId, productId));
+    }
+
     @PostMapping("/checkout")
     public ResponseEntity<Void> checkout(@RequestHeader("X-User-Id") String keycloakId,
             @RequestBody CheckoutRequest request) {
