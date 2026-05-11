@@ -4,6 +4,7 @@ import com.example.cartservice.domain.models.Cart;
 import com.example.cartservice.domain.models.CartItem;
 import com.example.cartservice.domain.ports.persistence.CartRepository;
 import com.example.commonlib.events.CartCheckedOutEvent;
+import com.example.commonlib.events.CartItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -58,7 +59,7 @@ public class CartService {
                 .userId(userId)
                 .keycloakId(keycloakId)
                 .items(cart.getItems().stream()
-                        .map(item -> com.example.commonlib.events.CartItemDto.builder()
+                        .map(item -> CartItemDto.builder()
                                 .productId(item.getProductId())
                                 .productName(item.getProductName())
                                 .sku(item.getSku())

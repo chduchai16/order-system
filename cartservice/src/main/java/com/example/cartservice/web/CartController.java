@@ -16,17 +16,14 @@ public class CartController {
 
     private final CartService cartService;
 
-    // TODO: In a real app, keycloakId would come from JWT Token (SecurityContext)
-    // For now, we pass it as a header for simplicity
-    
     @GetMapping
     public ResponseEntity<Cart> getCart(@RequestHeader("X-User-Id") String keycloakId) {
         return ResponseEntity.ok(cartService.getCart(keycloakId));
     }
 
     @PostMapping("/items")
-    public ResponseEntity<Cart> addItem(@RequestHeader("X-User-Id") String keycloakId, 
-                                        @RequestBody AddCartItemRequest request) {
+    public ResponseEntity<Cart> addItem(@RequestHeader("X-User-Id") String keycloakId,
+            @RequestBody AddCartItemRequest request) {
         CartItem item = CartItem.builder()
                 .productId(request.getProductId())
                 .productName(request.getProductName())
@@ -39,14 +36,14 @@ public class CartController {
 
     @PutMapping("/items/{productId}")
     public ResponseEntity<Cart> updateItemQuantity(@RequestHeader("X-User-Id") String keycloakId,
-                                                   @PathVariable Long productId,
-                                                   @RequestParam Integer quantity) {
+            @PathVariable Long productId,
+            @RequestParam Integer quantity) {
         return ResponseEntity.ok(cartService.updateItemQuantity(keycloakId, productId, quantity));
     }
 
     @DeleteMapping("/items/{productId}")
     public ResponseEntity<Cart> removeItem(@RequestHeader("X-User-Id") String keycloakId,
-                                           @PathVariable Long productId) {
+            @PathVariable Long productId) {
         return ResponseEntity.ok(cartService.removeItemFromCart(keycloakId, productId));
     }
 
@@ -58,7 +55,7 @@ public class CartController {
 
     @PostMapping("/checkout")
     public ResponseEntity<Void> checkout(@RequestHeader("X-User-Id") String keycloakId,
-                                         @RequestBody CheckoutRequest request) {
+            @RequestBody CheckoutRequest request) {
         cartService.checkout(
                 keycloakId,
                 request.getUserId(),
@@ -66,8 +63,7 @@ public class CartController {
                 request.getShippingCity(),
                 request.getShippingDistrict(),
                 request.getShippingCountry(),
-                request.getPaymentMethod()
-        );
+                request.getPaymentMethod());
         return ResponseEntity.ok().build();
     }
 }

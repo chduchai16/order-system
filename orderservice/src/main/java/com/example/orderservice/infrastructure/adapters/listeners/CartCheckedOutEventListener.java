@@ -1,6 +1,7 @@
 package com.example.orderservice.infrastructure.adapters.listeners;
 
 import com.example.commonlib.events.CartCheckedOutEvent;
+import com.example.orderservice.application.dtos.OrderItemRequest;
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.application.services.IOrderService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CartCheckedOutEventListener {
                     .district(event.getShippingDistrict())
                     .country(event.getShippingCountry())
                     .items(event.getItems().stream()
-                            .map(item -> com.example.orderservice.application.dtos.OrderItemRequest.builder()
+                            .map(item -> OrderItemRequest.builder()
                                     .productId(item.getProductId())
                                     .productName(item.getProductName())
                                     .quantity(item.getQuantity())

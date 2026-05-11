@@ -2,7 +2,7 @@ package com.example.cartservice.infrastructure.mappers;
 
 import com.example.cartservice.domain.models.Cart;
 import com.example.cartservice.domain.models.CartItem;
-import com.example.cartservice.infrastructure.persistence.entities.CartEntity;
+import com.example.cartservice.infrastructure.persistence.entities.*;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class CartMapper {
                 .build();
     }
 
-    private static CartItem itemToDomain(com.example.cartservice.infrastructure.persistence.entities.CartItemEntity entity) {
+    private static CartItem itemToDomain(CartItemEntity entity) {
         return CartItem.builder()
                 .productId(entity.getProductId())
                 .productName(entity.getProductName())
@@ -41,8 +41,8 @@ public class CartMapper {
                 .build();
     }
 
-    private static com.example.cartservice.infrastructure.persistence.entities.CartItemEntity itemToEntity(CartItem domain) {
-        return com.example.cartservice.infrastructure.persistence.entities.CartItemEntity.builder()
+    private static CartItemEntity itemToEntity(CartItem domain) {
+        return CartItemEntity.builder()
                 .productId(domain.getProductId())
                 .productName(domain.getProductName())
                 .sku(domain.getSku())

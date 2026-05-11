@@ -7,6 +7,8 @@ import com.example.paymentservice.domain.models.PaymentStatus;
 import com.example.paymentservice.domain.models.PaymentMethod;
 import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
 
+import com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity;
+import com.example.paymentservice.infrastructure.persistence.jpas.PaymentTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ import java.util.Optional;
 public class PaymentService implements IPaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final com.example.paymentservice.infrastructure.persistence.jpas.PaymentTransactionRepository transactionRepository;
+    private final PaymentTransactionRepository transactionRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
@@ -46,7 +48,7 @@ public class PaymentService implements IPaymentService {
                     Payment savedPayment = paymentRepository.save(payment);
                     
                     // lưu log giao dịch chi tiết
-                    transactionRepository.save(com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity.builder()
+                    transactionRepository.save(PaymentTransactionEntity.builder()
                         .orderId(savedPayment.getOrderId())
                         .gatewayProvider("InternalMock")
                         .status("SUCCESS")
@@ -79,7 +81,7 @@ public class PaymentService implements IPaymentService {
             paymentRepository.save(payment);
 
             // lưu log hoàn tiền
-            transactionRepository.save(com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity.builder()
+            transactionRepository.save(PaymentTransactionEntity.builder()
                 .orderId(orderId)
                 .gatewayProvider("InternalMock")
                 .status("REFUNDED")

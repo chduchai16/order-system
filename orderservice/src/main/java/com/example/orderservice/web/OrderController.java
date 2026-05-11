@@ -1,7 +1,6 @@
 package com.example.orderservice.web;
 
-import com.example.orderservice.application.dtos.OrderRequest;
-import com.example.orderservice.application.dtos.OrderResponse;
+import com.example.orderservice.application.dtos.*;
 import com.example.orderservice.application.services.IOrderService;
 import com.example.orderservice.domain.models.Order;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +40,8 @@ public class OrderController {
     }
 
     private OrderResponse toResponse(Order order) {
-        List<com.example.orderservice.application.dtos.OrderItemResponse> items = order.getItems().stream()
-                .map(item -> com.example.orderservice.application.dtos.OrderItemResponse.builder()
+        List<OrderItemResponse> items = order.getItems().stream()
+                .map(item -> OrderItemResponse.builder()
                         .id(item.getId())
                         .productId(item.getProductId())
                         .productName(item.getProductName())
@@ -52,9 +51,9 @@ public class OrderController {
                         .build())
                 .collect(Collectors.toList());
 
-        List<com.example.orderservice.application.dtos.StatusHistoryResponse> history = order.getStatusHistory() != null
+        List<StatusHistoryResponse> history = order.getStatusHistory() != null
                 ? order.getStatusHistory().stream()
-                    .map(h -> com.example.orderservice.application.dtos.StatusHistoryResponse.builder()
+                    .map(h -> StatusHistoryResponse.builder()
                             .fromStatus(h.getFromStatus())
                             .toStatus(h.getToStatus())
                             .reason(h.getReason())

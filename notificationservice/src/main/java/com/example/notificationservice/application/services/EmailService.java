@@ -1,5 +1,7 @@
 package com.example.notificationservice.application.services;
 
+import com.example.notificationservice.infrastructure.persistence.entities.NotificationLogEntity;
+import com.example.notificationservice.infrastructure.persistence.jpas.NotificationLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
-    private final com.example.notificationservice.infrastructure.persistence.jpas.NotificationLogRepository notificationLogRepository;
+    private final NotificationLogRepository notificationLogRepository;
 
     public void sendEmail(String to, String subject, String body) {
         // gửi email và lưu log
@@ -30,7 +32,8 @@ public class EmailService {
             status = "FAILED";
             log.error("Failed to send email to {}", to, e);
         } finally {
-            notificationLogRepository.save(com.example.notificationservice.infrastructure.persistence.entities.NotificationLogEntity.builder()
+            // lưu vết vào db
+            notificationLogRepository.save(NotificationLogEntity.builder()
                 .recipient(to)
                 .subject(subject)
                 .content(body)
