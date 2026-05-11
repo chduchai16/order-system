@@ -17,6 +17,8 @@ public class OrderItem {
     private String productName;
     private Integer quantity;
     private BigDecimal unitPrice;
+    private BigDecimal discountAmount;
+    private BigDecimal taxAmount;
 
     public BigDecimal getSubTotal() {
         return unitPrice.multiply(BigDecimal.valueOf(quantity));

@@ -50,6 +50,17 @@ public class OrderEntity {
     @Column(name = "shipping_country")
     private String shippingCountry;
 
+    private String shippingCarrier;
+    private String trackingNumber;
+    private BigDecimal shippingFee;
+    private String estimatedDelivery;
+
+    private String discountCode;
+    private BigDecimal discountAmount;
+
+    private BigDecimal taxAmount;
+    private String taxType;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;

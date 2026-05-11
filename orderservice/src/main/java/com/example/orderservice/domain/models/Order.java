@@ -23,6 +23,9 @@ public class Order {
     private BigDecimal totalPrice;
     private OrderStatus status;
     private Address shippingAddress;
+    private ShippingInfo shippingInfo;
+    private OrderDiscount discount;
+    private TaxInfo tax;
     private List<OrderStatusHistory> statusHistory;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

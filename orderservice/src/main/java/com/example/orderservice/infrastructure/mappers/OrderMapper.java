@@ -34,6 +34,20 @@ public class OrderMapper {
                 .totalPrice(entity.getTotalPrice())
                 .status(entity.getStatus())
                 .shippingAddress(address)
+                .shippingInfo(ShippingInfo.builder()
+                        .carrier(entity.getShippingCarrier())
+                        .trackingNumber(entity.getTrackingNumber())
+                        .shippingFee(entity.getShippingFee())
+                        .estimatedDelivery(entity.getEstimatedDelivery())
+                        .build())
+                .discount(OrderDiscount.builder()
+                        .code(entity.getDiscountCode())
+                        .amount(entity.getDiscountAmount())
+                        .build())
+                .tax(TaxInfo.builder()
+                        .amount(entity.getTaxAmount())
+                        .type(entity.getTaxType())
+                        .build())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -46,6 +60,8 @@ public class OrderMapper {
                 .productName(entity.getProductName())
                 .quantity(entity.getQuantity())
                 .unitPrice(entity.getUnitPrice())
+                .discountAmount(entity.getDiscountAmount())
+                .taxAmount(entity.getTaxAmount())
                 .build();
     }
 
@@ -76,6 +92,23 @@ public class OrderMapper {
             entity.setShippingCountry(domain.getShippingAddress().getCountry());
         }
 
+        if (domain.getShippingInfo() != null) {
+            entity.setShippingCarrier(domain.getShippingInfo().getCarrier());
+            entity.setTrackingNumber(domain.getShippingInfo().getTrackingNumber());
+            entity.setShippingFee(domain.getShippingInfo().getShippingFee());
+            entity.setEstimatedDelivery(domain.getShippingInfo().getEstimatedDelivery());
+        }
+
+        if (domain.getDiscount() != null) {
+            entity.setDiscountCode(domain.getDiscount().getCode());
+            entity.setDiscountAmount(domain.getDiscount().getAmount());
+        }
+
+        if (domain.getTax() != null) {
+            entity.setTaxAmount(domain.getTax().getAmount());
+            entity.setTaxType(domain.getTax().getType());
+        }
+
         if (domain.getItems() != null) {
             entity.setItems(domain.getItems().stream()
                 .map(item -> {
@@ -104,6 +137,8 @@ public class OrderMapper {
         entity.setProductName(domain.getProductName());
         entity.setQuantity(domain.getQuantity());
         entity.setUnitPrice(domain.getUnitPrice());
+        entity.setDiscountAmount(domain.getDiscountAmount());
+        entity.setTaxAmount(domain.getTaxAmount());
         return entity;
     }
 
