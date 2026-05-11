@@ -14,18 +14,4 @@ public class ProductRequest {
     private Integer stock;
     private java.util.List<VariantRequest> variants;
     private java.util.List<AttributeRequest> attributes;
-
-    @Data
-    public static class VariantRequest {
-        private String skuCode;
-        private String name;
-        private BigDecimal price;
-        private Integer stock;
-    }
-
-    @Data
-    public static class AttributeRequest {
-        private String name;
-        private String value;
-    }
 }

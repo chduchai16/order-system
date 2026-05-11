@@ -23,16 +23,4 @@ public class CartEntity {
     private List<CartItemEntity> items;
     private List<CartItemEntity> savedItems;
     private BigDecimal totalPrice;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CartItemEntity {
-        private Long productId;
-        private String productName;
-        private String sku;
-        private Integer quantity;
-        private BigDecimal unitPrice;
-    }
 }

@@ -30,7 +30,7 @@ public class CartCheckedOutEventListener {
                     .district(event.getShippingDistrict())
                     .country(event.getShippingCountry())
                     .items(event.getItems().stream()
-                            .map(item -> OrderRequest.OrderItemRequest.builder()
+                            .map(item -> com.example.orderservice.application.dtos.OrderItemRequest.builder()
                                     .productId(item.getProductId())
                                     .productName(item.getProductName())
                                     .quantity(item.getQuantity())

@@ -20,7 +20,7 @@ public class CartMapper {
                 .build();
     }
 
-    private static CartItem itemToDomain(CartEntity.CartItemEntity entity) {
+    private static CartItem itemToDomain(com.example.cartservice.infrastructure.persistence.entities.CartItemEntity entity) {
         return CartItem.builder()
                 .productId(entity.getProductId())
                 .productName(entity.getProductName())
@@ -41,8 +41,8 @@ public class CartMapper {
                 .build();
     }
 
-    private static CartEntity.CartItemEntity itemToEntity(CartItem domain) {
-        return CartEntity.CartItemEntity.builder()
+    private static com.example.cartservice.infrastructure.persistence.entities.CartItemEntity itemToEntity(CartItem domain) {
+        return com.example.cartservice.infrastructure.persistence.entities.CartItemEntity.builder()
                 .productId(domain.getProductId())
                 .productName(domain.getProductName())
                 .sku(domain.getSku())

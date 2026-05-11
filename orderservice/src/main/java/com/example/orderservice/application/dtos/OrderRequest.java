@@ -22,15 +22,4 @@ public class OrderRequest {
     private String city;
     private String district;
     private String country;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class OrderItemRequest {
-        private Long productId;
-        private String productName;
-        private Integer quantity;
-        private BigDecimal unitPrice;
-    }
 }

@@ -21,16 +21,4 @@ public class CartCheckedOutEvent {
     private String shippingDistrict;
     private String shippingCountry;
     private String paymentMethod;
-    
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class CartItemDto {
-        private Long productId;
-        private String productName;
-        private String sku;
-        private Integer quantity;
-        private BigDecimal unitPrice;
-    }
 }

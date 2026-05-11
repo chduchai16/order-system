@@ -41,8 +41,8 @@ public class OrderController {
     }
 
     private OrderResponse toResponse(Order order) {
-        List<OrderResponse.OrderItemResponse> items = order.getItems().stream()
-                .map(item -> OrderResponse.OrderItemResponse.builder()
+        List<com.example.orderservice.application.dtos.OrderItemResponse> items = order.getItems().stream()
+                .map(item -> com.example.orderservice.application.dtos.OrderItemResponse.builder()
                         .id(item.getId())
                         .productId(item.getProductId())
                         .productName(item.getProductName())
@@ -52,9 +52,9 @@ public class OrderController {
                         .build())
                 .collect(Collectors.toList());
 
-        List<OrderResponse.StatusHistoryResponse> history = order.getStatusHistory() != null
+        List<com.example.orderservice.application.dtos.StatusHistoryResponse> history = order.getStatusHistory() != null
                 ? order.getStatusHistory().stream()
-                    .map(h -> OrderResponse.StatusHistoryResponse.builder()
+                    .map(h -> com.example.orderservice.application.dtos.StatusHistoryResponse.builder()
                             .fromStatus(h.getFromStatus())
                             .toStatus(h.getToStatus())
                             .reason(h.getReason())

@@ -58,7 +58,7 @@ public class CartService {
                 .userId(userId)
                 .keycloakId(keycloakId)
                 .items(cart.getItems().stream()
-                        .map(item -> CartCheckedOutEvent.CartItemDto.builder()
+                        .map(item -> com.example.commonlib.events.CartItemDto.builder()
                                 .productId(item.getProductId())
                                 .productName(item.getProductName())
                                 .sku(item.getSku())
