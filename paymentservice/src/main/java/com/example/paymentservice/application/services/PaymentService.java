@@ -22,6 +22,7 @@ import java.util.Optional;
 public class PaymentService implements IPaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final com.example.paymentservice.infrastructure.persistence.jpas.PaymentTransactionRepository transactionRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
@@ -44,6 +45,14 @@ public class PaymentService implements IPaymentService {
                     
                     Payment savedPayment = paymentRepository.save(payment);
                     
+                    // lưu log giao dịch chi tiết
+                    transactionRepository.save(com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity.builder()
+                        .orderId(savedPayment.getOrderId())
+                        .gatewayProvider("InternalMock")
+                        .status("SUCCESS")
+                        .rawResponse("{\"status\":\"success\", \"id\":\"MOCK-123\"}")
+                        .build());
+
                     PaymentCompletedEvent event = new PaymentCompletedEvent(
                         savedPayment.getId(),
                         savedPayment.getOrderId(),
@@ -63,10 +72,19 @@ public class PaymentService implements IPaymentService {
     @Override
     @Transactional
     public void refundPayment(Long orderId) {
+        // thực hiện hoàn tiền
         log.info("Refunding payment for orderId={}", orderId);
         paymentRepository.findByOrderId(orderId).ifPresent(payment -> {
             payment.refund();
             paymentRepository.save(payment);
+
+            // lưu log hoàn tiền
+            transactionRepository.save(com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity.builder()
+                .orderId(orderId)
+                .gatewayProvider("InternalMock")
+                .status("REFUNDED")
+                .rawResponse("{\"action\":\"refund\", \"status\":\"success\"}")
+                .build());
             
             RefundIssuedEvent event = new RefundIssuedEvent(
                 payment.getId(),
@@ -83,6 +101,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public Optional<Payment> getPaymentByOrderId(Long orderId) {
+        // lấy chi tiết thanh toán theo đơn hàng
         return paymentRepository.findByOrderId(orderId);
     }
 }
