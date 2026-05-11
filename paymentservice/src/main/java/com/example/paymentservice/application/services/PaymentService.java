@@ -50,9 +50,10 @@ public class PaymentService implements IPaymentService {
                     // lưu log giao dịch chi tiết
                     transactionRepository.save(PaymentTransactionEntity.builder()
                         .orderId(savedPayment.getOrderId())
+                        .transactionId("TXN-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                         .gatewayProvider("InternalMock")
                         .status("SUCCESS")
-                        .rawResponse("{\"status\":\"success\", \"id\":\"MOCK-123\"}")
+                        .rawResponse("{\"status\":\"success\", \"id\":\"MOCK-" + System.currentTimeMillis() + "\"}")
                         .build());
 
                     PaymentCompletedEvent event = new PaymentCompletedEvent(

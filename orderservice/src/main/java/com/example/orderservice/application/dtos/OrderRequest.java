@@ -22,4 +22,9 @@ public class OrderRequest {
     private String city;
     private String district;
     private String country;
+    private String shippingCarrier;
+    private String estimatedDelivery;
+    
+    // Financial info
+    private String discountCode;
 }

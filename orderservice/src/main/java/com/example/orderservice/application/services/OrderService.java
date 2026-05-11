@@ -49,10 +49,26 @@ public class OrderService implements IOrderService {
                 .items(items)
                 .status(OrderStatus.PENDING)
                 .shippingAddress(shippingAddress)
+                .shippingInfo(ShippingInfo.builder()
+                        .carrier(request.getShippingCarrier())
+                        .estimatedDelivery(request.getEstimatedDelivery())
+                        .shippingFee(new BigDecimal("30000")) // default fee
+                        .build())
+                .discount(OrderDiscount.builder()
+                        .code(request.getDiscountCode())
+                        .amount(BigDecimal.ZERO) // logic to apply discount could go here
+                        .build())
                 .statusHistory(new ArrayList<>())
                 .build();
 
         order.calculateTotalPrice();
+        
+        // Calculate tax (10% VAT)
+        BigDecimal taxAmount = order.getTotalPrice().multiply(new BigDecimal("0.1"));
+        order.setTax(TaxInfo.builder()
+                .taxAmount(taxAmount)
+                .taxType("VAT10")
+                .build());
 
         Order savedOrder = orderRepository.save(order);
 
