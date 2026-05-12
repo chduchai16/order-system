@@ -1,5 +1,6 @@
 package com.example.userservice.application.services;
 
+import com.example.userservice.application.dtos.AddressRequest;
 import com.example.userservice.domain.models.User;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,6 @@ public interface IUserService {
     Optional<User> getUserByKeycloakId(String keycloakId);
     List<User> getAllUsers();
     
-    User addAddress(Long userId, com.example.userservice.application.dtos.AddressRequest request);
+    User addAddress(Long userId, AddressRequest request);
     User addToWishlist(Long userId, Long productId, String productName);
 }

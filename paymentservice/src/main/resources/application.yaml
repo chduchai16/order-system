@@ -33,4 +33,10 @@ spring:
 server:
   port: 8084
 
+vnpay:
+  tmn-code: ${VNP_TMN_CODE:7JHR53F3}
+  secret-key: ${VNP_HASH_SECRET:KS1VQ1270QKQ8A5FG0FD8NV4NBOYCM63}
+  pay-url: ${VNP_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+  return-url: ${VNP_RETURN_URL:http://localhost:8080/api/payment/vnpay-return}
+
 

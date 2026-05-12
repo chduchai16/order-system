@@ -1,22 +1,17 @@
 package com.example.userservice.application.services;
 
-import com.example.userservice.domain.models.Email;
-import com.example.userservice.domain.models.FullName;
-import com.example.userservice.domain.models.User;
+import com.example.commonlib.events.UserRegisteredIntegrationEvent;
+import com.example.userservice.application.dtos.AddressRequest;
+import com.example.userservice.domain.models.*;
 import com.example.userservice.domain.ports.persistence.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
-import com.example.commonlib.events.UserRegisteredIntegrationEvent;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -71,13 +66,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User addAddress(Long userId, com.example.userservice.application.dtos.AddressRequest request) {
+    public User addAddress(Long userId, AddressRequest request) {
         User user = getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         
-        user.addAddress(com.example.userservice.domain.models.AddressBookEntry.builder()
+        user.addAddress(AddressBookEntry.builder()
                 .label(request.getLabel())
-                .address(com.example.userservice.domain.models.Address.builder()
+                .address(Address.builder()
                         .street(request.getStreet())
                         .city(request.getCity())
                         .district(request.getDistrict())
@@ -94,7 +89,7 @@ public class UserService implements IUserService {
         User user = getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         
-        user.addToWishlist(com.example.userservice.domain.models.UserWishlistEntry.builder()
+        user.addToWishlist(UserWishlistEntry.builder()
                 .productId(productId)
                 .productName(productName)
                 .build());

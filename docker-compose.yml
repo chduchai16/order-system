@@ -192,6 +192,10 @@ services:
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+      VNP_TMN_CODE: "7JHR53F3"
+      VNP_HASH_SECRET: "KS1VQ1270QKQ8A5FG0FD8NV4NBOYCM63"
+      VNP_PAY_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+      VNP_RETURN_URL: "http://localhost:8080/api/payment/vnpay-return"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

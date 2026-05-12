@@ -6,9 +6,6 @@ import com.example.paymentservice.domain.models.Payment;
 import com.example.paymentservice.domain.models.PaymentStatus;
 import com.example.paymentservice.domain.models.PaymentMethod;
 import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
-
-import com.example.paymentservice.infrastructure.persistence.entities.PaymentTransactionEntity;
-import com.example.paymentservice.infrastructure.persistence.jpas.PaymentTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,7 @@ import java.util.Optional;
 public class PaymentService implements IPaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final PaymentTransactionRepository transactionRepository;
+    private final IPaymentTransactionService transactionService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
@@ -48,13 +45,13 @@ public class PaymentService implements IPaymentService {
                     Payment savedPayment = paymentRepository.save(payment);
                     
                     // lưu log giao dịch chi tiết
-                    transactionRepository.save(PaymentTransactionEntity.builder()
-                        .orderId(savedPayment.getOrderId())
-                        .transactionId("TXN-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase())
-                        .gatewayProvider("InternalMock")
-                        .status("SUCCESS")
-                        .rawResponse("{\"status\":\"success\", \"id\":\"MOCK-" + System.currentTimeMillis() + "\"}")
-                        .build());
+                    transactionService.logTransaction(
+                        savedPayment.getOrderId(),
+                        "TXN-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase(),
+                        "InternalMock",
+                        "{\"status\":\"success\", \"id\":\"MOCK-" + System.currentTimeMillis() + "\"}",
+                        "SUCCESS"
+                    );
 
                     PaymentCompletedEvent event = new PaymentCompletedEvent(
                         savedPayment.getId(),
@@ -82,12 +79,13 @@ public class PaymentService implements IPaymentService {
             paymentRepository.save(payment);
 
             // lưu log hoàn tiền
-            transactionRepository.save(PaymentTransactionEntity.builder()
-                .orderId(orderId)
-                .gatewayProvider("InternalMock")
-                .status("REFUNDED")
-                .rawResponse("{\"action\":\"refund\", \"status\":\"success\"}")
-                .build());
+            transactionService.logTransaction(
+                orderId,
+                "REF-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase(),
+                "InternalMock",
+                "{\"action\":\"refund\", \"status\":\"success\"}",
+                "REFUNDED"
+            );
             
             RefundIssuedEvent event = new RefundIssuedEvent(
                 payment.getId(),
