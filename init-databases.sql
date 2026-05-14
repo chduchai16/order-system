@@ -191,9 +191,19 @@ INSERT INTO stock_movements (product_id, variant_id, quantity, type, reason, cre
 \c user_db;
 
 -- ---- DDL ----
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+INSERT INTO roles (name) VALUES ('CUSTOMER')
+ON CONFLICT (name) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255),
+    role_id INTEGER REFERENCES roles(id),
     email VARCHAR(255) NOT NULL,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
@@ -219,6 +229,15 @@ CREATE TABLE IF NOT EXISTS user_wishlists (
     product_name VARCHAR(255),
     added_at TIMESTAMP DEFAULT NOW(),
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    token_hash VARCHAR(128) NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at TIMESTAMP NOT NULL,
+    revoked BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL
 );
 
 

@@ -67,6 +67,7 @@ services:
       USER_SERVICE_URL: "http://host.docker.internal:8081"
       ORDER_SERVICE_URL: "http://host.docker.internal:8083"
       PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
+      JWT_SECRET: "${JWT_SECRET:-8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx192M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -86,6 +87,9 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      JWT_SECRET: "${JWT_SECRET:-8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}"
+      JWT_ACCESS_TOKEN_TTL_SECONDS: "${JWT_ACCESS_TOKEN_TTL_SECONDS:-900}"
+      JWT_REFRESH_TOKEN_TTL_DAYS: "${JWT_REFRESH_TOKEN_TTL_DAYS:-7}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"
