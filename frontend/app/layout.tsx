@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Order System - E-commerce Platform',
-  description: 'Order management system with microservices architecture',
+  title: 'ShopVN - Mua sắm thông minh',
+  description: 'ShopVN - nền tảng mua sắm trực tuyến với sản phẩm chính hãng, thanh toán an toàn và giao hàng nhanh.',
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
       <body className="bg-gray-50 text-gray-900" suppressHydrationWarning>
         {children}
       </body>

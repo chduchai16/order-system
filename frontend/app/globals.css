@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-* {
-  border-radius: 0 !important;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -13,13 +9,6 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-input,
-button,
-select,
-textarea {
-  border-radius: 0 !important;
 }
 
 input:focus,

@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Product, ProductVariant } from '@/lib/utils/types';
 import { useCartStore } from '@/lib/store/cartStore';
 import Image from 'next/image';
-import VariantSelector from './VariantSelector';
-import ProductSpecifications from './ProductSpecifications';
+import Link from 'next/link';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -14,12 +14,13 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, variant = 'standard' }: ProductCardProps) {
   const addToCart = useCartStore(state => state.addToCart);
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+  const [selectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
   );
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     addToCart({
       productId: product.id,
       quantity: 1,
@@ -31,137 +32,79 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
-
-  if (variant === 'compact') {
-    return (
-      <div className="bg-white rounded-lg overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group cursor-pointer">
-        {/* Image Container */}
-        <div className="relative bg-gray-100 overflow-hidden aspect-square">
-          {product.image ? (
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              <div className="text-2xl">📦</div>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-3 flex-grow flex flex-col">
-          <h3 className="text-sm font-medium text-gray-900 mb-1 line-clamp-2 flex-grow" title={product.name}>
-            {product.name}
-          </h3>
-
-          <div className="space-y-2">
-            {product.categoryName && (
-              <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] rounded uppercase font-bold tracking-wider mb-1">
-                {product.categoryName}
-              </span>
-            )}
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold text-gray-900">
-                ${currentPrice.toFixed(2)}
-              </span>
-              {currentStock > 0 && (
-                <span className="text-xs text-gray-500">
-                  {currentStock} left
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="p-3 pt-0">
-          <button
-            onClick={handleAddToCart}
-            disabled={currentStock === 0}
-            className="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-md hover:from-blue-700 hover:to-blue-800 disabled:from-gray-300 disabled:to-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            {currentStock === 0 ? 'Out of Stock' : 'Add'}
-          </button>
-        </div>
-      </div>
-    );
-  }
+  
+  // Mock data for UI to match the image
+  const discount = Math.floor(Math.random() * 40) + 15;
+  const oldPrice = currentPrice * (1 + discount / 100);
+  const ratingCount = Math.floor(Math.random() * 500) + 50;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
+    <Link 
+      href={`/products/${product.id}`}
+      className="bg-white border border-gray-100 rounded-xl overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group cursor-pointer relative"
+    >
+      {/* Badges */}
+      <div className="absolute top-2 left-2 z-10 bg-[#ff3333] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+        -{discount}%
+      </div>
+      <button className="absolute top-2 right-2 z-10 bg-white p-1.5 rounded-full shadow-sm text-gray-400 hover:text-red-500 transition-colors">
+        <Heart className="w-4 h-4" />
+      </button>
+
       {/* Image Container */}
-      <div className="relative bg-gray-100 aspect-video">
+      <div className="relative bg-[#f4f6fb] overflow-hidden aspect-square flex items-center justify-center p-4">
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover"
+            className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            <div className="text-4xl">📦</div>
+          <div className="w-20 h-20 text-blue-400 opacity-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+              <path d="M21 19a2 2 0 0 1-2 2h-1c-1.657 0-3-1.343-3-3v-2c0-1.657 1.343-3 3-3h3v8z"></path>
+              <path d="M3 19a2 2 0 0 0 2 2h1c1.657 0 3-1.343 3-3v-2c0-1.657-1.343-3-3-3H3v8z"></path>
+            </svg>
           </div>
         )}
       </div>
 
-      <div className="p-4 flex-grow flex flex-col">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 truncate" title={product.name}>
-            {product.name}
-          </h3>
-          {product.categoryName && (
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] rounded uppercase font-bold tracking-wider">
-              {product.categoryName}
-            </span>
-          )}
+      {/* Content */}
+      <div className="p-3 flex-grow flex flex-col bg-white">
+        <h3 className="text-[13px] font-medium text-gray-800 mb-1.5 line-clamp-2 h-10 leading-tight" title={product.name}>
+          {product.name}
+        </h3>
+
+        <div className="flex items-center gap-1 mb-2">
+          <div className="flex text-[#ffb800]">
+            <Star className="w-3 h-3 fill-current" />
+          </div>
+          <span className="text-[11px] text-gray-500">({ratingCount})</span>
         </div>
 
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-          {product.description}
-        </p>
-
-        {/* Dynamic Selectors */}
-        {product.variants && (
-          <VariantSelector 
-            variants={product.variants} 
-            selectedVariantId={selectedVariant?.id || null} 
-            onSelect={setSelectedVariant} 
-          />
-        )}
-        
-        {product.attributes && (
-          <ProductSpecifications attributes={product.attributes} />
-        )}
-
-        <div className="flex justify-between items-end mt-auto pt-4">
-          <span className="text-xl font-bold text-gray-900">
-            ${currentPrice.toFixed(2)}
+        <div className="flex items-baseline gap-1.5 mt-auto">
+          <span className="text-[15px] font-bold text-[#ff6600]">
+            {(currentPrice * 25000).toLocaleString('vi-VN')}đ
           </span>
-          <span className={`text-xs px-2 py-1 rounded-full border ${currentStock > 0
-              ? 'bg-green-50 text-green-700 border-green-200'
-              : 'bg-red-50 text-red-700 border-red-200'
-            }`}>
-            {currentStock > 0 ? `${currentStock} in stock` : 'Out of stock'}
+          <span className="text-[11px] text-gray-400 line-through">
+            {(oldPrice * 25000).toLocaleString('vi-VN')}đ
           </span>
         </div>
       </div>
 
-      <div className="p-4 pt-0">
+      {/* Action Button */}
+      <div className="p-3 pt-0 bg-white mt-auto">
         <button
           onClick={handleAddToCart}
           disabled={currentStock === 0}
-          className="w-full py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-md hover:border-gray-400 hover:text-black disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm"
         >
-          {currentStock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          <ShoppingCart className="w-4 h-4" />
+          {currentStock === 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
         </button>
       </div>
-    </div>
+    </Link>
   );
 }
