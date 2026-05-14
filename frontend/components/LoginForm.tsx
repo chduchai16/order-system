@@ -3,35 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authService } from '@/lib/api/authService';
-import { tokenManager } from '@/lib/auth/tokenManager';
 
 export default function LoginForm() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
-
-    try {
-      const response = await authService.login(username, password);
-      tokenManager.setTokens(response.access_token, response.refresh_token);
-      router.push('/products');
-    } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } }; message?: string };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errAny = err as any;
-      const errorMsg = e.response?.data?.message || e.message || 'Login failed. Please try again.';
-      setError(errorMsg);
-      console.error('Login error:', err);
-    } finally {
-      setLoading(false);
-    }
+    router.push('/products');
   };
 
   return (
@@ -74,10 +56,9 @@ export default function LoginForm() {
 
       <button
         type="submit"
-        disabled={loading}
         className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? 'Logging in...' : 'Login'}
+        Login
       </button>
 
       <p className="mt-4 text-center text-sm text-gray-600">

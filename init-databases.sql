@@ -5,7 +5,6 @@ CREATE DATABASE user_db;
 CREATE DATABASE product_db;
 CREATE DATABASE order_db;
 CREATE DATABASE payment_db;
-CREATE DATABASE keycloak_db;
 CREATE DATABASE notification_db;
 
 
@@ -194,7 +193,6 @@ INSERT INTO stock_movements (product_id, variant_id, quantity, type, reason, cre
 -- ---- DDL ----
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    keycloak_id VARCHAR(255) NOT NULL UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL,
     first_name VARCHAR(255),
@@ -234,7 +232,6 @@ CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     order_number VARCHAR(50) NOT NULL UNIQUE,
     user_id BIGINT NOT NULL,
-    keycloak_id VARCHAR(255) NOT NULL,
     total_price DECIMAL(19, 2) NOT NULL,
     shipping_street VARCHAR(500),
     shipping_city VARCHAR(100),
@@ -274,12 +271,12 @@ CREATE TABLE IF NOT EXISTS order_status_history (
 );
 
 -- ---- SEED: Orders ----
-INSERT INTO orders (order_number, user_id, keycloak_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, status, created_at, updated_at) VALUES
-    ('ORD-20240501-001', 1, 'kc-uuid-user-001', 36480000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 3000000, 1650000, 'VAT10', 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
-    ('ORD-20240502-002', 2, 'kc-uuid-user-002', 8490000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 849000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
-    ('ORD-20240503-003', 3, 'kc-uuid-user-003', 31990000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 2909000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
-    ('ORD-20240504-004', 1, 'kc-uuid-user-001', 52990000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 50000, '2024-05-10', NULL, 0, 4817000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
-    ('ORD-20240505-005', 4, 'kc-uuid-user-004', 6490000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 590000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
+INSERT INTO orders (order_number, user_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, status, created_at, updated_at) VALUES
+    ('ORD-20240501-001', 1, 36480000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 3000000, 1650000, 'VAT10', 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
+    ('ORD-20240502-002', 2, 8490000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 849000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
+    ('ORD-20240503-003', 3, 31990000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 2909000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+    ('ORD-20240504-004', 1, 52990000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 50000, '2024-05-10', NULL, 0, 4817000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
+    ('ORD-20240505-005', 4, 6490000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 590000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
 
 -- ---- SEED: Order Items ----
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tax_amount, discount_amount) VALUES
@@ -316,7 +313,6 @@ CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
     order_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    keycloak_id VARCHAR(255) NOT NULL,
     amount DECIMAL(19, 2) NOT NULL,
     payment_method VARCHAR(30) NOT NULL,
     status VARCHAR(20) NOT NULL,
@@ -335,12 +331,12 @@ CREATE TABLE IF NOT EXISTS payment_transactions (
 );
 
 -- ---- SEED: Payments ----
-INSERT INTO payments (order_id, user_id, keycloak_id, amount, payment_method, status, processed_at, created_at) VALUES
-    (1, 1, 'kc-uuid-user-001', 36480000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-    (2, 2, 'kc-uuid-user-002', 8490000, 'MOMO', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-    (3, 3, 'kc-uuid-user-003', 31990000, 'CASH_ON_DELIVERY', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
-    (4, 1, 'kc-uuid-user-001', 52990000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
-    (5, 4, 'kc-uuid-user-004', 6490000, 'MOMO', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
+INSERT INTO payments (order_id, user_id, amount, payment_method, status, processed_at, created_at) VALUES
+    (1, 1, 36480000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+    (2, 2, 8490000, 'MOMO', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    (3, 3, 31990000, 'CASH_ON_DELIVERY', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
+    (4, 1, 52990000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    (5, 4, 6490000, 'MOMO', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
 
 -- ---- SEED: Payment Transactions ----
 INSERT INTO payment_transactions (order_id, transaction_id, gateway_provider, raw_response, status, created_at) VALUES

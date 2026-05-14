@@ -6,8 +6,6 @@ import Link from 'next/link';
 import { useCartStore } from '@/lib/store/cartStore';
 import { orderService } from '@/lib/api/orderService';
 import { userService } from '@/lib/api/userService';
-import { tokenManager } from '@/lib/auth/tokenManager';
-import { jwtDecoder } from '@/lib/auth/jwtDecoder';
 import { CreateOrderRequest, Address } from '@/lib/utils/types';
 
 export default function CheckoutPage() {
@@ -37,9 +35,6 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const fetchUserAddresses = async () => {
-      const accessToken = tokenManager.getAccessToken();
-      if (!accessToken) return;
-      
       try {
         // In this demo, we assume user ID 1 or fetch from profile
         const profile = await userService.getProfile();
@@ -101,12 +96,8 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const accessToken = tokenManager.getAccessToken();
-      const keycloakId = accessToken ? jwtDecoder.getKeycloakId(accessToken.replace('Bearer ', '')) : '';
-      
       const orderRequest: CreateOrderRequest = {
         userId: 1, 
-        keycloakId: keycloakId || '',
         items: items.map(item => ({
           productId: item.productId,
           productName: item.productName,

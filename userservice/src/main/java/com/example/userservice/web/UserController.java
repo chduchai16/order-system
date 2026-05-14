@@ -26,14 +26,6 @@ public class UserController {
                 .orElseThrow(() -> new RuntimeException("User not found: " + id));
     }
 
-    @GetMapping("/keycloak/{keycloakId}")
-    public ResponseEntity<UserResponse> getUserByKeycloakId(@PathVariable String keycloakId) {
-        return userService.getUserByKeycloakId(keycloakId)
-                .map(user -> ResponseEntity.ok(toResponse(user)))
-                .orElseThrow(() -> new RuntimeException("User not found: " + keycloakId));
-    }
-
-
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers()
@@ -60,7 +52,6 @@ public class UserController {
     private UserResponse toResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .keycloakId(user.getKeycloakId())
                 .username(user.getUsername())
                 .email(user.getEmail() != null ? user.getEmail().getValue() : null)
                 .firstName(user.getFullName() != null ? user.getFullName().getFirstName() : null)

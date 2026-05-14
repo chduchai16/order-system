@@ -34,7 +34,6 @@ public class PaymentService implements IPaymentService {
                     Payment payment = Payment.builder()
                             .orderId(request.getOrderId())
                             .userId(request.getUserId())
-                            .keycloakId(request.getKeycloakId())
                             .amount(new Money(request.getAmount()))
                             .paymentMethod(request.getPaymentMethod() != null ? request.getPaymentMethod() : PaymentMethod.BANK_TRANSFER) 
                             .status(PaymentStatus.PENDING)
@@ -57,7 +56,6 @@ public class PaymentService implements IPaymentService {
                         savedPayment.getId(),
                         savedPayment.getOrderId(),
                         savedPayment.getUserId(),
-                        savedPayment.getKeycloakId(),
                         savedPayment.getAmount().getAmount(),
                         savedPayment.getPaymentMethod().name(),
                         savedPayment.getStatus().name(),

@@ -24,7 +24,6 @@ public class OrderMapper {
                 .id(entity.getId())
                 .orderNumber(entity.getOrderNumber() != null ? new OrderNumber(entity.getOrderNumber()) : null)
                 .userId(entity.getUserId())
-                .keycloakId(entity.getKeycloakId())
                 .items(entity.getItems() != null ?
                     entity.getItems().stream().map(OrderMapper::itemToDomain).collect(Collectors.toList()) :
                     new ArrayList<>())
@@ -81,7 +80,6 @@ public class OrderMapper {
         entity.setId(domain.getId());
         entity.setOrderNumber(domain.getOrderNumber() != null ? domain.getOrderNumber().getValue() : OrderNumber.generate().getValue());
         entity.setUserId(domain.getUserId());
-        entity.setKeycloakId(domain.getKeycloakId());
         entity.setTotalPrice(domain.getTotalPrice());
         entity.setStatus(domain.getStatus());
 

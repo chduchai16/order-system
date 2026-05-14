@@ -15,7 +15,6 @@ public class Payment {
     private Long id;
     private Long orderId;
     private Long userId;
-    private String keycloakId;
     private Money amount;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;

@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderRequest {
     private Long userId;
-    private String keycloakId;
     private List<OrderItemRequest> items;
     
     // Shipping info

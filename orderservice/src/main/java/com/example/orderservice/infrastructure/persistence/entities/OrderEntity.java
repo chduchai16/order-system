@@ -26,9 +26,6 @@ public class OrderEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
-    private String keycloakId;
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> items;
 

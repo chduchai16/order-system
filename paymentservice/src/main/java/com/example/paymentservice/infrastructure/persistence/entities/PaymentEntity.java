@@ -28,9 +28,6 @@ public class PaymentEntity {
     private Long userId;
 
     @Column(nullable = false)
-    private String keycloakId;
-
-    @Column(nullable = false)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)

@@ -46,7 +46,6 @@ public class OrderService implements IOrderService {
         Order order = Order.builder()
                 .orderNumber(OrderNumber.generate())
                 .userId(request.getUserId())
-                .keycloakId(request.getKeycloakId())
                 .items(items)
                 .status(OrderStatus.PENDING)
                 .shippingAddress(shippingAddress)

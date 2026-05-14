@@ -12,7 +12,6 @@ public class PaymentMapper {
                 .id(entity.getId())
                 .orderId(entity.getOrderId())
                 .userId(entity.getUserId())
-                .keycloakId(entity.getKeycloakId())
                 .amount(new Money(entity.getAmount()))
                 .paymentMethod(entity.getPaymentMethod())
                 .status(entity.getStatus())
@@ -27,7 +26,6 @@ public class PaymentMapper {
         entity.setId(domain.getId());
         entity.setOrderId(domain.getOrderId());
         entity.setUserId(domain.getUserId());
-        entity.setKeycloakId(domain.getKeycloakId());
         if (domain.getAmount() != null) {
             entity.setAmount(domain.getAmount().getAmount());
         }

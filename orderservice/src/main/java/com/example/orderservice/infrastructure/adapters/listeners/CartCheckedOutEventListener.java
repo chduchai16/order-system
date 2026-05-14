@@ -20,12 +20,11 @@ public class CartCheckedOutEventListener {
 
     @KafkaListener(topics = "cart.checked-out", groupId = "order-group")
     public void handleCartCheckedOutEvent(CartCheckedOutEvent event) {
-        log.info("Received CartCheckedOutEvent for keycloakId: {}", event.getKeycloakId());
+        log.info("Received CartCheckedOutEvent for userId: {}", event.getUserId());
 
         try {
             OrderRequest orderRequest = OrderRequest.builder()
                     .userId(event.getUserId())
-                    .keycloakId(event.getKeycloakId())
                     .street(event.getShippingStreet())
                     .city(event.getShippingCity())
                     .district(event.getShippingDistrict())
@@ -41,7 +40,7 @@ public class CartCheckedOutEventListener {
                     .build();
 
             orderService.createOrder(orderRequest);
-            log.info("Successfully created order from CartCheckedOutEvent for keycloakId: {}", event.getKeycloakId());
+            log.info("Successfully created order from CartCheckedOutEvent for userId: {}", event.getUserId());
         } catch (Exception e) {
             log.error("Failed to create order from CartCheckedOutEvent: {}", e.getMessage(), e);
         }

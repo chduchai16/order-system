@@ -39,11 +39,6 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByKeycloakId(String keycloakId) {
-        return jpaUserRepository.findByKeycloakId(keycloakId).map(UserMapper::toDomain);
-    }
-
-    @Override
     public Optional<User> findByEmail(String email) {
         return jpaUserRepository.findByEmail(email).map(UserMapper::toDomain);
     }

@@ -27,9 +27,3 @@ spring:
 
 server:
   port: 8080
-
-keycloak:
-  server-url: http://keycloak:8080
-  realm: order
-  client-id: order
-  client-secret: ${KEYCLOAK_CLIENT_SECRET:V8TIkxbK17PLOJPwa3MUETNjlz4c9mC}

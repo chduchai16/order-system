@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class UserResponse {
     private Long id;
-    private String keycloakId;
     private String username;
     private String email;
     private String firstName;

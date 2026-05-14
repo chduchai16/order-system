@@ -43,7 +43,7 @@ public class ProductPriceChangedEventListener {
                 if (updated) {
                     cart.calculateTotalPrice();
                     redisCartRepository.save(CartMapper.toEntity(cart));
-                    log.info("Updated price in cart for keycloakId: {}", cart.getId());
+                    log.info("Updated price in cart for userId: {}", cart.getId());
                 }
             }
         } catch (Exception e) {

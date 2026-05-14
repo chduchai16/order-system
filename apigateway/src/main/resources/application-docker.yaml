@@ -4,11 +4,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: authservice
-          uri: ${USER_SERVICE_URL:http://userservice:8080}
-          predicates:
-            - Path=/api/auth/**
-
         - id: userservice
           uri: ${USER_SERVICE_URL:http://userservice:8080}
           predicates:
@@ -28,13 +23,5 @@ spring:
           uri: ${PAYMENT_SERVICE_URL:http://paymentservice:8080}
           predicates:
             - Path=/api/payments/**
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/order}
-          jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/order}/protocol/openid-connect/certs
-
 server:
   port: 8080

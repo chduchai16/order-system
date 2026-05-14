@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class OrderCreatedEvent {
     private Long orderId;
     private Long userId ;
-    private String keycloakId ;
     private Long productId ;
     private Integer quantity ;
     private BigDecimal totalPrice ;

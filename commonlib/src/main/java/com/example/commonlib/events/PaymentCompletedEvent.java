@@ -14,7 +14,6 @@ public class PaymentCompletedEvent {
     private Long paymentId;
     private Long orderId;
     private Long userId;
-    private String keycloakId;
     private BigDecimal amount;
     private String paymentMethod;
     private String status; // SUCCESS, FAILED

@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 public class PaymentRequest {
     private Long orderId;
     private Long userId;
-    private String keycloakId;
     private BigDecimal amount;
     private String paymentMethod;
 }

@@ -10,7 +10,6 @@ public class UserMapper {
         if (entity == null) return null;
         return User.builder()
                 .id(entity.getId())
-                .keycloakId(entity.getKeycloakId())
                 .username(entity.getUsername())
                 .email(new Email(entity.getEmail()))
                 .fullName(new FullName(entity.getFirstName(), entity.getLastName()))
@@ -53,7 +52,6 @@ public class UserMapper {
         if (domain == null) return null;
         UserEntity entity = new UserEntity();
         entity.setId(domain.getId());
-        entity.setKeycloakId(domain.getKeycloakId());
         entity.setUsername(domain.getUsername());
         if (domain.getEmail() != null) {
             entity.setEmail(domain.getEmail().getValue());

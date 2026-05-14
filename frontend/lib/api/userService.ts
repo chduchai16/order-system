@@ -3,9 +3,7 @@ import { User, Address, WishlistItem } from '@/lib/utils/types';
 
 export const userService = {
   getProfile: async (): Promise<User> => {
-    // In a real app, this would use the sub from JWT or a /me endpoint
-    // For now, we use a generic placeholder or fetch by ID if we have it
-    const response = await apiClient.get<User>('/api/users/profile');
+    const response = await apiClient.get<User>('/api/users/1');
     return response.data;
   },
 

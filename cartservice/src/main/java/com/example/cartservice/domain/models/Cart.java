@@ -15,7 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart {
-    private String id; // usually userId or keycloakId
+    private String id; // userId
     private List<CartItem> items;
     private List<CartItem> savedItems;
     private BigDecimal totalPrice;

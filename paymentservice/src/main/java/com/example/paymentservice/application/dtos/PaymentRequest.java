@@ -15,7 +15,6 @@ import com.example.paymentservice.domain.models.PaymentMethod;
 public class PaymentRequest {
     private Long orderId;
     private Long userId;
-    private String keycloakId;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;
 }

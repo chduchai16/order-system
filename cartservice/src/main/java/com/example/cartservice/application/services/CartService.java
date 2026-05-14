@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,56 +20,53 @@ public class CartService {
     private final CartRepository cartRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public Cart getCart(String keycloakId) {
-        return cartRepository.findById(keycloakId)
-                .orElseGet(() -> Cart.builder().id(keycloakId).build());
+    public Cart getCart(String userId) {
+        return cartRepository.findById(userId)
+                .orElseGet(() -> Cart.builder().id(userId).build());
     }
 
-    public Cart addItemToCart(String keycloakId, CartItem item) {
-        Cart cart = getCart(keycloakId);
+    public Cart addItemToCart(String userId, CartItem item) {
+        Cart cart = getCart(userId);
         cart.addItem(item);
         return cartRepository.save(cart);
     }
 
-    public Cart removeItemFromCart(String keycloakId, Long productId) {
-        Cart cart = getCart(keycloakId);
+    public Cart removeItemFromCart(String userId, Long productId) {
+        Cart cart = getCart(userId);
         cart.removeItem(productId);
         return cartRepository.save(cart);
     }
 
-    public Cart updateItemQuantity(String keycloakId, Long productId, Integer quantity) {
-        Cart cart = getCart(keycloakId);
+    public Cart updateItemQuantity(String userId, Long productId, Integer quantity) {
+        Cart cart = getCart(userId);
         cart.updateItemQuantity(productId, quantity);
         return cartRepository.save(cart);
     }
 
-    public void clearCart(String keycloakId) {
-        cartRepository.deleteById(keycloakId);
+    public void clearCart(String userId) {
+        cartRepository.deleteById(userId);
     }
 
-    public Cart saveForLater(String keycloakId, Long productId) {
-        // chuyển sản phẩm vào danh sách lưu lại
-        Cart cart = getCart(keycloakId);
+    public Cart saveForLater(String userId, Long productId) {
+        Cart cart = getCart(userId);
         cart.saveForLater(productId);
         return cartRepository.save(cart);
     }
 
-    public Cart moveToCart(String keycloakId, Long productId) {
-        // chuyển sản phẩm từ danh sách lưu lại vào giỏ hàng
-        Cart cart = getCart(keycloakId);
+    public Cart moveToCart(String userId, Long productId) {
+        Cart cart = getCart(userId);
         cart.moveToCart(productId);
         return cartRepository.save(cart);
     }
 
-    public void checkout(String keycloakId, Long userId, String street, String city, String district, String country, String paymentMethod) {
-        Cart cart = getCart(keycloakId);
+    public void checkout(String userIdHeader, Long userId, String street, String city, String district, String country, String paymentMethod) {
+        Cart cart = getCart(userIdHeader);
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
         CartCheckedOutEvent event = CartCheckedOutEvent.builder()
                 .userId(userId)
-                .keycloakId(keycloakId)
                 .items(cart.getItems().stream()
                         .map(item -> CartItemDto.builder()
                                 .productId(item.getProductId())
@@ -88,10 +83,9 @@ public class CartService {
                 .paymentMethod(paymentMethod)
                 .build();
 
-        kafkaTemplate.send("cart.checked-out", keycloakId, event);
-        log.info("Published CartCheckedOutEvent for user {}", keycloakId);
+        kafkaTemplate.send("cart.checked-out", userIdHeader, event);
+        log.info("Published CartCheckedOutEvent for user {}", userId);
 
-        // Clear cart after successful checkout
-        clearCart(keycloakId);
+        clearCart(userIdHeader);
     }
 }

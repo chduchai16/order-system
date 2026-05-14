@@ -1,10 +1,3 @@
-export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  token_type: string;
-}
-
 export interface Address {
   id?: number;
   label: string;
@@ -24,7 +17,6 @@ export interface WishlistItem {
 
 export interface User {
   id?: string;
-  keycloakId: string;
   username: string;
   email: string;
   firstName: string;
@@ -104,7 +96,6 @@ export interface DiscountInfo {
 export interface Order {
   id: string;
   orderNumber?: string;
-  keycloakId: string;
   items: OrderItem[];
   totalPrice: number;
   status: string;
@@ -136,19 +127,6 @@ export interface Cart {
   totalPrice: number;
 }
 
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  password: string;
-}
-
 export interface CreateOrderItemRequest {
   productId: string;
   productName: string;
@@ -158,7 +136,6 @@ export interface CreateOrderItemRequest {
 
 export interface CreateOrderRequest {
   userId: number;
-  keycloakId: string;
   items: CreateOrderItemRequest[];
   totalPrice: number;
   street: string;

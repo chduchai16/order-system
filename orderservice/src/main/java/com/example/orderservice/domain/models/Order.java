@@ -18,7 +18,6 @@ public class Order {
     private Long id;
     private OrderNumber orderNumber;
     private Long userId;
-    private String keycloakId;
     private List<OrderItem> items;
     private BigDecimal totalPrice;
     private OrderStatus status;

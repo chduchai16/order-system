@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class User {
     private Long id;
-    private String keycloakId;
     private String username;
     private Email email;
     private FullName fullName;

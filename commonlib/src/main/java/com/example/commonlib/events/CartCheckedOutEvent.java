@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CartCheckedOutEvent {
     private Long userId;
-    private String keycloakId;
     private List<CartItemDto> items;
     private String shippingStreet;
     private String shippingCity;

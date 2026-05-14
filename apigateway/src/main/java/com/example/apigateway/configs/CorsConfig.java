@@ -29,7 +29,7 @@ public class CorsConfig {
         // Allow all headers
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
         
-        // Allow credentials (cookies, auth headers)
+        // Allow credentials
         corsConfiguration.setAllowCredentials(true);
         
         // Max age for preflight cache
@@ -37,7 +37,6 @@ public class CorsConfig {
         
         // Allow expose of headers for client to read
         corsConfiguration.setExposedHeaders(Arrays.asList(
-            "Authorization",
             "Content-Type",
             "X-Custom-Header"
         ));

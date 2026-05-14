@@ -11,7 +11,7 @@ Hệ thống đặt hàng demo xây dựng theo kiến trúc microservice, mục
 | Language | Java 17 |
 | Framework | Spring Boot 3.5.0, Spring Cloud 2025.0.0 |
 | API Gateway | Spring Cloud Gateway |
-| Auth | Keycloak, OAuth2, JWT |
+| Auth | None |
 | Service Discovery | Eureka |
 | Messaging | Apache Kafka |
 | Database | PostgreSQL |
@@ -25,8 +25,7 @@ Hệ thống đặt hàng demo xây dựng theo kiến trúc microservice, mục
 ```
 Client
   └── API Gateway :8080
-        ├── User Service (with Auth)  
-        │   ├── Authentication (Keycloak wrapper)
+        ├── User Service  
         │   └── User Management (PostgreSQL)
         ├── Product Service
         ├── Order Service
@@ -34,7 +33,7 @@ Client
         └── Discovery Server
 
 Infrastructure:
-  Keycloak · PostgreSQL · Kafka · Eureka
+  PostgreSQL · Kafka · Eureka
 ```
 
 ---
@@ -44,12 +43,11 @@ Infrastructure:
 | Service | Port | Chức năng |
 |---------|------|----------|
 | API Gateway | 8080 | Routing, Load Balancing |
-| **User Service** | 8081 | **Auth + User Management** |
+| **User Service** | 8081 | **User Management** |
 | Product Service | 8082 | Quản lý sản phẩm |
 | Order Service | 8083 | Quản lý đơn hàng |
 | Payment Service | 8084 | Xử lý thanh toán |
 | Discovery Server | 8061 | Service Discovery (Eureka) |
-| Keycloak | 9090 | Identity Provider |
 | PostgreSQL | 5432 | Database |
 | Kafka | 9092 | Message Broker |
 
@@ -57,11 +55,7 @@ Infrastructure:
 
 ## Key API Endpoints
 
-### User & Auth Service
-- `POST /api/auth/register` - Đăng ký tài khoản mới
-- `POST /api/auth/login` - Đăng nhập & nhận JWT Token
-- `GET /api/users/me` - Lấy thông tin user hiện tại
-
+### User Service`r`n- `GET /api/users/{id}` - Lay thong tin user`r`n- `GET /api/users` - Danh sach user`r`n
 ### Product Service
 - `GET /api/products` - Danh sách sản phẩm (hỗ trợ lọc theo category)
 - `GET /api/products/{id}` - Chi tiết sản phẩm
@@ -91,7 +85,7 @@ Infrastructure:
 # 1. Clone & navigate
 cd d:\Java\order-system
 
-# 2. Khởi động infrastructure (Postgres, Kafka, Keycloak, Eureka)
+# 2. Khởi động infrastructure (Postgres, Kafka, Eureka)
 docker-compose up -d
 
 # 3. Build all services
@@ -103,8 +97,7 @@ mvn clean package -DskipTests
 
 # 5. Kiểm tra services
 # - API Gateway: http://localhost:8080
-# - User Service (Auth): http://localhost:8081/api/auth/*
-# - Keycloak: http://localhost:9090 (admin/admin)
+# - User Service: http://localhost:8081/api/users
 # - Eureka: http://localhost:8061
 ```
 

@@ -18,7 +18,7 @@ import java.util.List;
 public class CartEntity {
     
     @Id
-    private String id; // userId or keycloakId
+    private String id; // userId
     
     private List<CartItemEntity> items;
     private List<CartItemEntity> savedItems;
