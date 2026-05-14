@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Check, Gift, Lock, ShieldCheck, Trash2, Zap } from 'lucide-react';
-import AuthHeader from '@/components/AuthHeader';
-import RegisterForm from '@/components/RegisterForm';
+import AuthHeader from '@/features/auth/components/AuthHeader';
+import RegisterForm from '@/features/auth/components/RegisterForm';
 
 const perks = [
   ['Ưu đãi thành viên mới', 'Giảm 50k cho đơn đầu tiên'],

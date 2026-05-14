@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductVariant } from '@/lib/utils/types';
+import { ProductVariant } from '@/features/shared/types';
 
 interface VariantSelectorProps {
   variants: ProductVariant[];

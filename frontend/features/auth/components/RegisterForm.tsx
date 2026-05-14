@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
-import { authService } from '@/lib/api/authService';
-import { tokenStore } from '@/lib/api/tokenStore';
+import { authService } from '@/features/auth/api/authService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
 
 export default function RegisterForm() {
   const router = useRouter();

@@ -1,5 +1,5 @@
-import apiClient from './client';
-import { Product } from '@/lib/utils/types';
+import apiClient from '@/features/shared/api/client';
+import { Product } from '@/features/shared/types';
 
 export const productService = {
   getProducts: async (): Promise<Product[]> => {

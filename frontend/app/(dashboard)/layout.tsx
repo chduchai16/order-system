@@ -1,7 +1,7 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/features/shared/components/Navbar';
+import Footer from '@/features/shared/components/Footer';
 
 export default function DashboardLayout({
   children,

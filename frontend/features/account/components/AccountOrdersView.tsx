@@ -21,9 +21,9 @@ import {
   WalletCards,
   X,
 } from 'lucide-react';
-import { orderService } from '@/lib/api/orderService';
-import { userService } from '@/lib/api/userService';
-import { Address, Order } from '@/lib/utils/types';
+import { orderService } from '@/features/orders/api/orderService';
+import { userService } from '@/features/account/api/userService';
+import { Address, Order } from '@/features/shared/types';
 
 type OrderStatus = 'processing' | 'shipping' | 'completed' | 'cancelled';
 

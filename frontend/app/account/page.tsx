@@ -1,6 +1,6 @@
-import AccountOrdersView from '@/components/AccountOrdersView';
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
+import AccountOrdersView from '@/features/account/components/AccountOrdersView';
+import Footer from '@/features/shared/components/Footer';
+import Navbar from '@/features/shared/components/Navbar';
 
 export default function AccountPage() {
   return (

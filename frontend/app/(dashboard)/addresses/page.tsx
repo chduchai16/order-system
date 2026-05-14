@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Home, MapPin, Plus, Star, Trash2, Edit3, Building2 } from 'lucide-react';
-import { userService } from '@/lib/api/userService';
-import { Address } from '@/lib/utils/types';
+import { userService } from '@/features/account/api/userService';
+import { Address } from '@/features/shared/types';
 
 const fallbackAddresses: Address[] = [
   {

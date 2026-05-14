@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductAttribute } from '@/lib/utils/types';
+import { ProductAttribute } from '@/features/shared/types';
 
 interface ProductSpecificationsProps {
   attributes: ProductAttribute[];

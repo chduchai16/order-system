@@ -15,9 +15,9 @@ import {
   Star,
   Truck,
 } from 'lucide-react';
-import { productService } from '@/lib/api/productService';
-import { useCartStore } from '@/lib/store/cartStore';
-import { Product, ProductAttribute, ProductVariant } from '@/lib/utils/types';
+import { productService } from '@/features/products/api/productService';
+import { useCartStore } from '@/features/cart/store/cartStore';
+import { Product, ProductAttribute, ProductVariant } from '@/features/shared/types';
 
 const colorOptions = [
   { name: 'Đen', className: 'bg-[#1d2535]' },

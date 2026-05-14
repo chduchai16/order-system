@@ -19,8 +19,8 @@ import {
   Truck,
   Zap,
 } from 'lucide-react';
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
+import Footer from '@/features/shared/components/Footer';
+import Navbar from '@/features/shared/components/Navbar';
 
 const categories = [
   { name: 'Điện thoại', href: '/products?category=electronics', icon: Smartphone, count: '234' },

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { CreditCard, Gift, Lock, RefreshCw, ShieldCheck, Truck, Zap } from 'lucide-react';
-import AuthHeader from '@/components/AuthHeader';
-import LoginForm from '@/components/LoginForm';
+import AuthHeader from '@/features/auth/components/AuthHeader';
+import LoginForm from '@/features/auth/components/LoginForm';
 
 const benefits = [
   {

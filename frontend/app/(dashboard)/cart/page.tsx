@@ -17,8 +17,8 @@ import {
   Trash2,
   Truck,
 } from 'lucide-react';
-import { useCartStore } from '@/lib/store/cartStore';
-import { CartItem } from '@/lib/utils/types';
+import { useCartStore } from '@/features/cart/store/cartStore';
+import { CartItem } from '@/features/shared/types';
 
 const shippingOptions = [
   {

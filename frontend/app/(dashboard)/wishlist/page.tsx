@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Eye, Heart, PackageCheck, ShoppingCart, Star, Trash2, Zap } from 'lucide-react';
-import { userService } from '@/lib/api/userService';
-import { useCartStore } from '@/lib/store/cartStore';
-import { WishlistItem } from '@/lib/utils/types';
+import { userService } from '@/features/account/api/userService';
+import { useCartStore } from '@/features/cart/store/cartStore';
+import { WishlistItem } from '@/features/shared/types';
 
 const fallbackWishlist: WishlistItem[] = [
   { id: 1, productId: '1', productName: 'Tai nghe Bluetooth Sony Pro X1', addedAt: '2026-05-12T00:00:00Z' },

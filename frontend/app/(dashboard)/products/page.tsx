@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { productService } from '@/lib/api/productService';
-import { Product } from '@/lib/utils/types';
-import ProductCard from '@/components/ProductCard';
+import { productService } from '@/features/products/api/productService';
+import { Product } from '@/features/shared/types';
+import ProductCard from '@/features/products/components/ProductCard';
 import { ChevronLeft, ChevronRight, Clock, Truck, ShieldCheck, RefreshCw, Headset, Star } from 'lucide-react';
 import Link from 'next/link';
 

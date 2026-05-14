@@ -1,5 +1,5 @@
-import apiClient from './client';
-import { Order, CreateOrderRequest } from '@/lib/utils/types';
+import apiClient from '@/features/shared/api/client';
+import { Order, CreateOrderRequest } from '@/features/shared/types';
 
 export const orderService = {
   createOrder: async (request: CreateOrderRequest): Promise<Order> => {

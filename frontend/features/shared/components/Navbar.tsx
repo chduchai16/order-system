@@ -16,7 +16,7 @@ import {
   User,
   Zap,
 } from 'lucide-react';
-import { useCartStore } from '@/lib/store/cartStore';
+import { useCartStore } from '@/features/cart/store/cartStore';
 
 export default function Navbar() {
   const cartItemCount = useCartStore((state) => state.getItemCount());

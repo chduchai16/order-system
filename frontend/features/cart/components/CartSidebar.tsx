@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCartStore } from '@/lib/store/cartStore';
+import { useCartStore } from '@/features/cart/store/cartStore';
 
 export default function CartSidebar() {
   const itemCount = useCartStore(state => state.getItemCount());

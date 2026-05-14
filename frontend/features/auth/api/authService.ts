@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from '@/features/shared/api/client';
 
 export interface LoginRequest {
   username: string;

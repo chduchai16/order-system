@@ -17,11 +17,11 @@ import {
   WalletCards,
   Zap,
 } from 'lucide-react';
-import { orderService } from '@/lib/api/orderService';
-import { tokenStore } from '@/lib/api/tokenStore';
-import { userService } from '@/lib/api/userService';
-import { useCartStore } from '@/lib/store/cartStore';
-import { Address, CreateOrderRequest } from '@/lib/utils/types';
+import { orderService } from '@/features/orders/api/orderService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
+import { userService } from '@/features/account/api/userService';
+import { useCartStore } from '@/features/cart/store/cartStore';
+import { Address, CreateOrderRequest } from '@/features/shared/types';
 
 type PaymentMethod = 'COD' | 'VNPAY';
 

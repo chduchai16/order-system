@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Banner } from '@/lib/utils/types';
+import { Banner } from '@/features/shared/types';
 
 interface BannerCarouselProps {
     banners?: Banner[];

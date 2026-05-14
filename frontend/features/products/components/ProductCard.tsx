@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Product, ProductVariant } from '@/lib/utils/types';
-import { useCartStore } from '@/lib/store/cartStore';
+import { Product, ProductVariant } from '@/features/shared/types';
+import { useCartStore } from '@/features/cart/store/cartStore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, ShoppingCart, Star } from 'lucide-react';

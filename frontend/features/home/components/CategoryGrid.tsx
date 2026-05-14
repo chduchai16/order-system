@@ -1,6 +1,6 @@
 'use client';
 
-import { Category } from '@/lib/utils/types';
+import { Category } from '@/features/shared/types';
 
 interface CategoryGridProps {
     categories?: Category[];
