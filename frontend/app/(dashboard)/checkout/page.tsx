@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useCartStore } from '@/lib/store/cartStore';
 import { orderService } from '@/lib/api/orderService';
 import { userService } from '@/lib/api/userService';
+import { tokenStore } from '@/lib/api/tokenStore';
 import { CreateOrderRequest, Address } from '@/lib/utils/types';
 
 export default function CheckoutPage() {
@@ -36,7 +37,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchUserAddresses = async () => {
       try {
-        // In this demo, we assume user ID 1 or fetch from profile
         const profile = await userService.getProfile();
         if (profile.addresses) {
           setUserAddresses(profile.addresses);
@@ -96,8 +96,13 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
+      const userId = tokenStore.getUserId();
+      if (!userId) {
+        throw new Error('User is not authenticated');
+      }
+
       const orderRequest: CreateOrderRequest = {
-        userId: 1, 
+        userId,
         items: items.map(item => ({
           productId: item.productId,
           productName: item.productName,

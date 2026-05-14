@@ -12,8 +12,7 @@ export default function WishlistPage() {
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        // Assume user ID 1 for now
-        const items = await userService.getWishlist(1);
+        const items = await userService.getWishlist();
         setWishlist(items);
       } catch (err) {
         console.error('Failed to fetch wishlist', err);

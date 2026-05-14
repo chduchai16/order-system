@@ -3,17 +3,30 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authService } from '@/lib/api/authService';
+import { tokenStore } from '@/lib/api/tokenStore';
 
 export default function LoginForm() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    router.push('/products');
+    setIsSubmitting(true);
+
+    try {
+      const tokens = await authService.login({ username, password });
+      tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
+      router.push('/products');
+    } catch {
+      setError('Username or password is incorrect');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,9 +69,10 @@ export default function LoginForm() {
 
       <button
         type="submit"
+        disabled={isSubmitting}
         className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
       >
-        Login
+        {isSubmitting ? 'Logging in...' : 'Login'}
       </button>
 
       <p className="mt-4 text-center text-sm text-gray-600">

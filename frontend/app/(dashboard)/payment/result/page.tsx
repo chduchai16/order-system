@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function PaymentResultPage() {
+function PaymentResultContent() {
   const searchParams = useSearchParams();
   const status = searchParams.get('vnp_ResponseCode');
   const isSuccess = status === '00';
@@ -39,5 +40,13 @@ export default function PaymentResultPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function PaymentResultPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-12">Loading payment result...</div>}>
+      <PaymentResultContent />
+    </Suspense>
   );
 }

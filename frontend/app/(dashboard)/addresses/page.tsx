@@ -23,7 +23,7 @@ export default function AddressesPage() {
 
   const fetchAddresses = async () => {
     try {
-      const data = await userService.getAddresses(1);
+      const data = await userService.getAddresses();
       setAddresses(data);
     } catch (err) {
       console.error('Failed to fetch addresses', err);
@@ -35,7 +35,7 @@ export default function AddressesPage() {
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await userService.addAddress(1, newAddress);
+      await userService.addMyAddress(newAddress);
       setShowAddForm(false);
       setNewAddress({ label: '', street: '', city: '', district: '', country: 'Vietnam', isDefault: false });
       fetchAddresses();

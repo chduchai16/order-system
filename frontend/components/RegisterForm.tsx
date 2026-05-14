@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authService } from '@/lib/api/authService';
+import { tokenStore } from '@/lib/api/tokenStore';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -15,6 +17,7 @@ export default function RegisterForm() {
     confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,7 +38,23 @@ export default function RegisterForm() {
       return;
     }
 
-    router.push('/products');
+    setIsSubmitting(true);
+
+    try {
+      const tokens = await authService.register({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      });
+      tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
+      router.push('/products');
+    } catch {
+      setError('Registration failed. Please check your information and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClasses = "w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
@@ -148,9 +167,10 @@ export default function RegisterForm() {
 
       <button
         type="submit"
+        disabled={isSubmitting}
         className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
       >
-        Register
+        {isSubmitting ? 'Registering...' : 'Register'}
       </button>
 
       <p className="mt-4 text-center text-sm text-gray-600">
