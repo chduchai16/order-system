@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { CheckCircle2, Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
 import { authService } from '@/lib/api/authService';
 import { tokenStore } from '@/lib/api/tokenStore';
 
@@ -16,25 +17,33 @@ export default function RegisterForm() {
     password: '',
     confirmPassword: '',
   });
+  const [acceptedTerms, setAcceptedTerms] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
+    if (!acceptedTerms) {
+      setError('Vui lòng đồng ý với điều khoản sử dụng');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Mật khẩu xác nhận không khớp');
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError('Mật khẩu phải có ít nhất 8 ký tự');
       return;
     }
 
@@ -42,122 +51,125 @@ export default function RegisterForm() {
 
     try {
       const tokens = await authService.register({
-        username: formData.username,
-        email: formData.email,
+        username: formData.username.trim(),
+        email: formData.email.trim(),
         password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
       });
       tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
       router.push('/products');
     } catch {
-      setError('Registration failed. Please check your information and try again.');
+      setError('Đăng ký thất bại. Vui lòng kiểm tra thông tin và thử lại.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const inputClasses = "w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
-  const labelClasses = "block text-sm font-medium mb-1 text-gray-700";
+  const passwordStrong = formData.password.length >= 8;
+  const passwordsMatch = formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword;
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md">
+    <form onSubmit={handleSubmit} className="w-full">
       <div className="grid grid-cols-2 gap-4 mb-4">
+        <button type="button" className="h-11 rounded-md border border-gray-300 bg-white font-bold text-sm flex items-center justify-center gap-2 hover:border-[#ff6600]">
+          <span className="text-red-500 font-black">G</span>
+          Google
+        </button>
+        <button type="button" className="h-11 rounded-md border border-gray-300 bg-white font-bold text-sm flex items-center justify-center gap-2 hover:border-[#ff6600]">
+          <span className="text-blue-600 font-black">f</span>
+          Facebook
+        </button>
+      </div>
+
+      <div className="flex items-center gap-4 mb-4">
+        <div className="h-px bg-gray-300 flex-1" />
+        <span className="text-sm text-gray-600">hoặc điền thông tin bên dưới</span>
+        <div className="h-px bg-gray-300 flex-1" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <Field id="firstName" name="firstName" label="Họ" value={formData.firstName} onChange={handleChange} icon={User} placeholder="Nguyễn" />
+        <Field id="lastName" name="lastName" label="Tên" value={formData.lastName} onChange={handleChange} icon={User} placeholder="Thành" />
+      </div>
+
+      <div className="mb-3">
+        <Field id="username" name="username" label="Tên đăng nhập" value={formData.username} onChange={handleChange} icon={User} placeholder="nguyenthanh" autoComplete="username" active />
+      </div>
+
+      <div className="mb-3">
+        <Field id="email" name="email" type="email" label="Email" value={formData.email} onChange={handleChange} icon={Mail} placeholder="nguyenthanh@email.com" autoComplete="email" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-2">
         <div>
-          <label htmlFor="firstName" className={labelClasses}>
-            First Name
-          </label>
-          <input
-            id="firstName"
-            name="firstName"
-            type="text"
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder="John"
-            required
-            className={inputClasses}
-          />
+          <label htmlFor="password" className="block text-sm font-bold mb-2 text-gray-900">Mật khẩu</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••••"
+              autoComplete="new-password"
+              required
+              className={`w-full h-11 pl-10 pr-10 border rounded-md bg-white text-gray-900 text-sm focus:ring-2 ${
+                passwordStrong ? 'border-green-500 focus:border-green-500 focus:ring-green-100' : 'border-[#ff6600] focus:border-[#ff6600] focus:ring-orange-100'
+              }`}
+            />
+            <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+          <div className="h-1 bg-gray-200 rounded mt-2 overflow-hidden">
+            <div className={`h-full ${passwordStrong ? 'w-full bg-green-500' : 'w-1/3 bg-[#ff6600]'}`} />
+          </div>
+          <p className={`text-xs mt-1 font-semibold ${passwordStrong ? 'text-green-600' : 'text-[#ff6600]'}`}>
+            {passwordStrong ? 'Mật khẩu mạnh' : 'Tối thiểu 8 ký tự'}
+          </p>
         </div>
+
         <div>
-          <label htmlFor="lastName" className={labelClasses}>
-            Last Name
-          </label>
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Doe"
-            required
-            className={inputClasses}
-          />
+          <label htmlFor="confirmPassword" className="block text-sm font-bold mb-2 text-gray-900">Xác nhận mật khẩu</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••••"
+              autoComplete="new-password"
+              required
+              className={`w-full h-11 pl-10 pr-10 border rounded-md bg-white text-gray-900 text-sm focus:ring-2 ${
+                passwordsMatch ? 'border-green-500 focus:border-green-500 focus:ring-green-100' : 'border-gray-300 focus:border-[#ff6600] focus:ring-orange-100'
+              }`}
+            />
+            <button type="button" onClick={() => setShowConfirmPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+          <p className={`text-xs mt-3 font-semibold ${passwordsMatch ? 'text-green-600' : 'text-gray-500'}`}>
+            {passwordsMatch ? '✓ Mật khẩu khớp nhau' : 'Nhập lại mật khẩu'}
+          </p>
         </div>
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="username" className={labelClasses}>
-          Username
-        </label>
+      <label className="flex items-start gap-2 text-sm text-gray-700 my-4 cursor-pointer">
         <input
-          id="username"
-          name="username"
-          type="text"
-          value={formData.username}
-          onChange={handleChange}
-          placeholder="johndoe"
-          required
-          className={inputClasses}
+          type="checkbox"
+          checked={acceptedTerms}
+          onChange={(event) => setAcceptedTerms(event.target.checked)}
+          className="mt-1 w-4 h-4 accent-[#ff6600]"
         />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="email" className={labelClasses}>
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="john@example.com"
-          required
-          className={inputClasses}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="password" className={labelClasses}>
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="At least 8 characters"
-          required
-          className={inputClasses}
-        />
-      </div>
-
-      <div className="mb-6">
-        <label htmlFor="confirmPassword" className={labelClasses}>
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirm password"
-          required
-          className={inputClasses}
-        />
-      </div>
+        <span>
+          Tôi đồng ý với <Link href="/register" className="text-[#ff6600] font-bold">Điều khoản sử dụng</Link> và{' '}
+          <Link href="/register" className="text-[#ff6600] font-bold">Chính sách bảo mật</Link> của ShopVN.
+        </span>
+      </label>
 
       {error && (
         <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-md text-sm">
@@ -168,17 +180,65 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        className="w-full h-12 border border-gray-300 rounded-md bg-white text-gray-900 font-bold hover:border-[#ff6600] hover:text-[#ff6600] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
       >
-        {isSubmitting ? 'Registering...' : 'Register'}
+        <UserPlus className="w-4 h-4" />
+        {isSubmitting ? 'Đang tạo tài khoản...' : 'Tạo tài khoản miễn phí'}
       </button>
 
-      <p className="mt-4 text-center text-sm text-gray-600">
-        Already have an account?{' '}
-        <Link href="/login" className="text-blue-600 hover:underline font-medium">
-          Login here
+      <p className="mt-5 text-center text-sm text-gray-700">
+        Đã có tài khoản?{' '}
+        <Link href="/login" className="text-[#ff6600] hover:underline font-bold">
+          Đăng nhập ngay
         </Link>
       </p>
     </form>
+  );
+}
+
+function Field({
+  id,
+  name,
+  label,
+  value,
+  onChange,
+  icon: Icon,
+  type = 'text',
+  placeholder,
+  autoComplete,
+  active = false,
+}: {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  icon: React.ElementType;
+  type?: string;
+  placeholder?: string;
+  autoComplete?: string;
+  active?: boolean;
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm font-bold mb-2 text-gray-900">{label}</label>
+      <div className="relative">
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <input
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          required
+          className={`w-full h-11 pl-10 pr-10 border rounded-md bg-white text-gray-900 text-sm focus:ring-2 ${
+            active ? 'border-[#ff6600] focus:border-[#ff6600] focus:ring-orange-100' : 'border-green-500 focus:border-green-500 focus:ring-green-100'
+          }`}
+        />
+        {value && <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />}
+      </div>
+    </div>
   );
 }

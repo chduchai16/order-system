@@ -40,13 +40,17 @@ const refreshAccessToken = async (): Promise<string | null> => {
 };
 
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const accessToken = tokenStore.getAccessToken();
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+  const isAuthRequest = config.url?.startsWith('/api/auth/');
+
+  if (!isAuthRequest) {
+    const accessToken = tokenStore.getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
   }
 
   const userId = tokenStore.getUserId();
-  if (userId) {
+  if (!isAuthRequest && userId) {
     config.headers['X-User-Id'] = String(userId);
   }
 
