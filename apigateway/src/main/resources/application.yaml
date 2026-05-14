@@ -9,6 +9,11 @@ spring:
             predicates:
               - Path=/api/users/**
 
+          - id: auth
+            uri: ${USER_SERVICE_URL:http://userservice:8080}
+            predicates:
+              - Path=/api/auth/**
+
           - id: productservice
             uri: ${PRODUCT_SERVICE_URL:http://productservice:8080}
             predicates:
@@ -25,3 +30,6 @@ spring:
               - Path=/api/payments/**
 server:
   port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}
