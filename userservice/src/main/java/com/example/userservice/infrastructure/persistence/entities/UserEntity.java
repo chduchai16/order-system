@@ -21,6 +21,13 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(name = "password_hash")
+    private String passwordHash;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
+
     @Column(nullable = false)
     private String email;
 
@@ -39,6 +46,11 @@ public class UserEntity {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 

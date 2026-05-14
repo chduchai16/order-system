@@ -23,6 +23,13 @@ public class UserRepositoryAdapter implements UserRepository {
     @Override
     public User save(User user) {
         UserEntity entity = UserMapper.toEntity(user);
+        if (user.getId() != null) {
+            jpaUserRepository.findById(user.getId()).ifPresent(existing -> {
+                entity.setPasswordHash(existing.getPasswordHash());
+                entity.setRole(existing.getRole());
+                entity.setCreatedAt(existing.getCreatedAt());
+            });
+        }
         UserEntity savedEntity = jpaUserRepository.save(entity);
         return UserMapper.toDomain(savedEntity);
     }

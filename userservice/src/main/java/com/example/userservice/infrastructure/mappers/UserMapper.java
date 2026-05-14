@@ -11,6 +11,8 @@ public class UserMapper {
         return User.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
+                .passwordHash(entity.getPasswordHash())
+                .role(entity.getRole() != null ? entity.getRole().getName() : null)
                 .email(new Email(entity.getEmail()))
                 .fullName(new FullName(entity.getFirstName(), entity.getLastName()))
                 .active(entity.isActive())
@@ -53,6 +55,7 @@ public class UserMapper {
         UserEntity entity = new UserEntity();
         entity.setId(domain.getId());
         entity.setUsername(domain.getUsername());
+        entity.setPasswordHash(domain.getPasswordHash());
         if (domain.getEmail() != null) {
             entity.setEmail(domain.getEmail().getValue());
         }
