@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "paymentservice", url = "${PAYMENT_SERVICE_URL:http://paymentservice:8080}")
+@FeignClient(name = "paymentservice", url = "${PAYMENT_SERVICE_URL:http://localhost:8084}")
 public interface PaymentClient {
 
     @PostMapping("/api/payments")

@@ -3,9 +3,9 @@ spring:
     name: productservice
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/product_db
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/product_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
 
   jpa:
     hibernate:
@@ -16,7 +16,7 @@ spring:
         format_sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
     consumer:
       group-id: productservice-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -28,7 +28,7 @@ spring:
     exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}
 
 
 

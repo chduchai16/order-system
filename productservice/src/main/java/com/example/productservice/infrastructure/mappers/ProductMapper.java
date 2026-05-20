@@ -10,6 +10,7 @@ public class ProductMapper {
         if (entity == null) return null;
         return Product.builder()
                 .id(entity.getId())
+                .version(entity.getVersion())
                 .sku(entity.getSku() != null ? new SKU(entity.getSku()) : null)
                 .name(entity.getName())
                 .description(entity.getDescription())
@@ -58,6 +59,7 @@ public class ProductMapper {
         if (domain == null) return null;
         ProductEntity entity = new ProductEntity();
         entity.setId(domain.getId());
+        entity.setVersion(domain.getVersion());
         entity.setSku(domain.getSku() != null ? domain.getSku().getValue() : SKU.generate().getValue());
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());

@@ -44,4 +44,9 @@ public class OrderRepositoryAdapter implements OrderRepository {
                 .map(OrderMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<String> findLatestOrderNumberByPrefix(String prefix) {
+        return jpaOrderRepository.findLatestOrderNumberByPrefix(prefix);
+    }
 }

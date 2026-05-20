@@ -9,4 +9,5 @@ public interface OrderRepository {
     Optional<Order> findById(Long id);
     List<Order> findAll();
     List<Order> findByUserId(Long userId);
+    Optional<String> findLatestOrderNumberByPrefix(String prefix);
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Product {
     private Long id;
+    private Long version;
     private SKU sku;
     private String name;
     private String description;

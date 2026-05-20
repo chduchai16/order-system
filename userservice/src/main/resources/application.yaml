@@ -3,9 +3,9 @@ spring:
     name: userservice
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/user_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
 
   jpa:
     hibernate:
@@ -16,7 +16,7 @@ spring:
         format_sql: true
 
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
     consumer:
       group-id: userservice-group
     producer:
@@ -26,7 +26,7 @@ spring:
       retries: 3
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 jwt:
   secret: ${JWT_SECRET:8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}

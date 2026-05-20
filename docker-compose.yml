@@ -26,6 +26,7 @@ services:
     container_name: order-system-kafka
     ports:
       - "9092:9092"
+      - "9094:9094"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -86,7 +87,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/user_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       JWT_SECRET: "${JWT_SECRET:-8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}"
       JWT_ACCESS_TOKEN_TTL_SECONDS: "${JWT_ACCESS_TOKEN_TTL_SECONDS:-900}"
       JWT_REFRESH_TOKEN_TTL_DAYS: "${JWT_REFRESH_TOKEN_TTL_DAYS:-7}"
@@ -111,7 +112,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/product_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -133,7 +134,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       PRODUCT_SERVICE_URL: "http://host.docker.internal:8082"
       PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
       USER_SERVICE_URL: "http://host.docker.internal:8081"
@@ -158,7 +159,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/payment_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
       VNP_TMN_CODE: "7JHR53F3"
       VNP_HASH_SECRET: "KS1VQ1270QKQ8A5FG0FD8NV4NBOYCM63"
@@ -182,7 +183,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATA_REDIS_HOST: redis
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "host.docker.internal:9094"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"

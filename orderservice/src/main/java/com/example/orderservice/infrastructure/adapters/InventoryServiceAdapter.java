@@ -17,7 +17,7 @@ public class InventoryServiceAdapter implements InventoryService {
     @Override
     public void reserveStock(Long productId, Integer quantity) {
         log.info("Reserving stock for product {}: quantity {}", productId, quantity);
-        productClient.deductStock(productId, quantity);
+        productClient.reserveStock(productId, quantity);
     }
 
     @Override

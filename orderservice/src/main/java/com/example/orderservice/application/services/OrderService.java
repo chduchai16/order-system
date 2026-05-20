@@ -2,11 +2,18 @@ package com.example.orderservice.application.services;
 
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.application.saga.OrderSagaOrchestrator;
-import com.example.orderservice.domain.models.*;
+import com.example.orderservice.domain.models.Address;
+import com.example.orderservice.domain.models.Order;
+import com.example.orderservice.domain.models.OrderDiscount;
+import com.example.orderservice.domain.models.OrderItem;
+import com.example.orderservice.domain.models.OrderNumber;
+import com.example.orderservice.domain.models.OrderStatus;
+import com.example.orderservice.domain.models.ShippingInfo;
+import com.example.orderservice.domain.models.TaxInfo;
 import com.example.orderservice.domain.ports.persistence.OrderRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,40 +50,44 @@ public class OrderService implements IOrderService {
                         .build())
                 .collect(Collectors.toList());
 
-        Order order = Order.builder()
-                .orderNumber(OrderNumber.generate())
-                .userId(request.getUserId())
-                .items(items)
-                .status(OrderStatus.PENDING)
-                .shippingAddress(shippingAddress)
-                .shippingInfo(ShippingInfo.builder()
-                        .carrier(request.getShippingCarrier())
-                        .estimatedDelivery(request.getEstimatedDelivery())
-                        .shippingFee(new BigDecimal("30000")) // default fee
-                        .build())
-                .discount(OrderDiscount.builder()
-                        .code(request.getDiscountCode())
-                        .amount(BigDecimal.ZERO) // logic to apply discount could go here
-                        .build())
-                .statusHistory(new ArrayList<>())
-                .build();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            Order order = Order.builder()
+                    .orderNumber(nextOrderNumber())
+                    .userId(request.getUserId())
+                    .items(items)
+                    .status(OrderStatus.PENDING)
+                    .shippingAddress(shippingAddress)
+                    .shippingInfo(ShippingInfo.builder()
+                            .carrier(request.getShippingCarrier())
+                            .estimatedDelivery(request.getEstimatedDelivery())
+                            .shippingFee(new BigDecimal("30000"))
+                            .build())
+                    .discount(OrderDiscount.builder()
+                            .code(request.getDiscountCode())
+                            .amount(BigDecimal.ZERO)
+                            .build())
+                    .statusHistory(new ArrayList<>())
+                    .build();
 
-        order.calculateTotalPrice();
-        
-        // Calculate tax (10% VAT)
-        BigDecimal taxAmount = order.getTotalPrice().multiply(new BigDecimal("0.1"));
-        order.setTax(TaxInfo.builder()
-                .amount(taxAmount)
-                .type("VAT10")
-                .rate(new BigDecimal("0.1"))
-                .build());
+            order.calculateTotalPrice();
 
-        Order savedOrder = orderRepository.save(order);
+            BigDecimal taxAmount = order.getTotalPrice().multiply(new BigDecimal("0.1"));
+            order.setTax(TaxInfo.builder()
+                    .amount(taxAmount)
+                    .type("VAT10")
+                    .rate(new BigDecimal("0.1"))
+                    .build());
 
-        // Thực hiện Saga: reserve stock → payment → complete
-        sagaOrchestrator.execute(savedOrder);
+            try {
+                Order savedOrder = orderRepository.save(order);
+                sagaOrchestrator.execute(savedOrder);
+                return savedOrder;
+            } catch (DataIntegrityViolationException ex) {
+                log.warn("Order number collision on attempt {} for user {}", attempt + 1, request.getUserId(), ex);
+            }
+        }
 
-        return savedOrder;
+        throw new IllegalStateException("Unable to generate a unique order number after multiple attempts");
     }
 
     @Override
@@ -87,5 +98,21 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    private OrderNumber nextOrderNumber() {
+        String prefix = OrderNumber.currentPrefix();
+        long nextSequence = orderRepository.findLatestOrderNumberByPrefix(prefix)
+                .map(this::extractSequence)
+                .orElse(0L) + 1;
+        return OrderNumber.generate(nextSequence);
+    }
+
+    private long extractSequence(String orderNumber) {
+        int lastDashIndex = orderNumber.lastIndexOf('-');
+        if (lastDashIndex < 0 || lastDashIndex == orderNumber.length() - 1) {
+            return 0L;
+        }
+        return Long.parseLong(orderNumber.substring(lastDashIndex + 1));
     }
 }
