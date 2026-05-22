@@ -1,6 +1,6 @@
 package com.example.cartservice.infrastructure.adapters.listeners;
 
-import com.example.commonlib.events.ProductPriceChangedEvent;
+import com.example.commonlib.events.product.ProductPriceChangedEvent;
 import com.example.cartservice.domain.models.Cart;
 import com.example.cartservice.domain.ports.persistence.CartRepository;
 import com.example.cartservice.infrastructure.persistence.entities.CartEntity;

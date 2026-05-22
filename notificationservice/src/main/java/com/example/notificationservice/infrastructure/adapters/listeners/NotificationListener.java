@@ -1,9 +1,9 @@
 package com.example.notificationservice.infrastructure.adapters.listeners;
 
-import com.example.commonlib.events.OrderCancelledEvent;
-import com.example.commonlib.events.OrderCompletedEvent;
-import com.example.commonlib.events.PaymentCompletedEvent;
-import com.example.commonlib.events.CartCheckedOutEvent;
+import com.example.commonlib.events.order.OrderCancelledEvent;
+import com.example.commonlib.events.order.OrderCompletedEvent;
+import com.example.commonlib.events.payment.PaymentCompletedEvent;
+import com.example.commonlib.events.cart.CartCheckedOutEvent;
 import com.example.notificationservice.application.services.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.commonlib.events;
+package com.example.commonlib.events.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
