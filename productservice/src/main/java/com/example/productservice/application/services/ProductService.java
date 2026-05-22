@@ -1,21 +1,25 @@
 package com.example.productservice.application.services;
 
+import com.example.commonlib.events.cart.CartItemDto;
 import com.example.productservice.application.dtos.product.ProductRequest;
+import com.example.commonlib.events.stock.StockReservationFailedEvent;
+import com.example.commonlib.events.stock.StockReservedEvent;
 import com.example.productservice.domain.models.*;
 import com.example.productservice.domain.ports.persistence.CategoryRepository;
 import com.example.productservice.domain.ports.persistence.ProductRepository;
+import com.example.productservice.infrastructure.adapters.producers.ProductEventProducer;
 import com.example.productservice.infrastructure.persistence.entities.*;
 import com.example.productservice.infrastructure.persistence.jpas.StockMovementRepository;
 import com.example.productservice.infrastructure.mappers.ProductMapper;
-import com.example.commonlib.events.ProductPriceChangedEvent;
+import com.example.commonlib.events.product.ProductPriceChangedEvent;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +32,7 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final StockMovementRepository stockMovementRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ProductEventProducer productEventProducer;
 
     @Override
     @Transactional
@@ -132,6 +136,40 @@ public class ProductService implements IProductService {
                 .build());
     }
 
+
+    // trừ stock , nếu lỗi thì thực hiện cộng stock
+    @Override
+    @Transactional
+    public void reserveStockForOrder(Long orderId, Long userId, List<CartItemDto> items, BigDecimal totalPrice) {
+        try {
+            for (CartItemDto item : items) {
+                reserveStock(item.getProductId(), item.getQuantity());
+                log.info("Reserved stock for productId: {}, quantity: {}", item.getProductId(), item.getQuantity());
+            }
+
+            StockReservedEvent event = new StockReservedEvent(
+                    orderId,
+                    userId,
+                    items,
+                    totalPrice,
+                    LocalDateTime.now()
+            );
+            productEventProducer.publishStockReserved(event);
+            log.info("Published StockReservedEvent for orderId: {}", orderId);
+        } catch (Exception e) {
+            StockReservationFailedEvent failedEvent = new StockReservationFailedEvent(
+                    orderId,
+                    userId,
+                    items,
+                    "Stock reservation failed: " + e.getMessage(),
+                    LocalDateTime.now()
+            );
+            productEventProducer.publishStockReservationFailed(failedEvent);
+            log.info("Published StockReservationFailedEvent for orderId: {}", orderId);
+            throw e;
+        }
+    }
+
     @Override
     @Transactional
     public void releaseStock(Long productId, Integer quantity) {
@@ -160,7 +198,7 @@ public class ProductService implements IProductService {
         Product savedProduct = productRepository.save(product);
         
         ProductPriceChangedEvent event = new ProductPriceChangedEvent(productId, oldPrice, newPrice);
-        kafkaTemplate.send("product.price.changed", event);
+        productEventProducer.publishProductPriceChanged(event);
         
         return savedProduct;
     }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface IOrderService {
     Order createOrder(OrderRequest request);
+    void cancelOrder(Long orderId, String reason);
     Optional<Order> getOrderById(Long id);
     List<Order> getAllOrders();
 }

@@ -1,9 +1,9 @@
 package com.example.orderservice.infrastructure.adapters.producers;
 
 
-import com.example.commonlib.events.OrderCreatedEvent;
-import com.example.commonlib.events.OrderCompletedEvent;
-import com.example.commonlib.events.OrderCancelledEvent;
+import com.example.commonlib.events.order.OrderCreatedEvent;
+import com.example.commonlib.events.order.OrderCompletedEvent;
+import com.example.commonlib.events.order.OrderCancelledEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

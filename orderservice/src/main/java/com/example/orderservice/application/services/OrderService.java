@@ -1,7 +1,17 @@
 package com.example.orderservice.application.services;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.example.commonlib.events.order.OrderCreatedEvent;
+import com.example.commonlib.events.order.OrderCancelledEvent;
+import com.example.commonlib.events.cart.CartItemDto;
 import com.example.orderservice.application.dtos.OrderRequest;
-import com.example.orderservice.application.saga.OrderSagaOrchestrator;
 import com.example.orderservice.domain.models.Address;
 import com.example.orderservice.domain.models.Order;
 import com.example.orderservice.domain.models.OrderDiscount;
@@ -11,16 +21,10 @@ import com.example.orderservice.domain.models.OrderStatus;
 import com.example.orderservice.domain.models.ShippingInfo;
 import com.example.orderservice.domain.models.TaxInfo;
 import com.example.orderservice.domain.ports.persistence.OrderRepository;
+import com.example.orderservice.infrastructure.adapters.producers.OrderEventProducer;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +32,9 @@ import java.util.stream.Collectors;
 public class OrderService implements IOrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderSagaOrchestrator sagaOrchestrator;
+    private final OrderEventProducer orderEventProducer ;
 
+    // tạo đơn hàng
     @Override
     public Order createOrder(OrderRequest request) {
         log.info("Creating order for user {}", request.getUserId());
@@ -78,13 +83,25 @@ public class OrderService implements IOrderService {
                     .rate(new BigDecimal("0.1"))
                     .build());
 
-            try {
-                Order savedOrder = orderRepository.save(order);
-                sagaOrchestrator.execute(savedOrder);
-                return savedOrder;
-            } catch (DataIntegrityViolationException ex) {
-                log.warn("Order number collision on attempt {} for user {}", attempt + 1, request.getUserId(), ex);
-            }
+            Order createdOrder = orderRepository.save(order);
+            List<CartItemDto> itemDtos = createdOrder.getItems().stream()
+                    .map(item -> CartItemDto.builder()
+                            .productId(item.getProductId())
+                            .productName(item.getProductName())
+                            .quantity(item.getQuantity())
+                            .unitPrice(item.getUnitPrice())
+                            .build())
+                    .toList();
+            OrderCreatedEvent event = new OrderCreatedEvent(
+                    createdOrder.getId(),
+                    createdOrder.getUserId(),
+                    itemDtos,
+                    createdOrder.getTotalPrice(),
+                    createdOrder.getCreatedAt()
+            );
+            // gửi event vào trong kafka
+            orderEventProducer.publishOrderCreated(event);
+            return createdOrder;
         }
 
         throw new IllegalStateException("Unable to generate a unique order number after multiple attempts");
@@ -93,6 +110,34 @@ public class OrderService implements IOrderService {
     @Override
     public Optional<Order> getOrderById(Long id) {
         return orderRepository.findById(id);
+    }
+
+    @Override
+    public void cancelOrder(Long orderId, String reason) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            log.info("Order {} already cancelled", orderId);
+            return;
+        }
+
+        order.markAsCancelled(reason);
+        Order savedOrder = orderRepository.save(order);
+
+        orderEventProducer.publishOrderCancelled(new OrderCancelledEvent(
+                savedOrder.getId(),
+                savedOrder.getOrderNumber() != null ? savedOrder.getOrderNumber().getValue() : null,
+                reason,
+                savedOrder.getItems().stream()
+                        .map(item -> CartItemDto.builder()
+                                .productId(item.getProductId())
+                                .productName(item.getProductName())
+                                .quantity(item.getQuantity())
+                                .unitPrice(item.getUnitPrice())
+                                .build())
+                        .toList()
+        ));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.orderservice.infrastructure.adapters.listeners;
 
-import com.example.commonlib.events.CartCheckedOutEvent;
+import com.example.commonlib.events.cart.CartCheckedOutEvent;
 import com.example.orderservice.application.dtos.OrderItemRequest;
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.application.services.IOrderService;
