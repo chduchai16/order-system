@@ -17,7 +17,7 @@ public class PaymentController {
 
     @PostMapping
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {
-        Payment payment = paymentService.processPayment(request);
+        Payment payment = paymentService.createPayment(request);
         return ResponseEntity.ok(toResponse(payment));
     }
 
@@ -37,6 +37,7 @@ public class PaymentController {
     private PaymentResponse toResponse(Payment payment) {
         return PaymentResponse.builder()
                 .id(payment.getId())
+                .paymentCode(payment.getPaymentCode())
                 .orderId(payment.getOrderId())
                 .amount(payment.getAmount() != null ? payment.getAmount().getAmount() : null)
                 .paymentMethod(payment.getPaymentMethod())

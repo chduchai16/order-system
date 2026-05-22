@@ -21,6 +21,9 @@ public class PaymentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String paymentCode;  // ← Mã thanh toán unique
+
     @Column(nullable = false)
     private Long orderId;
 

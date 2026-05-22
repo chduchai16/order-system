@@ -1,17 +1,18 @@
 package com.example.paymentservice.infrastructure.persistence.adapters;
 
-import com.example.paymentservice.domain.models.Payment;
-import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
-
-import com.example.paymentservice.infrastructure.mappers.PaymentMapper;
-import com.example.paymentservice.infrastructure.persistence.entities.PaymentEntity;
-import com.example.paymentservice.infrastructure.persistence.jpas.JpaPaymentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.example.paymentservice.domain.models.Payment;
+import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
+import com.example.paymentservice.infrastructure.mappers.PaymentMapper;
+import com.example.paymentservice.infrastructure.persistence.entities.PaymentEntity;
+import com.example.paymentservice.infrastructure.persistence.jpas.JpaPaymentRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -41,5 +42,10 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
         return jpaPaymentRepository.findAll().stream()
                 .map(PaymentMapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Payment> findByCode(String code) {
+        return jpaPaymentRepository.findByCode(code).map(PaymentMapper::toDomain) ;
     }
 }

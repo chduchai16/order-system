@@ -10,6 +10,7 @@ public class PaymentMapper {
         if (entity == null) return null;
         return Payment.builder()
                 .id(entity.getId())
+                .paymentCode(entity.getPaymentCode())
                 .orderId(entity.getOrderId())
                 .userId(entity.getUserId())
                 .amount(new Money(entity.getAmount()))
@@ -24,6 +25,7 @@ public class PaymentMapper {
         if (domain == null) return null;
         PaymentEntity entity = new PaymentEntity();
         entity.setId(domain.getId());
+        entity.setPaymentCode(domain.getPaymentCode());
         entity.setOrderId(domain.getOrderId());
         entity.setUserId(domain.getUserId());
         if (domain.getAmount() != null) {

@@ -1,18 +1,25 @@
 package com.example.paymentservice.application.services;
 
+import java.time.LocalDateTime;
+
 import com.example.paymentservice.application.dtos.PaymentRequest;
+import com.example.paymentservice.application.dtos.SePayWebhookRequest;
 import com.example.paymentservice.domain.models.Money;
 import com.example.paymentservice.domain.models.Payment;
 import com.example.paymentservice.domain.models.PaymentStatus;
-import com.example.paymentservice.domain.models.PaymentMethod;
 import com.example.paymentservice.domain.ports.persistence.PaymentRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.kafka.core.KafkaTemplate;
-import com.example.commonlib.events.PaymentCompletedEvent;
-import com.example.commonlib.events.RefundIssuedEvent;
+
+import com.example.commonlib.events.payment.PaymentCompletedEvent;
+import com.example.commonlib.events.payment.RefundIssuedEvent;
+
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,45 +33,29 @@ public class PaymentService implements IPaymentService {
 
     @Override
     @Transactional
-    public Payment processPayment(PaymentRequest request) {
+    public Payment createPayment(PaymentRequest request) {
         log.info("Processing payment for orderId={}", request.getOrderId());
 
-        return paymentRepository.findByOrderId(request.getOrderId())
-                .orElseGet(() -> {
-                    Payment payment = Payment.builder()
-                            .orderId(request.getOrderId())
-                            .userId(request.getUserId())
-                            .amount(new Money(request.getAmount()))
-                            .paymentMethod(request.getPaymentMethod() != null ? request.getPaymentMethod() : PaymentMethod.BANK_TRANSFER) 
-                            .status(PaymentStatus.PENDING)
-                            .build();
-
-                    payment.complete(); 
-                    
-                    Payment savedPayment = paymentRepository.save(payment);
-                    
-                    // lưu log giao dịch chi tiết
-                    transactionService.logTransaction(
-                        savedPayment.getOrderId(),
-                        "TXN-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase(),
-                        "InternalMock",
-                        "{\"status\":\"success\", \"id\":\"MOCK-" + System.currentTimeMillis() + "\"}",
-                        "SUCCESS"
-                    );
-
-                    PaymentCompletedEvent event = new PaymentCompletedEvent(
-                        savedPayment.getId(),
-                        savedPayment.getOrderId(),
-                        savedPayment.getUserId(),
-                        savedPayment.getAmount().getAmount(),
-                        savedPayment.getPaymentMethod().name(),
-                        savedPayment.getStatus().name(),
-                        savedPayment.getProcessedAt()
-                    );
-                    kafkaTemplate.send("payment.completed", event);
-                    
-                    return savedPayment;
-                });
+        if(!paymentRepository.findByOrderId(request.getOrderId()).isPresent()) {
+            // tạo payment code dạng : PAY-{timestamp}-{orderId}
+            String paymentCode = "PAY-" + System.currentTimeMillis() + "-" + request.getOrderId();
+            
+            Payment payment = Payment.builder()
+                    .paymentCode(paymentCode)
+                    .orderId(request.getOrderId())
+                    .userId(request.getUserId())
+                    .amount(new Money(request.getAmount()))
+                    .paymentMethod(request.getPaymentMethod())
+                    .status(PaymentStatus.PENDING)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            
+            Payment savedPayment = paymentRepository.save(payment);
+            log.info("Payment created with code={} for orderId={}", paymentCode, request.getOrderId());
+            return savedPayment;
+        }
+        
+        throw new RuntimeException("Payment already exists for orderId: " + request.getOrderId());
     }
 
     @Override
@@ -102,5 +93,37 @@ public class PaymentService implements IPaymentService {
     public Optional<Payment> getPaymentByOrderId(Long orderId) {
         // lấy chi tiết thanh toán theo đơn hàng
         return paymentRepository.findByOrderId(orderId);
+    }
+
+    @Override
+    @Transactional
+    public Payment processPayment(SePayWebhookRequest request, Map<String, String> headers) {
+        Payment payment = paymentRepository.findByCode(request.getContent())
+                .orElseThrow(() -> new RuntimeException(
+                        "Payment does not exist with code: " + request.getContent()));
+
+        payment.complete();
+        Payment savedPayment = paymentRepository.save(payment);
+
+        transactionService.logTransaction(
+                savedPayment.getOrderId(),
+                request.getReferenceCode() != null ? request.getReferenceCode() : String.valueOf(request.getId()),
+                request.getGateway(),
+                request.toString(),
+                request.getStatus() != null ? request.getStatus() : savedPayment.getStatus().name());
+
+        PaymentCompletedEvent event = new PaymentCompletedEvent(
+                savedPayment.getId(),
+                savedPayment.getOrderId(),
+                savedPayment.getUserId(),
+                savedPayment.getAmount().getAmount(),
+                savedPayment.getPaymentMethod().name(),
+                savedPayment.getStatus().name(),
+                savedPayment.getProcessedAt());
+        kafkaTemplate.send("payment.completed", event);
+
+        log.info("Payment completed for orderId={}, paymentCode={}",
+                savedPayment.getOrderId(), savedPayment.getPaymentCode());
+        return savedPayment;
     }
 }

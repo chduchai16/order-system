@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PaymentResponse {
     private Long id;
+    private String paymentCode;  // Mã thanh toán để gửi cho sepay/ngân hàng
     private Long orderId;
     private BigDecimal amount;
     private PaymentMethod paymentMethod;

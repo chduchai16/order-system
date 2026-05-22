@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Payment {
     private Long id;
+    private String paymentCode;  // Mã thanh toán unique cho sepay/ngân hàng
     private Long orderId;
     private Long userId;
     private Money amount;
