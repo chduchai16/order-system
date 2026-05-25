@@ -1,15 +1,17 @@
 package com.example.orderservice.infrastructure.adapters.listeners;
 
+import java.util.stream.Collectors;
+
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
 import com.example.commonlib.events.cart.CartCheckedOutEvent;
 import com.example.orderservice.application.dtos.OrderItemRequest;
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.application.services.IOrderService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

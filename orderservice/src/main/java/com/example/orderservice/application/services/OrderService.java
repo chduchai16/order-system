@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.commonlib.events.order.OrderCreatedEvent;
-import com.example.commonlib.events.order.OrderCancelledEvent;
 import com.example.commonlib.events.cart.CartItemDto;
+import com.example.commonlib.events.order.OrderCancelledEvent;
+import com.example.commonlib.events.order.OrderCreatedEvent;
+import com.example.commonlib.events.payment.PaymentCompletedEvent;
 import com.example.orderservice.application.dtos.OrderRequest;
 import com.example.orderservice.domain.models.Address;
 import com.example.orderservice.domain.models.Order;
@@ -23,6 +24,7 @@ import com.example.orderservice.domain.models.TaxInfo;
 import com.example.orderservice.domain.ports.persistence.OrderRepository;
 import com.example.orderservice.infrastructure.adapters.producers.OrderEventProducer;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,7 @@ public class OrderService implements IOrderService {
 
     // tạo đơn hàng
     @Override
+    @Transactional
     public Order createOrder(OrderRequest request) {
         log.info("Creating order for user {}", request.getUserId());
 
@@ -113,6 +116,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional
     public void cancelOrder(Long orderId, String reason) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
@@ -159,5 +163,19 @@ public class OrderService implements IOrderService {
             return 0L;
         }
         return Long.parseLong(orderNumber.substring(lastDashIndex + 1));
+    }
+
+    // xử lý đánh đã thanh toán
+    @Override
+    @Transactional
+    public void handlePaymentCompleted(PaymentCompletedEvent event) {
+        Order order = orderRepository.findById(event.getOrderId())
+            .orElseThrow(() -> new IllegalArgumentException("Order not found"));        
+        if (order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.COMPLETED) {
+                return;
+        }
+
+        order.markAsPaid();
+        orderRepository.save(order);
     }
 }
