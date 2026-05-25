@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/products/**").permitAll()
                         .pathMatchers("/api/payments/webhook").permitAll()
+                        .pathMatchers("/api/payments/webhook/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

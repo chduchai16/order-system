@@ -1,7 +1,7 @@
 package com.example.paymentservice.application.dtos;
 
-import com.example.paymentservice.domain.models.PaymentStatus;
 import com.example.paymentservice.domain.models.PaymentMethod;
+import com.example.paymentservice.domain.models.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +16,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PaymentResponse {
     private Long id;
-    private String paymentCode;  // Mã thanh toán để gửi cho sepay/ngân hàng
+    private String paymentCode;
     private Long orderId;
     private BigDecimal amount;
+    private String currency;
     private PaymentMethod paymentMethod;
     private PaymentStatus status;
+    private String bankCode;
+    private String bankName;
+    private String accountNumber;
+    private String accountName;
+    private String transferContent;
+    private LocalDateTime createdAt;
+    private LocalDateTime expiresAt;
     private LocalDateTime processedAt;
 }

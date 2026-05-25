@@ -1,6 +1,8 @@
 spring:
   application:
     name: paymentservice
+  config:
+    import: optional:file:.env[.properties],optional:file:./.env[.properties],optional:file:../.env[.properties],optional:file:.env.properties,optional:file:./.env.properties,optional:file:paymentservice/.env.properties,optional:file:./paymentservice/.env.properties,optional:file:../paymentservice/.env.properties
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/payment_db}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
@@ -27,16 +29,18 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.type.mapping: orderCreatedEvent:com.example.commonlib.events.OrderCreatedEvent
-        spring.json.trusted.packages: com.example.commonlib.events
+        spring.json.type.mapping: stockReservedEvent:com.example.commonlib.events.stock.StockReservedEvent
+        spring.json.trusted.packages: com.example.commonlib.events,com.example.commonlib.events.*
 
 server:
   port: ${SERVER_PORT:8084}
 
-vnpay:
-  tmn-code: ${VNP_TMN_CODE:7JHR53F3}
-  secret-key: ${VNP_HASH_SECRET:KS1VQ1270QKQ8A5FG0FD8NV4NBOYCM63}
-  pay-url: ${VNP_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
-  return-url: ${VNP_RETURN_URL:http://localhost:8080/api/payment/vnpay-return}
-
-
+payment:
+  bank:
+    code: ${PAYMENT_BANK_CODE:ICB}
+    name: ${PAYMENT_BANK_NAME:VietinBank}
+    account-number: ${PAYMENT_ACCOUNT_NUMBER:}
+    account-name: ${PAYMENT_ACCOUNT_NAME:}
+  transfer:
+    prefix: ${PAYMENT_TRANSFER_PREFIX:SEVQR}
+    ttl-minutes: ${PAYMENT_TRANSFER_TTL_MINUTES:30}

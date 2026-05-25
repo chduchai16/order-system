@@ -17,16 +17,30 @@ spring:
 
   kafka:
     bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
     consumer:
       group-id: paymentservice-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.type.mapping: stockReservedEvent:com.example.commonlib.events.stock.StockReservedEvent
+        spring.json.trusted.packages: com.example.commonlib.events,com.example.commonlib.events.*
 
 server:
   port: 8080
 
-vnpay:
-  tmn-code: ${VNP_TMN_CODE}
-  secret-key: ${VNP_HASH_SECRET}
-  pay-url: ${VNP_PAY_URL}
-  return-url: ${VNP_RETURN_URL}
+payment:
+  bank:
+    code: ${PAYMENT_BANK_CODE:ICB}
+    name: ${PAYMENT_BANK_NAME:VietinBank}
+    account-number: ${PAYMENT_ACCOUNT_NUMBER:}
+    account-name: ${PAYMENT_ACCOUNT_NAME:}
+  transfer:
+    prefix: ${PAYMENT_TRANSFER_PREFIX:SEVQR}
+    ttl-minutes: ${PAYMENT_TRANSFER_TTL_MINUTES:30}
 
 

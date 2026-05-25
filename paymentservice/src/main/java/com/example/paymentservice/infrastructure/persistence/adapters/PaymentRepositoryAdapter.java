@@ -46,6 +46,6 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
 
     @Override
     public Optional<Payment> findByCode(String code) {
-        return jpaPaymentRepository.findByCode(code).map(PaymentMapper::toDomain) ;
+        return jpaPaymentRepository.findByPaymentCode(code).map(PaymentMapper::toDomain);
     }
 }

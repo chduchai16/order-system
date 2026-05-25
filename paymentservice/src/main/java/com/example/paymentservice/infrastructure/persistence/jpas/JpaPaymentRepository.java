@@ -10,5 +10,5 @@ import com.example.paymentservice.infrastructure.persistence.entities.PaymentEnt
 @Repository
 public interface JpaPaymentRepository extends JpaRepository<PaymentEntity, Long> {
     Optional<PaymentEntity> findByOrderId(Long orderId);
-    Optional<PaymentEntity> findByCode (String code) ;
+    Optional<PaymentEntity> findByPaymentCode(String paymentCode);
 }
