@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
   Check,
   CheckCircle2,
+  Copy,
   CreditCard,
   Landmark,
   Lock,
@@ -15,19 +16,17 @@ import {
   ShoppingCart,
   Truck,
   WalletCards,
-  Zap,
 } from 'lucide-react';
-import { orderService } from '@/features/orders/api/orderService';
-import { tokenStore } from '@/features/shared/api/tokenStore';
 import { userService } from '@/features/account/api/userService';
 import { useCartStore } from '@/features/cart/store/cartStore';
-import { Address, CreateOrderRequest } from '@/features/shared/types';
+import { orderService } from '@/features/orders/api/orderService';
+import { paymentService } from '@/features/payments/api/paymentService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
+import { Address, CreateOrderRequest, Order, Payment } from '@/features/shared/types';
 
-type PaymentMethod = 'COD' | 'VNPAY';
+type PaymentMethod = 'COD' | 'BANK_TRANSFER';
 
 const steps = ['Giỏ hàng', 'Thanh toán', 'Giao hàng', 'Xác nhận'];
-const toDisplayPrice = (price: number) => (price >= 10000 ? price : price * 25000);
-const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
 const paymentMethods: Array<{
   id: PaymentMethod;
@@ -37,9 +36,9 @@ const paymentMethods: Array<{
   badge?: string;
 }> = [
   {
-    id: 'VNPAY',
-    title: 'Thanh toán online qua VNPay',
-    description: 'Thanh toán trước bằng thẻ ATM, Visa/Mastercard hoặc ví điện tử.',
+    id: 'BANK_TRANSFER',
+    title: 'Chuyển khoản ngân hàng',
+    description: 'Quét QR hoặc chuyển khoản đúng nội dung để thanh toán tự động.',
     icon: CreditCard,
     badge: 'Khuyên dùng',
   },
@@ -50,6 +49,8 @@ const paymentMethods: Array<{
     icon: WalletCards,
   },
 ];
+
+const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
 function ProductIcon({ index }: { index: number }) {
   const colors = ['bg-[#dff1ff] text-blue-500', 'bg-pink-100 text-purple-500', 'bg-green-100 text-green-600'];
@@ -65,15 +66,32 @@ function ProductIcon({ index }: { index: number }) {
   );
 }
 
+function buildQrImageUrl(payment: Payment) {
+  const params = new URLSearchParams({
+    acc: payment.accountNumber,
+    bank: payment.bankCode,
+    amount: String(Math.round(payment.amount)),
+    des: payment.transferContent,
+  });
+
+  return `https://qr.sepay.vn/img?${params.toString()}`;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
+  const [pollingPayment, setPollingPayment] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('VNPAY');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('BANK_TRANSFER');
   const [userAddresses, setUserAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+  const [payment, setPayment] = useState<Payment | null>(null);
+  const [submittedItems, setSubmittedItems] = useState<typeof items>([]);
+  const [submittedSubtotal, setSubmittedSubtotal] = useState(0);
+  const [submittedTotal, setSubmittedTotal] = useState(0);
   const [address, setAddress] = useState({
     street: '',
     city: '',
@@ -81,11 +99,17 @@ export default function CheckoutPage() {
     country: 'Vietnam',
   });
 
-  const subtotal = useMemo(() => toDisplayPrice(getTotalPrice()), [getTotalPrice, items]);
+  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice, items]);
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
   const shippingFee = 0;
-  const paymentDiscount = paymentMethod === 'VNPAY' ? Math.round(subtotal * 0.03) : 0;
+  const paymentDiscount = paymentMethod === 'BANK_TRANSFER' ? Math.round(subtotal * 0.03) : 0;
   const total = Math.max(0, subtotal + shippingFee - paymentDiscount);
+  const displayItems = createdOrder ? submittedItems : items;
+  const displaySubtotal = createdOrder ? submittedSubtotal : subtotal;
+  const displayTotal = createdOrder ? submittedTotal : total;
+  const displayItemCount = displayItems.reduce((count, item) => count + item.quantity, 0);
+  const waitingForPayment = Boolean(createdOrder) && paymentMethod === 'BANK_TRANSFER' && !payment && !success;
+  const showingQr = Boolean(createdOrder) && Boolean(payment) && payment?.status !== 'COMPLETED' && !success;
 
   useEffect(() => {
     const fetchUserAddresses = async () => {
@@ -106,6 +130,61 @@ export default function CheckoutPage() {
     fetchUserAddresses();
   }, []);
 
+  useEffect(() => {
+    if (!createdOrder || paymentMethod !== 'BANK_TRANSFER' || success) {
+      return;
+    }
+
+    let cancelled = false;
+    let timeoutId: number | undefined;
+
+    const pollPayment = async () => {
+      setPollingPayment(true);
+
+      try {
+        const foundPayment = await paymentService.getPaymentByOrderId(Number(createdOrder.id));
+        if (cancelled) {
+          return;
+        }
+
+        setError('');
+        setPayment(foundPayment);
+        setPollingPayment(false);
+
+        if (foundPayment.status === 'COMPLETED') {
+          setSuccess(true);
+          setTimeout(() => {
+            router.push('/orders');
+          }, 1500);
+          return;
+        }
+      } catch (err: unknown) {
+        if (cancelled) {
+          return;
+        }
+
+        const status = (err as { response?: { status?: number } }).response?.status;
+        if (status && status !== 404) {
+          setError('Không thể lấy thông tin thanh toán. Vui lòng thử lại.');
+        }
+      }
+
+      if (!cancelled) {
+        timeoutId = window.setTimeout(pollPayment, 3000);
+      }
+    };
+
+    pollPayment();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+      setPollingPayment(false);
+    };
+  }, [createdOrder, paymentMethod, router, success]);
+
   const handleSelectAddress = (addr: Address) => {
     setSelectedAddressId(addr.id || null);
     setAddress({
@@ -121,65 +200,85 @@ export default function CheckoutPage() {
     setAddress({ ...address, [e.target.name]: e.target.value });
   };
 
+  const handleCopy = async (value: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      setError(`Khong the sao chep ${label}.`);
+    }
+  };
+
   const handleSubmitOrder = async () => {
     if (!address.street || !address.city || !address.district) {
-      setError('Vui lòng nhập đầy đủ địa chỉ giao hàng');
+      setError('Vui long nhap day du dia chi giao hang');
       return;
     }
 
     setError('');
     setLoading(true);
+    setPayment(null);
+    setCreatedOrder(null);
+    setSubmittedItems([]);
+    setSubmittedSubtotal(0);
+    setSubmittedTotal(0);
 
     try {
       const userId = tokenStore.getUserId();
       if (!userId) {
-        throw new Error('Bạn cần đăng nhập để đặt hàng');
+        throw new Error('Ban can dang nhap de dat hang');
+      }
+
+      const orderItems = items.map((item) => ({
+        productId: Number(item.productId),
+        productName: item.productName,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      }));
+
+      if (orderItems.some((item) => Number.isNaN(item.productId))) {
+        throw new Error('San pham trong gio hang khong hop le');
       }
 
       const orderRequest: CreateOrderRequest = {
         userId,
-        items: items.map((item) => ({
-          productId: item.productId,
-          productName: item.productName,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-        })),
+        items: orderItems,
         totalPrice: total,
         street: address.street,
         city: address.city,
         district: address.district,
         country: address.country,
-        shippingCarrier: 'Giao Hàng Nhanh',
-        discountCode: paymentMethod === 'VNPAY' ? 'ONLINEPAY' : '',
+        shippingCarrier: 'Giao Hang Nhanh',
+        discountCode: paymentMethod === 'BANK_TRANSFER' ? 'ONLINEPAY' : '',
       };
 
-      await orderService.createOrder(orderRequest);
-
-      if (paymentMethod === 'VNPAY') {
-        window.open('https://sandbox.vnpayment.vn/apis/vnpay-demo/', '_blank');
-      }
-
-      setSuccess(true);
+      const order = await orderService.createOrder(orderRequest);
+      setSubmittedItems(items);
+      setSubmittedSubtotal(subtotal);
+      setSubmittedTotal(total);
+      setCreatedOrder(order);
       clearCart();
 
-      setTimeout(() => {
-        router.push('/orders');
-      }, 1500);
+      if (paymentMethod === 'COD') {
+        setSuccess(true);
+        setTimeout(() => {
+          router.push('/orders');
+        }, 1500);
+      }
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } }; message?: string };
-      setError(e.response?.data?.message || e.message || 'Không thể tạo đơn hàng');
+      setError(e.response?.data?.message || e.message || 'Khong the tao don hang');
       console.error('Order creation error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  if (items.length === 0 && !success) {
+  if (items.length === 0 && !success && !createdOrder) {
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-10 text-center">
         <ShoppingCart className="w-12 h-12 mx-auto text-[#ff6600] mb-4" />
         <h1 className="text-2xl font-bold mb-2 text-gray-900">Giỏ hàng của bạn đang trống</h1>
-        <p className="text-gray-600 mb-6">Thêm sản phẩm vào giỏ để bắt đầu thanh toán.</p>
+        <p className="text-gray-600 mb-6">Thêm sản phẩm vào giỏ để bắt đầu đặt hàng.</p>
         <Link href="/products" className="inline-flex px-6 py-2.5 rounded-md bg-[#ff6600] text-white font-semibold hover:bg-orange-600">
           Tiếp tục mua sắm
         </Link>
@@ -280,7 +379,7 @@ export default function CheckoutPage() {
               </div>
               <div>
                 <h2 className="font-bold text-gray-950">Địa chỉ giao hàng</h2>
-                <p className="text-sm text-gray-600">Sau khi thanh toán, đơn hàng sẽ được giao đến địa chỉ này.</p>
+                <p className="text-sm text-gray-600">Sau khi thanh toán, đơn hàng sẽ được giao đến địa chỉ này</p>
               </div>
             </div>
 
@@ -358,11 +457,81 @@ export default function CheckoutPage() {
             </div>
           </section>
 
+          {(waitingForPayment || showingQr) && (
+            <section className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-md bg-orange-50 text-[#ff6600] flex items-center justify-center">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-gray-950">Thanh toán chuyển khoản</h2>
+                  <p className="text-sm text-gray-600">
+                    {waitingForPayment
+                      ? 'Hệ thống đang chuẩn bị mã thanh toán cho đơn hàng của bạn.'
+                      : 'Quét QR hoặc sao chép thông tin phía dưới để thanh toán.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-5">
+                {waitingForPayment && (
+                  <div className="rounded-lg border border-dashed border-orange-200 bg-orange-50 p-6 text-sm text-gray-700">
+                    Đơn hàng <span className="font-bold text-gray-950">#{createdOrder?.orderNumber || createdOrder?.id}</span> đã được tạo.
+                    {pollingPayment ? 'Đang chờ hệ thống sinh thông tin thanh toán...' : ' Đang khởi tạo thanh toán...'}
+                  </div>
+                )}
+
+                {showingQr && payment && (
+                  <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
+                    <div className="rounded-lg border border-gray-200 p-4 bg-gray-50 flex flex-col items-center">
+                      <img src={buildQrImageUrl(payment)} alt="Mã QR thanh toán" className="w-56 h-56 rounded-lg bg-white border border-gray-200 p-2" />
+                      <p className="text-xs text-gray-500 mt-3 text-center">Quét QR bằng app ngân hàng để điền sẵn số tiền và nội dung chuyển khoản.</p>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="rounded-lg border border-gray-200 p-4">
+                        <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">Đơn hàng</p>
+                        <p className="font-bold text-gray-950">#{createdOrder?.orderNumber || createdOrder?.id}</p>
+                      </div>
+
+                      {[
+                        { label: 'Ngân hàng', value: payment.bankName },
+                        { label: 'Chủ tài khoản', value: payment.accountName },
+                        { label: 'Số tài khoản', value: payment.accountNumber, copyable: true },
+                        { label: 'Số tiền', value: formatVnd(payment.amount), copyable: true, copyValue: String(Math.round(payment.amount)) },
+                        { label: 'Nội dung chuyển khoản', value: payment.transferContent, copyable: true },
+                        { label: 'Mã thanh toán', value: payment.paymentCode },
+                        { label: 'Trạng thái', value: payment.status === 'PENDING' ? 'Chờ thanh toán' : payment.status },
+                      ].map((field) => (
+                        <div key={field.label} className="rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">{field.label}</p>
+                            <p className="font-semibold text-gray-950 break-all">{field.value}</p>
+                          </div>
+                          {field.copyable && (
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(field.copyValue || field.value, field.label.toLowerCase())}
+                              className="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-300 text-sm font-semibold hover:border-[#ff6600] hover:text-[#ff6600]"
+                            >
+                              <Copy className="w-4 h-4" />
+                              Sao chép
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
           <section className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <h2 className="font-bold text-gray-950 px-5 py-4 border-b border-gray-200">Sản phẩm đặt mua</h2>
             <div className="divide-y divide-gray-200">
-              {items.map((item, index) => {
-                const unitPrice = toDisplayPrice(item.unitPrice || 0);
+              {displayItems.map((item, index) => {
+                const unitPrice = item.unitPrice || 0;
                 return (
                   <article key={item.productId} className="p-5 flex items-center gap-4">
                     <ProductIcon index={index} />
@@ -383,8 +552,8 @@ export default function CheckoutPage() {
             <h2 className="font-bold text-gray-950 px-5 py-4 border-b border-gray-200">Tóm tắt thanh toán</h2>
             <div className="p-5 space-y-3 text-sm">
               <div className="flex justify-between">
-                <span>Tạm tính ({itemCount} sản phẩm)</span>
-                <span className="font-semibold">{formatVnd(subtotal)}</span>
+                <span>Tạm tính ({displayItemCount} sản phẩm)</span>
+                <span className="font-semibold">{formatVnd(displaySubtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Ưu đãi thanh toán online</span>
@@ -396,13 +565,13 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between">
                 <span>Phương thức</span>
-                <span className="font-semibold">{paymentMethod === 'VNPAY' ? 'VNPay' : 'COD'}</span>
+                <span className="font-semibold">{paymentMethod === 'BANK_TRANSFER' ? 'Chuyển khoản' : 'COD'}</span>
               </div>
 
               <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between items-start">
                 <span className="font-bold text-gray-950">Tổng thanh toán</span>
                 <span className="text-right">
-                  <span className="block text-2xl font-bold text-[#ff6600]">{formatVnd(total)}</span>
+                  <span className="block text-2xl font-bold text-[#ff6600]">{formatVnd(displayTotal)}</span>
                   <span className="text-xs text-green-600 font-semibold">Đã gồm phí giao hàng</span>
                 </span>
               </div>
@@ -416,11 +585,11 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={handleSubmitOrder}
-                disabled={loading}
+                disabled={loading || waitingForPayment || showingQr}
                 className="mt-4 w-full h-12 rounded-md bg-[#ff6600] text-white flex items-center justify-center gap-2 font-bold hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <Lock className="w-4 h-4" />
-                {loading ? 'Đang xử lý...' : paymentMethod === 'VNPAY' ? 'Thanh toán và đặt hàng' : 'Đặt hàng COD'}
+                {loading ? 'Dang xu ly...' : paymentMethod === 'BANK_TRANSFER' ? 'Tạo đơn và lấy mã QR' : 'Đặt hàng COD'}
               </button>
 
               <Link href="/cart" className="w-full h-11 rounded-md border border-gray-300 flex items-center justify-center font-bold hover:border-[#ff6600] hover:text-[#ff6600]">
@@ -431,7 +600,7 @@ export default function CheckoutPage() {
 
           <section className="bg-white border border-gray-200 rounded-lg p-5 grid grid-cols-2 gap-3 text-sm text-gray-700">
             <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-[#ff6600]" />Thanh toán bảo mật</div>
-            <div className="flex items-center gap-2"><Landmark className="w-4 h-4 text-[#ff6600]" />Cổng VNPay</div>
+            <div className="flex items-center gap-2"><Landmark className="w-4 h-4 text-[#ff6600]" />SePay + VietQR</div>
             <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-[#ff6600]" />Giao sau thanh toán</div>
             <div className="flex items-center gap-2"><PackageCheck className="w-4 h-4 text-[#ff6600]" />Hàng chính hãng</div>
           </section>

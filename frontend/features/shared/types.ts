@@ -128,7 +128,7 @@ export interface Cart {
 }
 
 export interface CreateOrderItemRequest {
-  productId: string;
+  productId: number;
   productName: string;
   quantity: number;
   unitPrice: number;
@@ -144,4 +144,22 @@ export interface CreateOrderRequest {
   country: string;
   shippingCarrier?: string;
   discountCode?: string;
+}
+
+export interface Payment {
+  id: number;
+  orderId: number;
+  paymentCode: string;
+  amount: number;
+  currency: string;
+  paymentMethod: string;
+  status: string;
+  bankCode: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  transferContent: string;
+  createdAt?: string;
+  expiresAt?: string;
+  processedAt?: string;
 }
