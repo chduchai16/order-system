@@ -40,10 +40,6 @@ export default function AddressesPage() {
     isDefault: false,
   });
 
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
-
   const fetchAddresses = async () => {
     try {
       const data = await userService.getAddresses();
@@ -55,6 +51,12 @@ export default function AddressesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      void fetchAddresses();
+    });
+  }, []);
 
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -12,6 +12,16 @@ interface ProductCardProps {
   variant?: 'compact' | 'standard';
 }
 
+function getStableVisualMetrics(product: Product) {
+  const source = `${product.id}:${product.name}`;
+  const seed = source.split('').reduce((total, char) => total + char.charCodeAt(0), 0);
+
+  return {
+    discount: 15 + (seed % 40),
+    ratingCount: 50 + (seed % 500),
+  };
+}
+
 export default function ProductCard({ product, variant = 'standard' }: ProductCardProps) {
   const addToCart = useCartStore(state => state.addToCart);
   const [selectedVariant] = useState<ProductVariant | null>(
@@ -34,10 +44,10 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
   const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
   
-  // Mock data for UI to match the image
-  const discount = Math.floor(Math.random() * 40) + 15;
+  const { discount, ratingCount } = getStableVisualMetrics(product);
   const oldPrice = currentPrice * (1 + discount / 100);
-  const ratingCount = Math.floor(Math.random() * 500) + 50;
+  const cardPadding = variant === 'compact' ? 'p-2' : 'p-3';
+  const titleClassName = variant === 'compact' ? 'text-xs h-8' : 'text-[13px] h-10';
 
   return (
     <Link 
@@ -73,8 +83,8 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
       </div>
 
       {/* Content */}
-      <div className="p-3 flex-grow flex flex-col bg-white">
-        <h3 className="text-[13px] font-medium text-gray-800 mb-1.5 line-clamp-2 h-10 leading-tight" title={product.name}>
+      <div className={`${cardPadding} flex-grow flex flex-col bg-white`}>
+        <h3 className={`${titleClassName} font-medium text-gray-800 mb-1.5 line-clamp-2 leading-tight`} title={product.name}>
           {product.name}
         </h3>
 
@@ -96,7 +106,7 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
       </div>
 
       {/* Action Button */}
-      <div className="p-3 pt-0 bg-white mt-auto">
+      <div className={`${cardPadding} pt-0 bg-white mt-auto`}>
         <button
           onClick={handleAddToCart}
           disabled={currentStock === 0}

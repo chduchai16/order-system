@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Eye, Heart, PackageCheck, ShoppingCart, Star, Trash2, Zap } from 'lucide-react';
 import { userService } from '@/features/account/api/userService';
@@ -14,6 +14,7 @@ const fallbackWishlist: WishlistItem[] = [
 ];
 
 const visualColors = ['bg-[#dff1ff] text-blue-500', 'bg-pink-100 text-purple-500', 'bg-green-100 text-green-600', 'bg-yellow-100 text-yellow-600'];
+const recentThreshold = new Date('2026-04-25T00:00:00Z').getTime();
 
 const formatDate = (date: string) => {
   try {
@@ -57,10 +58,7 @@ export default function WishlistPage() {
   }, []);
 
   const totalCount = wishlist.length;
-  const recentCount = useMemo(() => {
-    const now = Date.now();
-    return wishlist.filter((item) => now - new Date(item.addedAt).getTime() < 1000 * 60 * 60 * 24 * 30).length;
-  }, [wishlist]);
+  const recentCount = wishlist.filter((item) => new Date(item.addedAt).getTime() >= recentThreshold).length;
 
   const handleAddToCart = (item: WishlistItem) => {
     addToCart({

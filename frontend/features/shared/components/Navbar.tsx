@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import {
   Activity,
@@ -20,12 +20,8 @@ import {
 import { useCartStore } from '@/features/cart/store/cartStore';
 
 export default function Navbar() {
-  const [mounted, setMounted] = useState(false);
-  const cartItemCount = useCartStore((state) => state.getItemCount());
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isHydrated = useSyncExternalStore(() => () => undefined, () => true, () => false);
+  const cartItemCount = useCartStore((state) => state.items.reduce((count, item) => count + item.quantity, 0));
 
   return (
     <header className="w-full">
@@ -79,7 +75,7 @@ export default function Navbar() {
               <div className="flex flex-col items-center relative">
                 <ShoppingCart className="w-6 h-6" />
                 <span className="text-[10px] mt-1 font-medium">Giỏ hàng</span>
-                {mounted && cartItemCount > 0 && (
+                {isHydrated && cartItemCount > 0 && (
                   <span className="absolute -top-1.5 -right-2 bg-[#ff6600] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center border border-[#242e42]">
                     {cartItemCount}
                   </span>

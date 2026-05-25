@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -99,8 +100,17 @@ export default function CheckoutPage() {
     country: 'Vietnam',
   });
 
-  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice, items]);
-  const itemCount = items.reduce((count, item) => count + item.quantity, 0);
+  const handleSelectAddress = (addr: Address) => {
+    setSelectedAddressId(addr.id || null);
+    setAddress({
+      street: addr.street,
+      city: addr.city,
+      district: addr.district,
+      country: addr.country,
+    });
+  };
+
+  const subtotal = getTotalPrice();
   const shippingFee = 0;
   const paymentDiscount = paymentMethod === 'BANK_TRANSFER' ? Math.round(subtotal * 0.03) : 0;
   const total = Math.max(0, subtotal + shippingFee - paymentDiscount);
@@ -184,16 +194,6 @@ export default function CheckoutPage() {
       setPollingPayment(false);
     };
   }, [createdOrder, paymentMethod, router, success]);
-
-  const handleSelectAddress = (addr: Address) => {
-    setSelectedAddressId(addr.id || null);
-    setAddress({
-      street: addr.street,
-      city: addr.city,
-      district: addr.district,
-      country: addr.country,
-    });
-  };
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedAddressId(null);
@@ -484,7 +484,14 @@ export default function CheckoutPage() {
                 {showingQr && payment && (
                   <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
                     <div className="rounded-lg border border-gray-200 p-4 bg-gray-50 flex flex-col items-center">
-                      <img src={buildQrImageUrl(payment)} alt="Mã QR thanh toán" className="w-56 h-56 rounded-lg bg-white border border-gray-200 p-2" />
+                      <Image
+                        src={buildQrImageUrl(payment)}
+                        alt="Mã QR thanh toán"
+                        width={224}
+                        height={224}
+                        unoptimized
+                        className="w-56 h-56 rounded-lg bg-white border border-gray-200 p-2"
+                      />
                       <p className="text-xs text-gray-500 mt-3 text-center">Quét QR bằng app ngân hàng để điền sẵn số tiền và nội dung chuyển khoản.</p>
                     </div>
 

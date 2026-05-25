@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   Check,
@@ -94,7 +94,7 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState('SALE30');
   const [selectedShipping, setSelectedShipping] = useState(shippingOptions[0].id);
 
-  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice, items]);
+  const subtotal = getTotalPrice();
   const selectedShippingOption = shippingOptions.find((option) => option.id === selectedShipping) ?? shippingOptions[0];
   const productDiscount = items.length > 0 ? Math.round(subtotal * 0.225) : 0;
   const couponDiscount = appliedCoupon.trim().toUpperCase() === 'SALE30' && items.length > 0 ? 30000 : 0;
