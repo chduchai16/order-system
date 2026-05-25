@@ -2,9 +2,17 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: cartservice
   data:
     redis:
       host: redis
       port: 6379
   kafka:
     bootstrap-servers: kafka:9092
+    consumer:
+      group-id: cart-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

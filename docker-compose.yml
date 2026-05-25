@@ -64,10 +64,10 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      PRODUCT_SERVICE_URL: "http://host.docker.internal:8082"
-      USER_SERVICE_URL: "http://host.docker.internal:8081"
-      ORDER_SERVICE_URL: "http://host.docker.internal:8083"
-      PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
+      PRODUCT_SERVICE_URL: "${DOCKER_PRODUCT_SERVICE_URL:-http://host.docker.internal:8082}"
+      USER_SERVICE_URL: "${DOCKER_USER_SERVICE_URL:-http://host.docker.internal:8081}"
+      ORDER_SERVICE_URL: "${DOCKER_ORDER_SERVICE_URL:-http://host.docker.internal:8083}"
+      PAYMENT_SERVICE_URL: "${DOCKER_PAYMENT_SERVICE_URL:-http://host.docker.internal:8084}"
       JWT_SECRET: "${JWT_SECRET:-8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx192M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
@@ -135,9 +135,9 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      PRODUCT_SERVICE_URL: "http://host.docker.internal:8082"
-      PAYMENT_SERVICE_URL: "http://host.docker.internal:8084"
-      USER_SERVICE_URL: "http://host.docker.internal:8081"
+      PRODUCT_SERVICE_URL: "${DOCKER_PRODUCT_SERVICE_URL:-http://host.docker.internal:8082}"
+      PAYMENT_SERVICE_URL: "${DOCKER_PAYMENT_SERVICE_URL:-http://host.docker.internal:8084}"
+      USER_SERVICE_URL: "${DOCKER_USER_SERVICE_URL:-http://host.docker.internal:8081}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -160,11 +160,13 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      PAYMENT_BANK_CODE: "${PAYMENT_BANK_CODE}"
+      PAYMENT_BANK_NAME: "${PAYMENT_BANK_NAME}"
+      PAYMENT_ACCOUNT_NUMBER: "${PAYMENT_ACCOUNT_NUMBER}"
+      PAYMENT_ACCOUNT_NAME: "${PAYMENT_ACCOUNT_NAME}"
+      PAYMENT_TRANSFER_PREFIX: "${PAYMENT_TRANSFER_PREFIX}"
+      PAYMENT_TRANSFER_TTL_MINUTES: "${PAYMENT_TRANSFER_TTL_MINUTES}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
-      VNP_TMN_CODE: "7JHR53F3"
-      VNP_HASH_SECRET: "KS1VQ1270QKQ8A5FG0FD8NV4NBOYCM63"
-      VNP_PAY_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-      VNP_RETURN_URL: "http://localhost:8080/api/payment/vnpay-return"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

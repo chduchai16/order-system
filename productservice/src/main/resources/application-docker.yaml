@@ -17,8 +17,18 @@ spring:
 
   kafka:
     bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
     consumer:
       group-id: productservice-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.type.mapping: orderCreatedEvent:com.example.commonlib.events.order.OrderCreatedEvent
+        spring.json.trusted.packages: com.example.commonlib.events
 
 server:
   port: 8080

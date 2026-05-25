@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: notificationservice
   datasource:
     url: jdbc:postgresql://postgres:5432/notification_db
     username: ${POSTGRES_USER}
@@ -12,3 +14,8 @@ spring:
     show-sql: true
   kafka:
     bootstrap-servers: kafka:9092
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"

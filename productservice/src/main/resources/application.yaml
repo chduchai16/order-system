@@ -22,10 +22,8 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
+        spring.json.type.mapping: orderCreatedEvent:com.example.commonlib.events.order.OrderCreatedEvent
         spring.json.trusted.packages: com.example.commonlib.events
-
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 
 server:
   port: ${SERVER_PORT:8082}
