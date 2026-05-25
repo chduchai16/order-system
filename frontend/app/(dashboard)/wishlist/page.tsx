@@ -67,7 +67,7 @@ export default function WishlistPage() {
       productId: item.productId,
       productName: item.productName,
       quantity: 1,
-      unitPrice: 290000,
+      unitPrice: 2000,
     });
   };
 
@@ -138,7 +138,7 @@ export default function WishlistPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5">
             {wishlist.map((item, index) => {
-              const price = 290000 + index * 120000;
+              const price = 2000;
               const oldPrice = Math.round(price * 1.45);
 
               return (

@@ -32,6 +32,7 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
+  const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
   
   // Mock data for UI to match the image
   const discount = Math.floor(Math.random() * 40) + 15;
@@ -86,10 +87,10 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
 
         <div className="flex items-baseline gap-1.5 mt-auto">
           <span className="text-[15px] font-bold text-[#ff6600]">
-            {(currentPrice * 25000).toLocaleString('vi-VN')}đ
+            {formatVnd(currentPrice)}
           </span>
           <span className="text-[11px] text-gray-400 line-through">
-            {(oldPrice * 25000).toLocaleString('vi-VN')}đ
+            {formatVnd(oldPrice)}
           </span>
         </div>
       </div>

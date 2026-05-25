@@ -76,59 +76,59 @@ INSERT INTO categories (name, description) VALUES
 
 -- ---- SEED: Products (30 sản phẩm) ----
 INSERT INTO products (sku, name, category_id, description, price, stock, reserved_stock, version, active, created_at, updated_at) VALUES
-    ('IPHONE-15-PRO', 'iPhone 15 Pro 256GB', 1, 'iPhone 15 Pro chip A17 Pro, màu Titan Tự Nhiên', 29990000, 150, 5, 0, true, NOW(), NOW()),
-    ('IPHONE-15', 'iPhone 15 128GB', 1, 'iPhone 15 chip A16 Bionic, Dynamic Island', 22990000, 200, 8, 0, true, NOW(), NOW()),
-    ('IPHONE-14', 'iPhone 14 128GB', 1, 'iPhone 14 chip A15 Bionic', 18490000, 100, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-S24U', 'Samsung Galaxy S24 Ultra', 1, 'Samsung S24 Ultra màn hình 6.8 inch AMOLED', 31990000, 80, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-S24', 'Samsung Galaxy S24', 1, 'Samsung S24 chip Snapdragon 8 Gen 3', 21990000, 120, 3, 0, true, NOW(), NOW()),
-    ('OPPO-FIND-X7', 'OPPO Find X7 Pro', 1, 'OPPO Find X7 Pro camera Hasselblad, chip Dimensity 9300', 25990000, 60, 1, 0, true, NOW(), NOW()),
-    ('XIAOMI-14-PRO', 'Xiaomi 14 Pro', 1, 'Xiaomi 14 Pro camera Leica, chip Snapdragon 8 Gen 3', 23990000, 70, 0, 0, true, NOW(), NOW()),
-    ('VIVO-X100-PRO', 'Vivo X100 Pro', 1, 'Vivo X100 Pro camera Zeiss, chip Dimensity 9300', 22490000, 50, 0, 0, true, NOW(), NOW()),
-    ('MACBOOK-M3-PRO', 'MacBook Pro M3 14 inch', 2, 'MacBook Pro chip M3, RAM 18GB, SSD 512GB', 52990000, 40, 0, 0, true, NOW(), NOW()),
-    ('MACBOOK-AIR-M2', 'MacBook Air M2 13 inch', 2, 'MacBook Air chip M2, RAM 8GB, SSD 256GB', 28990000, 80, 4, 0, true, NOW(), NOW()),
-    ('DELL-XPS-15', 'Dell XPS 15 OLED', 2, 'Dell XPS 15 Intel Core i9, RTX 4060', 45990000, 25, 1, 0, true, NOW(), NOW()),
-    ('ASUS-ZENBOOK-14', 'ASUS Zenbook 14 OLED', 2, 'ASUS Zenbook 14 Ryzen 7 7745HX, OLED 2.8K', 25990000, 35, 0, 0, true, NOW(), NOW()),
-    ('LENOVO-X1-CARBON', 'Lenovo ThinkPad X1 Carbon Gen 12', 2, 'ThinkPad X1 Carbon Intel Core Ultra 7, 14 inch', 42990000, 20, 0, 0, true, NOW(), NOW()),
-    ('HP-SPECTRE-X360', 'HP Spectre x360 14', 2, 'HP Spectre x360 2-in-1 Intel Evo, OLED', 35990000, 18, 1, 0, true, NOW(), NOW()),
-    ('AIRPODS-PRO2', 'Apple AirPods Pro (2nd Gen)', 3, 'Tai nghe chống ồn ANC, chip H2', 6490000, 200, 10, 0, true, NOW(), NOW()),
-    ('SAMSUNG-BUDS2', 'Samsung Galaxy Buds2 Pro', 3, 'Tai nghe Samsung ANC, âm thanh 360°', 3290000, 150, 3, 0, true, NOW(), NOW()),
-    ('MAGSAFE-CHARGER', 'Apple MagSafe Charger 15W', 3, 'Sạc không dây MagSafe 15W cho iPhone', 990000, 500, 20, 0, true, NOW(), NOW()),
-    ('ANKER-HUB-7IN1', 'Anker USB-C Hub 7-in-1', 3, 'Hub USB-C 7 cổng, hỗ trợ 4K HDMI, 100W PD', 1290000, 300, 5, 0, true, NOW(), NOW()),
-    ('IPAD-PRO-M4', 'iPad Pro M4 11 inch', 4, 'iPad Pro chip M4, màn hình Nano-texture', 23990000, 60, 3, 0, true, NOW(), NOW()),
-    ('IPAD-AIR-M2', 'iPad Air M2 11 inch', 4, 'iPad Air chip M2, màn hình Liquid Retina', 16990000, 90, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-TAB-S9U', 'Samsung Galaxy Tab S9 Ultra', 4, 'Tab S9 Ultra màn 14.6 inch AMOLED 120Hz', 28990000, 30, 0, 0, true, NOW(), NOW()),
-    ('WATCH-ULTRA2', 'Apple Watch Ultra 2', 5, 'Đồng hồ thông minh cao cấp cho hoạt động ngoài trời', 21990000, 35, 0, 0, true, NOW(), NOW()),
-    ('WATCH-S9', 'Apple Watch Series 9 45mm', 5, 'Apple Watch Series 9 chip S9, double tap', 12990000, 80, 2, 0, true, NOW(), NOW()),
-    ('GARMIN-FENIX7', 'Garmin Fenix 7X Pro Solar', 5, 'Đồng hồ GPS đa thể thao sạc năng lượng mặt trời', 19990000, 25, 0, 0, true, NOW(), NOW()),
-    ('SONY-WH1000XM5', 'Sony WH-1000XM5', 6, 'Tai nghe over-ear chống ồn tốt nhất thị trường', 8490000, 120, 4, 0, true, NOW(), NOW()),
-    ('JBLS-CHARGE5', 'JBL Charge 5', 6, 'Loa bluetooth chống nước IP67, pin 20 giờ', 3290000, 180, 6, 0, true, NOW(), NOW()),
-    ('BOSE-QC45', 'Bose QuietComfort 45', 6, 'Tai nghe Bose ANC, âm thanh cân bằng tự nhiên', 7990000, 60, 1, 0, true, NOW(), NOW()),
-    ('ASUS-ROG-SWIFT', 'ASUS ROG Swift 27" 165Hz', 8, 'Màn hình gaming QHD 165Hz 1ms G-Sync', 10990000, 45, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-990PRO', 'Samsung 990 Pro SSD 1TB', 10, 'NVMe PCIe Gen4 SSD 7450MB/s', 3290000, 300, 15, 0, true, NOW(), NOW()),
-    ('WD-BLACK-2TB', 'WD Black SN850X 2TB', 10, 'NVMe PCIe Gen4 SSD tối ưu cho gaming, 7300MB/s', 4990000, 150, 5, 0, true, NOW(), NOW());
+    ('IPHONE-15-PRO', 'iPhone 15 Pro 256GB', 1, 'iPhone 15 Pro chip A17 Pro, màu Titan Tự Nhiên', 2000, 150, 5, 0, true, NOW(), NOW()),
+    ('IPHONE-15', 'iPhone 15 128GB', 1, 'iPhone 15 chip A16 Bionic, Dynamic Island', 2000, 200, 8, 0, true, NOW(), NOW()),
+    ('IPHONE-14', 'iPhone 14 128GB', 1, 'iPhone 14 chip A15 Bionic', 2000, 100, 2, 0, true, NOW(), NOW()),
+    ('SAMSUNG-S24U', 'Samsung Galaxy S24 Ultra', 1, 'Samsung S24 Ultra màn hình 6.8 inch AMOLED', 2000, 80, 2, 0, true, NOW(), NOW()),
+    ('SAMSUNG-S24', 'Samsung Galaxy S24', 1, 'Samsung S24 chip Snapdragon 8 Gen 3', 2000, 120, 3, 0, true, NOW(), NOW()),
+    ('OPPO-FIND-X7', 'OPPO Find X7 Pro', 1, 'OPPO Find X7 Pro camera Hasselblad, chip Dimensity 9300', 2000, 60, 1, 0, true, NOW(), NOW()),
+    ('XIAOMI-14-PRO', 'Xiaomi 14 Pro', 1, 'Xiaomi 14 Pro camera Leica, chip Snapdragon 8 Gen 3', 2000, 70, 0, 0, true, NOW(), NOW()),
+    ('VIVO-X100-PRO', 'Vivo X100 Pro', 1, 'Vivo X100 Pro camera Zeiss, chip Dimensity 9300', 2000, 50, 0, 0, true, NOW(), NOW()),
+    ('MACBOOK-M3-PRO', 'MacBook Pro M3 14 inch', 2, 'MacBook Pro chip M3, RAM 18GB, SSD 512GB', 2000, 40, 0, 0, true, NOW(), NOW()),
+    ('MACBOOK-AIR-M2', 'MacBook Air M2 13 inch', 2, 'MacBook Air chip M2, RAM 8GB, SSD 256GB', 2000, 80, 4, 0, true, NOW(), NOW()),
+    ('DELL-XPS-15', 'Dell XPS 15 OLED', 2, 'Dell XPS 15 Intel Core i9, RTX 4060', 2000, 25, 1, 0, true, NOW(), NOW()),
+    ('ASUS-ZENBOOK-14', 'ASUS Zenbook 14 OLED', 2, 'ASUS Zenbook 14 Ryzen 7 7745HX, OLED 2.8K', 2000, 35, 0, 0, true, NOW(), NOW()),
+    ('LENOVO-X1-CARBON', 'Lenovo ThinkPad X1 Carbon Gen 12', 2, 'ThinkPad X1 Carbon Intel Core Ultra 7, 14 inch', 2000, 20, 0, 0, true, NOW(), NOW()),
+    ('HP-SPECTRE-X360', 'HP Spectre x360 14', 2, 'HP Spectre x360 2-in-1 Intel Evo, OLED', 2000, 18, 1, 0, true, NOW(), NOW()),
+    ('AIRPODS-PRO2', 'Apple AirPods Pro (2nd Gen)', 3, 'Tai nghe chống ồn ANC, chip H2', 2000, 200, 10, 0, true, NOW(), NOW()),
+    ('SAMSUNG-BUDS2', 'Samsung Galaxy Buds2 Pro', 3, 'Tai nghe Samsung ANC, âm thanh 360°', 2000, 150, 3, 0, true, NOW(), NOW()),
+    ('MAGSAFE-CHARGER', 'Apple MagSafe Charger 15W', 3, 'Sạc không dây MagSafe 15W cho iPhone', 2000, 500, 20, 0, true, NOW(), NOW()),
+    ('ANKER-HUB-7IN1', 'Anker USB-C Hub 7-in-1', 3, 'Hub USB-C 7 cổng, hỗ trợ 4K HDMI, 100W PD', 2000, 300, 5, 0, true, NOW(), NOW()),
+    ('IPAD-PRO-M4', 'iPad Pro M4 11 inch', 4, 'iPad Pro chip M4, màn hình Nano-texture', 2000, 60, 3, 0, true, NOW(), NOW()),
+    ('IPAD-AIR-M2', 'iPad Air M2 11 inch', 4, 'iPad Air chip M2, màn hình Liquid Retina', 2000, 90, 2, 0, true, NOW(), NOW()),
+    ('SAMSUNG-TAB-S9U', 'Samsung Galaxy Tab S9 Ultra', 4, 'Tab S9 Ultra màn 14.6 inch AMOLED 120Hz', 2000, 30, 0, 0, true, NOW(), NOW()),
+    ('WATCH-ULTRA2', 'Apple Watch Ultra 2', 5, 'Đồng hồ thông minh cao cấp cho hoạt động ngoài trời', 2000, 35, 0, 0, true, NOW(), NOW()),
+    ('WATCH-S9', 'Apple Watch Series 9 45mm', 5, 'Apple Watch Series 9 chip S9, double tap', 2000, 80, 2, 0, true, NOW(), NOW()),
+    ('GARMIN-FENIX7', 'Garmin Fenix 7X Pro Solar', 5, 'Đồng hồ GPS đa thể thao sạc năng lượng mặt trời', 2000, 25, 0, 0, true, NOW(), NOW()),
+    ('SONY-WH1000XM5', 'Sony WH-1000XM5', 6, 'Tai nghe over-ear chống ồn tốt nhất thị trường', 2000, 120, 4, 0, true, NOW(), NOW()),
+    ('JBLS-CHARGE5', 'JBL Charge 5', 6, 'Loa bluetooth chống nước IP67, pin 20 giờ', 2000, 180, 6, 0, true, NOW(), NOW()),
+    ('BOSE-QC45', 'Bose QuietComfort 45', 6, 'Tai nghe Bose ANC, âm thanh cân bằng tự nhiên', 2000, 60, 1, 0, true, NOW(), NOW()),
+    ('ASUS-ROG-SWIFT', 'ASUS ROG Swift 27" 165Hz', 8, 'Màn hình gaming QHD 165Hz 1ms G-Sync', 2000, 45, 2, 0, true, NOW(), NOW()),
+    ('SAMSUNG-990PRO', 'Samsung 990 Pro SSD 1TB', 10, 'NVMe PCIe Gen4 SSD 7450MB/s', 2000, 300, 15, 0, true, NOW(), NOW()),
+    ('WD-BLACK-2TB', 'WD Black SN850X 2TB', 10, 'NVMe PCIe Gen4 SSD tối ưu cho gaming, 7300MB/s', 2000, 150, 5, 0, true, NOW(), NOW());
 
 -- ---- SEED: Product Variants ----
 INSERT INTO product_variants (sku_code, name, price, total_stock, reserved_stock, product_id) VALUES
-    ('IPHONE-15-PRO-128', 'iPhone 15 Pro 128GB Titan Đen', 27990000, 50, 2, 1),
-    ('IPHONE-15-PRO-256', 'iPhone 15 Pro 256GB Titan Tự Nhiên', 29990000, 60, 3, 1),
-    ('IPHONE-15-PRO-512', 'iPhone 15 Pro 512GB Titan Trắng', 34990000, 30, 0, 1),
-    ('IPHONE-15-128-BLUE', 'iPhone 15 128GB Xanh Dương', 22990000, 80, 4, 2),
-    ('IPHONE-15-128-PINK', 'iPhone 15 128GB Hồng', 22990000, 60, 2, 2),
-    ('IPHONE-15-256-BLACK', 'iPhone 15 256GB Đen', 25990000, 40, 1, 2),
-    ('SAMSUNG-S24U-256', 'Samsung S24 Ultra 256GB Đen Titanium', 31990000, 40, 1, 4),
-    ('SAMSUNG-S24U-512', 'Samsung S24 Ultra 512GB Xám Titanium', 35990000, 20, 0, 4),
-    ('SAMSUNG-S24U-1TB', 'Samsung S24 Ultra 1TB Vàng Titanium', 41990000, 10, 0, 4),
-    ('MACBOOK-M3-512', 'MacBook Pro M3 14" 512GB Bạc', 52990000, 20, 0, 9),
-    ('MACBOOK-M3-1T', 'MacBook Pro M3 14" 1TB Đen Không Gian', 62990000, 10, 0, 9),
-    ('MACBOOK-AIR-8-256', 'MacBook Air M2 8GB/256GB Bạc', 28990000, 40, 2, 10),
-    ('MACBOOK-AIR-8-512', 'MacBook Air M2 8GB/512GB Xám', 33990000, 25, 1, 10),
-    ('MACBOOK-AIR-16-512', 'MacBook Air M2 16GB/512GB Trắng Sao', 39990000, 15, 1, 10),
-    ('IPAD-PRO-256-WIFI', 'iPad Pro M4 11" 256GB WiFi', 23990000, 30, 2, 19),
-    ('IPAD-PRO-512-CELL', 'iPad Pro M4 11" 512GB WiFi+Cellular', 31990000, 15, 1, 19),
-    ('WATCH-S9-41MM', 'Apple Watch S9 41mm Nhôm Hồng', 10990000, 40, 1, 23),
-    ('WATCH-S9-45MM-STA', 'Apple Watch S9 45mm Thép Vàng', 16990000, 20, 0, 23),
-    ('SSD-990PRO-1TB', 'Samsung 990 Pro 1TB PCIe Gen4', 3290000, 150, 10, 29),
-    ('SSD-990PRO-2TB', 'Samsung 990 Pro 2TB PCIe Gen4', 5990000, 80, 3, 29);
+    ('IPHONE-15-PRO-128', 'iPhone 15 Pro 128GB Titan Đen', 2000, 50, 2, 1),
+    ('IPHONE-15-PRO-256', 'iPhone 15 Pro 256GB Titan Tự Nhiên', 2000, 60, 3, 1),
+    ('IPHONE-15-PRO-512', 'iPhone 15 Pro 512GB Titan Trắng', 2000, 30, 0, 1),
+    ('IPHONE-15-128-BLUE', 'iPhone 15 128GB Xanh Dương', 2000, 80, 4, 2),
+    ('IPHONE-15-128-PINK', 'iPhone 15 128GB Hồng', 2000, 60, 2, 2),
+    ('IPHONE-15-256-BLACK', 'iPhone 15 256GB Đen', 2000, 40, 1, 2),
+    ('SAMSUNG-S24U-256', 'Samsung S24 Ultra 256GB Đen Titanium', 2000, 40, 1, 4),
+    ('SAMSUNG-S24U-512', 'Samsung S24 Ultra 512GB Xám Titanium', 2000, 20, 0, 4),
+    ('SAMSUNG-S24U-1TB', 'Samsung S24 Ultra 1TB Vàng Titanium', 2000, 10, 0, 4),
+    ('MACBOOK-M3-512', 'MacBook Pro M3 14" 512GB Bạc', 2000, 20, 0, 9),
+    ('MACBOOK-M3-1T', 'MacBook Pro M3 14" 1TB Đen Không Gian', 2000, 10, 0, 9),
+    ('MACBOOK-AIR-8-256', 'MacBook Air M2 8GB/256GB Bạc', 2000, 40, 2, 10),
+    ('MACBOOK-AIR-8-512', 'MacBook Air M2 8GB/512GB Xám', 2000, 25, 1, 10),
+    ('MACBOOK-AIR-16-512', 'MacBook Air M2 16GB/512GB Trắng Sao', 2000, 15, 1, 10),
+    ('IPAD-PRO-256-WIFI', 'iPad Pro M4 11" 256GB WiFi', 2000, 30, 2, 19),
+    ('IPAD-PRO-512-CELL', 'iPad Pro M4 11" 512GB WiFi+Cellular', 2000, 15, 1, 19),
+    ('WATCH-S9-41MM', 'Apple Watch S9 41mm Nhôm Hồng', 2000, 40, 1, 23),
+    ('WATCH-S9-45MM-STA', 'Apple Watch S9 45mm Thép Vàng', 2000, 20, 0, 23),
+    ('SSD-990PRO-1TB', 'Samsung 990 Pro 1TB PCIe Gen4', 2000, 150, 10, 29),
+    ('SSD-990PRO-2TB', 'Samsung 990 Pro 2TB PCIe Gen4', 2000, 80, 3, 29);
 
 -- ---- SEED: Product Attributes ----
 INSERT INTO product_attributes (product_id, name, value) VALUES
@@ -292,19 +292,19 @@ CREATE TABLE IF NOT EXISTS order_status_history (
 -- ---- SEED: Orders ----
 INSERT INTO orders (order_number, user_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, status, created_at, updated_at) VALUES
     ('ORD-20240501-001', 1, 36480000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 3000000, 1650000, 'VAT10', 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
-    ('ORD-20240502-002', 2, 8490000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 849000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
-    ('ORD-20240503-003', 3, 31990000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 2909000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
-    ('ORD-20240504-004', 1, 52990000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 50000, '2024-05-10', NULL, 0, 4817000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
-    ('ORD-20240505-005', 4, 6490000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 590000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
+    ('ORD-20240502-002', 2, 2000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 849000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
+    ('ORD-20240503-003', 3, 2000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 2909000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+    ('ORD-20240504-004', 1, 2000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 50000, '2024-05-10', NULL, 0, 4817000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
+    ('ORD-20240505-005', 4, 2000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 590000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
 
 -- ---- SEED: Order Items ----
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tax_amount, discount_amount) VALUES
-    (1, 1, 'iPhone 15 Pro 256GB', 1, 29990000, 2999000, 3000000),
-    (1, 5, 'Apple AirPods Pro (2nd Gen)', 1, 6490000, 649000, 0),
-    (2, 8, 'Sony WH-1000XM5', 1, 8490000, 849000, 0),
-    (3, 2, 'Samsung Galaxy S24 Ultra', 1, 31990000, 3199000, 0),
-    (4, 3, 'MacBook Pro M3 14 inch', 1, 52990000, 5299000, 0),
-    (5, 5, 'Apple AirPods Pro (2nd Gen)', 1, 6490000, 649000, 0);
+    (1, 1, 'iPhone 15 Pro 256GB', 1, 2000, 2999000, 3000000),
+    (1, 5, 'Apple AirPods Pro (2nd Gen)', 1, 2000, 649000, 0),
+    (2, 8, 'Sony WH-1000XM5', 1, 2000, 849000, 0),
+    (3, 2, 'Samsung Galaxy S24 Ultra', 1, 2000, 3199000, 0),
+    (4, 3, 'MacBook Pro M3 14 inch', 1, 2000, 5299000, 0),
+    (5, 5, 'Apple AirPods Pro (2nd Gen)', 1, 2000, 649000, 0);
 
 -- ---- SEED: Order Status History ----
 INSERT INTO order_status_history (order_id, from_status, to_status, reason, changed_at) VALUES
@@ -330,6 +330,7 @@ INSERT INTO order_status_history (order_id, from_status, to_status, reason, chan
 -- ---- DDL ----
 CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
+    payment_code VARCHAR(255) NOT NULL UNIQUE,
     order_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     amount DECIMAL(19, 2) NOT NULL,
@@ -350,12 +351,12 @@ CREATE TABLE IF NOT EXISTS payment_transactions (
 );
 
 -- ---- SEED: Payments ----
-INSERT INTO payments (order_id, user_id, amount, payment_method, status, processed_at, created_at) VALUES
-    (1, 1, 36480000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-    (2, 2, 8490000, 'MOMO', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-    (3, 3, 31990000, 'CASH_ON_DELIVERY', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
-    (4, 1, 52990000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
-    (5, 4, 6490000, 'MOMO', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
+INSERT INTO payments (payment_code, order_id, user_id, amount, payment_method, status, processed_at, created_at) VALUES
+    ('PAY-INIT-1', 1, 1, 36480000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+    ('PAY-INIT-2', 2, 2, 2000, 'WALLET', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    ('PAY-INIT-3', 3, 3, 2000, 'COD', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
+    ('PAY-INIT-4', 4, 1, 2000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    ('PAY-INIT-5', 5, 4, 2000, 'WALLET', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
 
 -- ---- SEED: Payment Transactions ----
 INSERT INTO payment_transactions (order_id, transaction_id, gateway_provider, raw_response, status, created_at) VALUES
@@ -392,3 +393,6 @@ INSERT INTO notification_logs (user_id, recipient, subject, content, status, sen
     (3, 'cuong.le@gmail.com', 'Xác nhận đơn hàng ORD-20240503-003', 'Đơn hàng ORD-20240503-003 đã được tiếp nhận và đang chờ xử lý.', 'SENT', NOW() - INTERVAL '1 day'),
     (5, 'em.vo@gmail.com', 'Chào mừng bạn đến với hệ thống', 'Tài khoản của bạn đã được tạo thành công. Hãy bắt đầu mua sắm!', 'SENT', NOW() - INTERVAL '30 days'),
     (2, 'binh.tran@gmail.com', 'Lỗi kết nối gateway thanh toán', 'Không thể kết nối cổng thanh toán. Vui lòng thử lại.', 'FAILED', NOW() - INTERVAL '7 days');
+
+
+

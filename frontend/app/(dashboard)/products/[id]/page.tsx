@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -37,10 +37,10 @@ const fallbackSpecs: ProductAttribute[] = [
   { name: 'Bảo hành', value: '12 tháng chính hãng' },
 ];
 
-const toDisplayPrice = (price: number) => (price >= 10000 ? price : price * 25000);
 const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: productId } = use(params);
   const router = useRouter();
   const addToCart = useCartStore((state) => state.addToCart);
   const [product, setProduct] = useState<Product | null>(null);
@@ -52,7 +52,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await productService.getProductById(params.id);
+        const data = await productService.getProductById(productId);
         setProduct(data);
         setSelectedVariant(data.variants?.[0] ?? null);
       } catch (err) {
@@ -63,26 +63,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     };
 
     fetchProduct();
-  }, [params.id]);
+  }, [productId]);
 
   const displayProduct = useMemo<Product>(
     () =>
       product ?? {
-        id: params.id,
+        id: productId,
         sku: 'SONY-PRO-X1',
         name: 'Tai nghe Bluetooth Sony Pro X1 - Chống ồn ANC, 30h pin',
-        price: 290000,
+        price: 2000,
         stock: 248,
         description:
           'Tai nghe Bluetooth cao cấp với chống ồn chủ động, âm thanh cân bằng và thời lượng pin dài.',
         categoryName: 'Âm thanh',
         attributes: fallbackSpecs,
       },
-    [params.id, product]
+    [productId, product]
   );
 
   const unitPrice = selectedVariant ? selectedVariant.price : displayProduct.price;
-  const displayPrice = toDisplayPrice(unitPrice);
+  const displayPrice = unitPrice;
   const originalPrice = Math.round(displayPrice * 1.55);
   const saving = originalPrice - displayPrice;
   const stock = selectedVariant ? selectedVariant.stock : displayProduct.availableStock ?? displayProduct.stock;

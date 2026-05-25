@@ -44,7 +44,6 @@ const shippingOptions = [
 const paymentMethods = ['Visa/MC', 'MoMo', 'ZaloPay', 'COD'];
 const placeholderColors = ['bg-[#dff1ff] text-blue-500', 'bg-pink-100 text-purple-500', 'bg-green-100 text-green-600'];
 
-const toDisplayPrice = (price: number) => (price >= 10000 ? price : price * 25000);
 const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
 function ProductIcon({ index }: { index: number }) {
@@ -95,7 +94,7 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState('SALE30');
   const [selectedShipping, setSelectedShipping] = useState(shippingOptions[0].id);
 
-  const subtotal = useMemo(() => toDisplayPrice(getTotalPrice()), [getTotalPrice, items]);
+  const subtotal = useMemo(() => getTotalPrice(), [getTotalPrice, items]);
   const selectedShippingOption = shippingOptions.find((option) => option.id === selectedShipping) ?? shippingOptions[0];
   const productDiscount = items.length > 0 ? Math.round(subtotal * 0.225) : 0;
   const couponDiscount = appliedCoupon.trim().toUpperCase() === 'SALE30' && items.length > 0 ? 30000 : 0;
@@ -158,7 +157,7 @@ export default function CartPage() {
             {items.length > 0 ? (
               <div className="divide-y divide-gray-200">
                 {items.map((item, index) => {
-                  const price = toDisplayPrice(item.unitPrice || 0);
+                  const price = item.unitPrice || 0;
                   const originalPrice = Math.round(price * 1.55);
 
                   return (
@@ -249,7 +248,7 @@ export default function CartPage() {
                   <div key={item.productId} className="p-5 flex items-center justify-between gap-4">
                     <div className="min-w-0">
                       <p className="font-semibold truncate">{item.productName}</p>
-                      <p className="text-sm text-gray-500">{formatVnd(toDisplayPrice(item.unitPrice || 0))}</p>
+                      <p className="text-sm text-gray-500">{formatVnd(item.unitPrice || 0)}</p>
                     </div>
                     <div className="flex gap-3 shrink-0">
                       <button type="button" onClick={() => moveToCart(item.productId)} className="text-sm font-semibold text-[#ff6600] hover:underline">
