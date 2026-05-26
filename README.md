@@ -1,110 +1,104 @@
-# Ordering System — Microservice Demo
+# Hệ thống đặt hàng Microservices (Order System)
 
-Hệ thống đặt hàng demo xây dựng theo kiến trúc microservice, mục đích học hỏi các công nghệ và pattern phổ biến trong thực tế.
+Đây là một hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc Microservices hướng sự kiện (Event-Driven Architecture) với Spring Boot và Spring Cloud ở backend, cùng React và Next.js ở frontend.
 
----
+## Kiến trúc hệ thống
 
-## Tech Stack
+Hệ thống bao gồm các dịch vụ sau:
 
-| Thành phần | Công nghệ |
-|---|---|
-| Language | Java 17 |
-| Framework | Spring Boot 3.5.0, Spring Cloud 2025.0.0 |
-| API Gateway | Spring Cloud Gateway |
-| Auth | None |
-| Service Discovery | Eureka |
-| Messaging | Apache Kafka |
-| Database | PostgreSQL |
-| Container | Docker, Docker Compose |
+- Gateway (apigateway): Cổng kết nối duy nhất, định tuyến các yêu cầu và xác thực JWT.
+- User Service (userservice): Quản lý người dùng, đăng ký, đăng nhập và bảo mật.
+- Product Service (productservice): Quản lý danh mục sản phẩm và kho hàng.
+- Cart Service (cartservice): Dịch vụ giỏ hàng lưu trữ dữ liệu trên Redis cache.
+- Order Service (orderservice): Logic đặt hàng và xử lý quy trình mua hàng.
+- Payment Service (paymentservice): Giả lập và xử lý thanh toán đơn hàng, tích hợp SePay.
+- Notification Service (notificationservice): Gửi thông báo về trạng thái đơn hàng.
+- Shared Library (commonlib): Thư viện chứa các DTO, Exceptions, và Kafka Events dùng chung.
 
+## Thiết kế kiến trúc và Tính năng nổi bật
 
----
+### Kiến trúc Clean Architecture
 
-## Kiến trúc
+Các dịch vụ backend trong hệ thống được thiết kế tuân thủ nghiêm ngặt các nguyên lý của Clean Architecture nhằm đảm bảo tách biệt rõ ràng các mối quan tâm (separation of concerns), độc lập cấu trúc mã nguồn, dễ viết unit test và bảo trì lâu dài:
+- Domain Layer: Chứa các thực thể cốt lõi (entities) và các quy tắc nghiệp vụ cơ bản không phụ thuộc vào framework hay cơ sở dữ liệu bên ngoài.
+- Application Layer: Chứa các ca sử dụng (use cases), định nghĩa các cổng giao tiếp (interfaces) và điều phối luồng logic nghiệp vụ chính của từng dịch vụ.
+- Infrastructure Layer: Chứa triển khai cụ thể của các cổng giao tiếp (adapters) như tương tác cơ sở dữ liệu (Spring Data JPA), tích hợp dịch vụ bên ngoài, cấu hình Apache Kafka (producers/listeners) hay Redis.
+- Web Layer: Định nghĩa các REST API Controller để tiếp nhận và phản hồi yêu cầu từ phía Client thông qua API Gateway.
 
-```
-Client
-  └── API Gateway :8080
-        ├── User Service  
-        │   └── User Management (PostgreSQL)
-        ├── Product Service
-        ├── Order Service
-        ├── Payment Service
-        └── Discovery Server
+### Tích hợp cổng thanh toán SePay
 
-Infrastructure:
-  PostgreSQL · Kafka · Eureka
-```
+Hệ thống hỗ trợ thanh toán tự động qua cổng thanh toán SePay:
+- Cung cấp API Webhook tại đường dẫn `/sepay` để tiếp nhận thông tin chuyển khoản từ SePay theo thời gian thực.
+- Tự động phân tích nội dung chuyển khoản để trích xuất mã thanh toán (payment code).
+- Xác thực tính hợp lệ của thông tin giao dịch, cập nhật trạng thái đơn hàng ngay lập tức và phát hành sự kiện Kafka để các dịch vụ liên quan cập nhật trạng thái tương ứng.
 
----
+## Công nghệ sử dụng
 
-## Services
+- Ngôn ngữ: Java 17, JavaScript/TypeScript.
+- Framework Backend: Spring Boot 3.5.0, Spring Cloud 2025.0.0, Spring Data JPA.
+- Framework Frontend: React 19, Next.js 16.2, Tailwind CSS v4, Zustand.
+- Cơ sở dữ liệu: PostgreSQL 15 (CSDL quan hệ), Redis 7.2 (InMemory cache).
+- Hệ thống tin nhắn: Apache Kafka 7.6.0.
+- Container hóa: Docker, Docker Compose.
 
-| Service | Port | Chức năng |
-|---------|------|----------|
-| API Gateway | 8080 | Routing, Load Balancing |
-| **User Service** | 8081 | **User Management** |
-| Product Service | 8082 | Quản lý sản phẩm |
-| Order Service | 8083 | Quản lý đơn hàng |
-| Payment Service | 8084 | Xử lý thanh toán |
-| Discovery Server | 8061 | Service Discovery (Eureka) |
-| PostgreSQL | 5432 | Database |
-| Kafka | 9092 | Message Broker |
+## Port và các dịch vụ
 
----
+Dưới đây là danh sách các cổng (port) mặc định:
 
-## Key API Endpoints
+- Gateway: 8080
+- User Service: 8081
+- Product Service: 8082
+- Order Service: 8083
+- Payment Service: 8084
+- Cart Service: 8085
+- Notification Service: 8086
+- Frontend: 3000
+- PostgreSQL: 5432
+- Redis: 6380
+- Kafka: 9092, 9094
 
-### User Service`r`n- `GET /api/users/{id}` - Lay thong tin user`r`n- `GET /api/users` - Danh sach user`r`n
-### Product Service
-- `GET /api/products` - Danh sách sản phẩm (hỗ trợ lọc theo category)
-- `GET /api/products/{id}` - Chi tiết sản phẩm
-- `GET /api/categories` - Danh sách danh mục sản phẩm
+## Hướng dẫn chạy hệ thống
 
-### Order Service
-- `POST /api/orders` - Đặt hàng (Saga Orchestration)
-- `GET /api/orders` - Lịch sử đơn hàng của người dùng
-- `GET /api/orders/{id}` - Chi tiết trạng thái đơn hàng
+### Yêu cầu hệ thống
 
-### Payment Service
-- `GET /api/payments/order/{orderId}` - Kiểm tra trạng thái thanh toán của đơn hàng
+Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã được cài đặt sẵn:
 
----
+- Java Development Kit (JDK) 17
+- Node.js và npm
+- Docker và Docker Compose
+- Maven (để build mã nguồn Java)
 
+### Bước 1: Build các dịch vụ backend
 
-## Chạy project
-
-### Prerequisites
-- Docker & Docker Compose
-- Java 17+
-- Maven 3.9+
-
-### Steps
+Sử dụng Makefile để tự động build tất cả microservices qua Maven:
 
 ```bash
-# 1. Clone & navigate
-cd d:\Java\order-system
-
-# 2. Khởi động infrastructure (Postgres, Kafka, Eureka)
-docker-compose up -d
-
-# 3. Build all services
-mvn clean package -DskipTests
-
-# 4. Run services (IDE hoặc terminal)
-# Backend: mỗi service chạy trên port riêng (8080-8084)
-# Frontend: npm run dev (port 3000)
-
-# 5. Kiểm tra services
-# - API Gateway: http://localhost:8080
-# - User Service: http://localhost:8081/api/users
-# - Eureka: http://localhost:8061
+make build
 ```
 
----
+Hoặc sử dụng lệnh Maven truyền thống từ thư mục gốc:
 
-## Kiến trúc & Pattern
-Hệ thống được thiết kế theo các nguyên tắc hiện đại để đảm bảo khả năng mở rộng và bảo trì:
-- **Clean Architecture & DDD**: Tách biệt rõ ràng các lớp Domain, Application, Infrastructure. Sử dụng mô hình Port-Adapter.
-- **Saga Pattern (Orchestration)**: Quản lý giao dịch phân tán giữa các service Order, Inventory và Payment.
-- **Database per Service**: Mỗi service sở hữu database riêng để đảm bảo tính độc lập.
+```bash
+mvn clean package -DskipTests
+```
+
+### Bước 2: Khởi chạy cơ sở hạ tầng và các microservices
+
+```bash
+docker-compose up -d
+```
+
+Cơ sở dữ liệu PostgreSQL sẽ tự động được khởi tạo thông qua tập tin init-databases.sql.
+
+### Bước 3: Chạy frontend
+
+Di chuyển vào thư mục frontend và khởi chạy môi trường phát triển (development):
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Ứng dụng frontend sẽ chạy tại địa chỉ: http://localhost:3000
+
