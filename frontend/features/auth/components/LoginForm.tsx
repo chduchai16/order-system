@@ -26,37 +26,37 @@ export default function LoginForm() {
       tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
       router.push('/products');
     } catch {
-      setError('Tên đăng nhập hoặc mật khẩu không đúng');
+      setError('Tên đăng nhập hoặc mật khẩu không chính xác.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full">
-      <div className="grid grid-cols-2 gap-4 mb-5">
-        <button type="button" className="h-11 rounded-md border border-gray-300 bg-white font-bold text-sm flex items-center justify-center gap-2 hover:border-[#ff6600]">
-          <span className="text-red-500 font-black">G</span>
+    <form onSubmit={handleSubmit} className="w-full space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <button type="button" className="h-10 rounded-full border border-gray-300 bg-white font-bold text-xs flex items-center justify-center gap-1.5 hover:border-[#222222] transition-colors cursor-pointer text-gray-700">
+          <span className="text-red-500 font-black text-sm">G</span>
           Google
         </button>
-        <button type="button" className="h-11 rounded-md border border-gray-300 bg-white font-bold text-sm flex items-center justify-center gap-2 hover:border-[#ff6600]">
-          <span className="text-blue-600 font-black">f</span>
+        <button type="button" className="h-10 rounded-full border border-gray-300 bg-white font-bold text-xs flex items-center justify-center gap-1.5 hover:border-[#222222] transition-colors cursor-pointer text-gray-700">
+          <span className="text-blue-600 font-black text-sm">f</span>
           Facebook
         </button>
       </div>
 
-      <div className="flex items-center gap-4 mb-5">
-        <div className="h-px bg-gray-300 flex-1" />
-        <span className="text-sm text-gray-600">hoặc đăng nhập bằng tài khoản</span>
-        <div className="h-px bg-gray-300 flex-1" />
+      <div className="flex items-center gap-3 my-4">
+        <div className="h-px bg-gray-250 flex-1" />
+        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">hoặc bằng tài khoản</span>
+        <div className="h-px bg-gray-250 flex-1" />
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="username" className="block text-sm font-bold mb-2 text-gray-900">
+      <div className="space-y-1.5">
+        <label htmlFor="username" className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
           Tên đăng nhập
         </label>
         <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             id="username"
             name="username"
@@ -66,17 +66,17 @@ export default function LoginForm() {
             placeholder="nguyenthanh"
             autoComplete="username"
             required
-            className="w-full h-12 pl-10 pr-4 border border-[#ff6600] rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-orange-100"
+            className="w-full h-11 pl-10 pr-4 border border-gray-300 rounded-full bg-white text-gray-900 focus:border-[#F1641E] focus:outline-none focus:ring-1 focus:ring-[#F1641E]/30 text-xs"
           />
         </div>
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="password" className="block text-sm font-bold mb-2 text-gray-900">
+      <div className="space-y-1.5">
+        <label htmlFor="password" className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
           Mật khẩu
         </label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             id="password"
             name="password"
@@ -86,12 +86,12 @@ export default function LoginForm() {
             placeholder="••••••••••"
             autoComplete="current-password"
             required
-            className="w-full h-12 pl-10 pr-11 border border-gray-300 rounded-md bg-white text-gray-900 focus:border-[#ff6600] focus:ring-2 focus:ring-orange-100"
+            className="w-full h-11 pl-10 pr-11 border border-gray-300 rounded-full bg-white text-gray-900 focus:border-[#F1641E] focus:outline-none focus:ring-1 focus:ring-[#F1641E]/30 text-xs"
           />
           <button
             type="button"
             onClick={() => setShowPassword((value) => !value)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black cursor-pointer"
             aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
           >
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -99,23 +99,23 @@ export default function LoginForm() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-5 text-sm">
-        <label className="flex items-center gap-2 text-gray-700 cursor-pointer">
+      <div className="flex items-center justify-between pt-1 text-xs font-semibold">
+        <label className="flex items-center gap-2 text-gray-650 cursor-pointer">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={(event) => setRememberMe(event.target.checked)}
-            className="w-4 h-4 accent-[#ff6600]"
+            className="w-3.5 h-3.5 accent-[#F1641E]"
           />
           Ghi nhớ đăng nhập
         </label>
-        <Link href="/login" className="text-[#ff6600] font-semibold hover:underline">
+        <Link href="/login" className="text-[#F1641E] hover:underline">
           Quên mật khẩu?
         </Link>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-md text-sm">
+        <div className="p-3 bg-red-50 text-red-650 border border-red-200 rounded-xl text-xs leading-normal">
           {error}
         </div>
       )}
@@ -123,18 +123,11 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-12 border border-gray-300 rounded-md bg-white text-gray-900 font-bold hover:border-[#ff6600] hover:text-[#ff6600] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+        className="w-full h-11 bg-[#F1641E] hover:bg-[#d85213] text-white font-bold text-xs rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
       >
-        <LogIn className="w-4 h-4" />
-        {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+        <LogIn className="w-3.5 h-3.5" />
+        {isSubmitting ? 'Đang xác thực...' : 'Đăng nhập vào ShopVN'}
       </button>
-
-      <p className="mt-5 text-center text-sm text-gray-700">
-        Chưa có tài khoản?{' '}
-        <Link href="/register" className="text-[#ff6600] hover:underline font-bold">
-          Tạo tài khoản miễn phí
-        </Link>
-      </p>
     </form>
   );
 }

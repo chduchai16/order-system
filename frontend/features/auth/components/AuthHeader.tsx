@@ -2,32 +2,34 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap } from 'lucide-react';
 
 export default function AuthHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="h-16 bg-[#1e2738] text-white border-b border-[#2d374b]">
+    <header className="h-16 bg-[#FDFAF7] text-[#222222] border-b border-[#EAE3D2]/60 font-sans">
       <div className="h-full px-6 lg:px-10 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-          <Zap className="w-5 h-5 text-[#ff6600] fill-current" />
+        <Link href="/" className="flex items-center gap-1.5 font-serif font-black text-2xl text-[#F1641E] tracking-tight hover:opacity-90 transition-opacity">
           ShopVN
         </Link>
 
-        <nav className="flex items-center gap-2 text-sm font-bold">
+        <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
           <Link
             href="/login"
-            className={`px-4 py-2 rounded-md transition-colors ${
-              pathname === '/login' ? 'text-[#ff6600] bg-white/5' : 'text-gray-300 hover:text-white'
+            className={`px-4.5 py-2 rounded-full transition-all duration-200 cursor-pointer ${
+              pathname === '/login' 
+                ? 'text-[#F1641E] bg-[#F5EFE6]' 
+                : 'text-gray-650 hover:text-black hover:bg-gray-150/40'
             }`}
           >
             Đăng nhập
           </Link>
           <Link
             href="/register"
-            className={`px-4 py-2 rounded-md transition-colors ${
-              pathname === '/register' ? 'text-[#ff6600] bg-white/5' : 'text-gray-300 hover:text-white'
+            className={`px-4.5 py-2 rounded-full transition-all duration-200 cursor-pointer ${
+              pathname === '/register' 
+                ? 'text-[#F1641E] bg-[#F5EFE6]' 
+                : 'text-gray-650 hover:text-black hover:bg-gray-150/40'
             }`}
           >
             Đăng ký
