@@ -46,24 +46,26 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
   
   const { discount, ratingCount } = getStableVisualMetrics(product);
   const oldPrice = currentPrice * (1 + discount / 100);
-  const cardPadding = variant === 'compact' ? 'p-2' : 'p-3';
-  const titleClassName = variant === 'compact' ? 'text-xs h-8' : 'text-[13px] h-10';
+  const cardPadding = variant === 'compact' ? 'p-3' : 'p-4';
+  const titleClassName = variant === 'compact' ? 'text-xs h-8' : 'text-xs md:text-sm h-10';
 
   return (
     <Link 
       href={`/products/${product.id}`}
-      className="bg-white border border-gray-100 rounded-xl overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300 group cursor-pointer relative"
+      className="bg-white border border-[#EAE3D2]/50 rounded-2xl overflow-hidden flex flex-col h-full hover:shadow-md hover:border-[#F1641E]/20 transition-all duration-300 group cursor-pointer relative"
     >
-      {/* Badges */}
-      <div className="absolute top-2 left-2 z-10 bg-[#ff3333] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-        -{discount}%
+      {/* Discount Badge - Etsy Forest Green Style */}
+      <div className="absolute top-2.5 left-2.5 z-10 bg-[#EBF2EE] text-[#1E5C3F] text-[10px] font-bold px-2 py-0.5 rounded-sm">
+        Giảm {discount}%
       </div>
-      <button className="absolute top-2 right-2 z-10 bg-white p-1.5 rounded-full shadow-sm text-gray-400 hover:text-red-500 transition-colors">
+
+      {/* Wishlist Heart Button */}
+      <button className="absolute top-2.5 right-2.5 z-10 bg-white p-1.5 rounded-full shadow-sm text-gray-400 hover:text-red-500 hover:scale-105 transition-all duration-200 cursor-pointer" aria-label="Yêu thích">
         <Heart className="w-4 h-4" />
       </button>
 
       {/* Image Container */}
-      <div className="relative bg-[#f4f6fb] overflow-hidden aspect-square flex items-center justify-center p-4">
+      <div className="relative bg-[#FDFAF7]/40 overflow-hidden aspect-square flex items-center justify-center p-4 border-b border-[#EAE3D2]/30">
         {product.image ? (
           <Image
             src={product.image}
@@ -72,11 +74,10 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
             className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-20 h-20 text-blue-400 opacity-50">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-              <path d="M21 19a2 2 0 0 1-2 2h-1c-1.657 0-3-1.343-3-3v-2c0-1.657 1.343-3 3-3h3v8z"></path>
-              <path d="M3 19a2 2 0 0 0 2 2h1c1.657 0 3-1.343 3-3v-2c0-1.657-1.343-3-3-3H3v8z"></path>
+          <div className="w-20 h-20 text-[#F1641E] opacity-50 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
             </svg>
           </div>
         )}
@@ -84,35 +85,38 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
 
       {/* Content */}
       <div className={`${cardPadding} flex-grow flex flex-col bg-white`}>
-        <h3 className={`${titleClassName} font-medium text-gray-800 mb-1.5 line-clamp-2 leading-tight`} title={product.name}>
+        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 line-clamp-1">
+          {product.categoryName || 'ShopVN Tuyển chọn'}
+        </span>
+        <h3 className={`${titleClassName} font-semibold text-[#222222] mb-1.5 line-clamp-2 leading-tight group-hover:text-[#F1641E] transition-colors`} title={product.name}>
           {product.name}
         </h3>
 
-        <div className="flex items-center gap-1 mb-2">
+        {/* Rating */}
+        <div className="flex items-center gap-1 mb-3">
           <div className="flex text-[#ffb800]">
-            <Star className="w-3 h-3 fill-current" />
+            <Star className="w-3.5 h-3.5 fill-current" />
           </div>
-          <span className="text-[11px] text-gray-500">({ratingCount})</span>
+          <span className="text-[10.5px] text-gray-500 font-semibold">4.8 ({ratingCount})</span>
         </div>
 
-        <div className="flex items-baseline gap-1.5 mt-auto">
-          <span className="text-[15px] font-bold text-[#ff6600]">
+        {/* Prices */}
+        <div className="flex items-baseline gap-1.5 mt-auto mb-3">
+          <span className="text-[15px] font-bold text-[#F1641E]">
             {formatVnd(currentPrice)}
           </span>
           <span className="text-[11px] text-gray-400 line-through">
             {formatVnd(oldPrice)}
           </span>
         </div>
-      </div>
 
-      {/* Action Button */}
-      <div className={`${cardPadding} pt-0 bg-white mt-auto`}>
+        {/* Action Button - Pill Shaped */}
         <button
           onClick={handleAddToCart}
           disabled={currentStock === 0}
-          className="w-full py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-md hover:border-gray-400 hover:text-black disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm"
+          className="w-full py-2 bg-white border border-[#222222] text-[#222222] hover:bg-[#222222] hover:text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-1.5 text-xs font-bold rounded-full cursor-pointer mt-1"
         >
-          <ShoppingCart className="w-4 h-4" />
+          <ShoppingCart className="w-3.5 h-3.5" />
           {currentStock === 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
         </button>
       </div>
