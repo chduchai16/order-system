@@ -63,126 +63,126 @@ CREATE TABLE IF NOT EXISTS stock_movements (
 
 -- ---- SEED: Categories ----
 INSERT INTO categories (name, description) VALUES
-    ('Điện thoại', 'Điện thoại thông minh các loại'),
-    ('Laptop', 'Máy tính xách tay'),
-    ('Phụ kiện', 'Phụ kiện điện tử'),
-    ('Máy tính bảng', 'Tablet và iPad'),
-    ('Đồng hồ thông minh', 'Smartwatch và fitness tracker'),
-    ('Âm thanh', 'Loa, tai nghe các loại'),
-    ('Thiết bị mạng', 'Router, switch, modem'),
-    ('Màn hình', 'Màn hình máy tính'),
-    ('Bàn phím & Chuột', 'Thiết bị ngoại vi'),
-    ('Ổ cứng & Lưu trữ', 'SSD, HDD, USB');
+    ('Gốm sứ trang trí', 'Đồ gốm men hỏa biến và gốm sứ trang trí thủ công nghệ thuật'),
+    ('Trang sức thủ công', 'Trang sức bạc S925, thạch anh và đá quý tự nhiên độc bản'),
+    ('Nến thơm tự nhiên', 'Nến thơm tinh dầu thiên nhiên, sáp đậu nành bảo vệ sức khỏe'),
+    ('Đồ gỗ mỹ nghệ', 'Nội thất, khay gỗ và dụng cụ trang trí gỗ óc chó tự nhiên'),
+    ('Thêu tay nghệ thuật', 'Tranh thêu tay, túi vải và phụ kiện thêu tay họa tiết truyền thống'),
+    ('Thời trang linen', 'Quần áo, chăn ga làm bằng chất liệu vải linen và cotton organic'),
+    ('Đồ len móc tay', 'Khăn len choàng cổ, mũ nồi và thú bông đan móc thủ công'),
+    ('Trà & Thảo mộc', 'Các loại trà hoa tự nhiên dệt hương và trà thảo mộc organic'),
+    ('Tranh vẽ & Canvas', 'Tranh canvas, tranh sơn mài và tác phẩm nghệ thuật trang trí'),
+    ('Sổ tay & Đồ da', 'Sổ tay da bò veg-tan, ví da và phụ kiện da thiết kế thủ công');
 
 -- ---- SEED: Products (30 sản phẩm) ----
 INSERT INTO products (sku, name, category_id, description, price, stock, reserved_stock, version, active, created_at, updated_at) VALUES
-    ('IPHONE-15-PRO', 'iPhone 15 Pro 256GB', 1, 'iPhone 15 Pro chip A17 Pro, màu Titan Tự Nhiên', 2000, 150, 5, 0, true, NOW(), NOW()),
-    ('IPHONE-15', 'iPhone 15 128GB', 1, 'iPhone 15 chip A16 Bionic, Dynamic Island', 2000, 200, 8, 0, true, NOW(), NOW()),
-    ('IPHONE-14', 'iPhone 14 128GB', 1, 'iPhone 14 chip A15 Bionic', 2000, 100, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-S24U', 'Samsung Galaxy S24 Ultra', 1, 'Samsung S24 Ultra màn hình 6.8 inch AMOLED', 2000, 80, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-S24', 'Samsung Galaxy S24', 1, 'Samsung S24 chip Snapdragon 8 Gen 3', 2000, 120, 3, 0, true, NOW(), NOW()),
-    ('OPPO-FIND-X7', 'OPPO Find X7 Pro', 1, 'OPPO Find X7 Pro camera Hasselblad, chip Dimensity 9300', 2000, 60, 1, 0, true, NOW(), NOW()),
-    ('XIAOMI-14-PRO', 'Xiaomi 14 Pro', 1, 'Xiaomi 14 Pro camera Leica, chip Snapdragon 8 Gen 3', 2000, 70, 0, 0, true, NOW(), NOW()),
-    ('VIVO-X100-PRO', 'Vivo X100 Pro', 1, 'Vivo X100 Pro camera Zeiss, chip Dimensity 9300', 2000, 50, 0, 0, true, NOW(), NOW()),
-    ('MACBOOK-M3-PRO', 'MacBook Pro M3 14 inch', 2, 'MacBook Pro chip M3, RAM 18GB, SSD 512GB', 2000, 40, 0, 0, true, NOW(), NOW()),
-    ('MACBOOK-AIR-M2', 'MacBook Air M2 13 inch', 2, 'MacBook Air chip M2, RAM 8GB, SSD 256GB', 2000, 80, 4, 0, true, NOW(), NOW()),
-    ('DELL-XPS-15', 'Dell XPS 15 OLED', 2, 'Dell XPS 15 Intel Core i9, RTX 4060', 2000, 25, 1, 0, true, NOW(), NOW()),
-    ('ASUS-ZENBOOK-14', 'ASUS Zenbook 14 OLED', 2, 'ASUS Zenbook 14 Ryzen 7 7745HX, OLED 2.8K', 2000, 35, 0, 0, true, NOW(), NOW()),
-    ('LENOVO-X1-CARBON', 'Lenovo ThinkPad X1 Carbon Gen 12', 2, 'ThinkPad X1 Carbon Intel Core Ultra 7, 14 inch', 2000, 20, 0, 0, true, NOW(), NOW()),
-    ('HP-SPECTRE-X360', 'HP Spectre x360 14', 2, 'HP Spectre x360 2-in-1 Intel Evo, OLED', 2000, 18, 1, 0, true, NOW(), NOW()),
-    ('AIRPODS-PRO2', 'Apple AirPods Pro (2nd Gen)', 3, 'Tai nghe chống ồn ANC, chip H2', 2000, 200, 10, 0, true, NOW(), NOW()),
-    ('SAMSUNG-BUDS2', 'Samsung Galaxy Buds2 Pro', 3, 'Tai nghe Samsung ANC, âm thanh 360°', 2000, 150, 3, 0, true, NOW(), NOW()),
-    ('MAGSAFE-CHARGER', 'Apple MagSafe Charger 15W', 3, 'Sạc không dây MagSafe 15W cho iPhone', 2000, 500, 20, 0, true, NOW(), NOW()),
-    ('ANKER-HUB-7IN1', 'Anker USB-C Hub 7-in-1', 3, 'Hub USB-C 7 cổng, hỗ trợ 4K HDMI, 100W PD', 2000, 300, 5, 0, true, NOW(), NOW()),
-    ('IPAD-PRO-M4', 'iPad Pro M4 11 inch', 4, 'iPad Pro chip M4, màn hình Nano-texture', 2000, 60, 3, 0, true, NOW(), NOW()),
-    ('IPAD-AIR-M2', 'iPad Air M2 11 inch', 4, 'iPad Air chip M2, màn hình Liquid Retina', 2000, 90, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-TAB-S9U', 'Samsung Galaxy Tab S9 Ultra', 4, 'Tab S9 Ultra màn 14.6 inch AMOLED 120Hz', 2000, 30, 0, 0, true, NOW(), NOW()),
-    ('WATCH-ULTRA2', 'Apple Watch Ultra 2', 5, 'Đồng hồ thông minh cao cấp cho hoạt động ngoài trời', 2000, 35, 0, 0, true, NOW(), NOW()),
-    ('WATCH-S9', 'Apple Watch Series 9 45mm', 5, 'Apple Watch Series 9 chip S9, double tap', 2000, 80, 2, 0, true, NOW(), NOW()),
-    ('GARMIN-FENIX7', 'Garmin Fenix 7X Pro Solar', 5, 'Đồng hồ GPS đa thể thao sạc năng lượng mặt trời', 2000, 25, 0, 0, true, NOW(), NOW()),
-    ('SONY-WH1000XM5', 'Sony WH-1000XM5', 6, 'Tai nghe over-ear chống ồn tốt nhất thị trường', 2000, 120, 4, 0, true, NOW(), NOW()),
-    ('JBLS-CHARGE5', 'JBL Charge 5', 6, 'Loa bluetooth chống nước IP67, pin 20 giờ', 2000, 180, 6, 0, true, NOW(), NOW()),
-    ('BOSE-QC45', 'Bose QuietComfort 45', 6, 'Tai nghe Bose ANC, âm thanh cân bằng tự nhiên', 2000, 60, 1, 0, true, NOW(), NOW()),
-    ('ASUS-ROG-SWIFT', 'ASUS ROG Swift 27" 165Hz', 8, 'Màn hình gaming QHD 165Hz 1ms G-Sync', 2000, 45, 2, 0, true, NOW(), NOW()),
-    ('SAMSUNG-990PRO', 'Samsung 990 Pro SSD 1TB', 10, 'NVMe PCIe Gen4 SSD 7450MB/s', 2000, 300, 15, 0, true, NOW(), NOW()),
-    ('WD-BLACK-2TB', 'WD Black SN850X 2TB', 10, 'NVMe PCIe Gen4 SSD tối ưu cho gaming, 7300MB/s', 2000, 150, 5, 0, true, NOW(), NOW());
+    ('LY-SU-HOA-BIEN', 'Ly sứ men hỏa biến Hà Đông', 1, 'Ly sứ được nung ở nhiệt độ cao với lớp men hỏa biến tự sắc xanh biển sâu độc bản.', 250000, 150, 5, 0, true, NOW(), NOW()),
+    ('NHAN-BAC-THACH-ANH', 'Nhẫn bạc thạch anh tóc vàng', 2, 'Nhẫn làm thủ công từ bạc ta đính đá thạch anh tóc vàng thiên nhiên mang năng lượng tích cực.', 380000, 200, 8, 0, true, NOW(), NOW()),
+    ('NEN-THOM-HOA-OAI-HUONG', 'Nến thơm tinh dầu hoa oải hương', 3, 'Nến thơm làm từ sáp đậu nành organic phối trộn tinh dầu oải hương giúp ngủ ngon, thư giãn tinh thần.', 160000, 100, 2, 0, true, NOW(), NOW()),
+    ('KHAY-TRA-GO-OC-CHO', 'Khay trà gỗ óc chó nguyên khối', 4, 'Khay trà gỗ óc chó cao cấp vân gỗ tự nhiên sang trọng, bề mặt chống nước hoàn thiện thủ công.', 1500000, 80, 2, 0, true, NOW(), NOW()),
+    ('TUI-LINEN-THEU-TAY', 'Túi vải linen thêu hoa cúc cổ điển', 5, 'Túi tote linen thêu tay cúc họa mi tỉ mỉ, ngăn chứa rộng phù hợp sử dụng hàng ngày.', 290000, 120, 3, 0, true, NOW(), NOW()),
+    ('AO-LINEN-DANG-SUONG', 'Áo linen dáng suông cao cấp', 6, 'Áo kiểu cổ thuyền vải linen tự nhiên mềm mát, thoáng mát và sang trọng cho mùa hè.', 580000, 60, 1, 0, true, NOW(), NOW()),
+    ('KHAN-CHOANG-LEN-MOC', 'Khăn choàng len móc tay thủ công', 7, 'Khăn quàng cổ đan từ sợi len cừu mềm mịn, họa tiết quả dâu xinh xắn nổi bật.', 450000, 70, 0, 0, true, NOW(), NOW()),
+    ('TRA-HOA-CUC-MAT-ONG', 'Trà hoa cúc dệt hương mật ong', 8, 'Trà hoa cúc nguyên bông phơi sấy sạch tự nhiên kết hợp mật ong ngọt thanh thanh, tốt cho mắt.', 120000, 50, 0, 0, true, NOW(), NOW()),
+    ('TRANH-CANVAS-SEN-KHO', 'Tranh canvas sen khô mùa thu', 9, 'Tác phẩm nghệ thuật tối giản với hình ảnh sen tàn mộc mạc mang cảm hứng thiền định tĩnh lặng.', 750000, 40, 0, 0, true, NOW(), NOW()),
+    ('SO-TAY-DA-HANDMADE', 'Sổ tay bìa da bò thật khắc tên', 10, 'Sổ tay chế tác thủ công bìa da bò sáp, ruột giấy Kraft kem cổ điển không dòng kẻ.', 480000, 80, 4, 0, true, NOW(), NOW()),
+    ('BINH-HOA-GOM-MOC', 'Bình hoa gốm mộc tráng men ngọc', 1, 'Bình cắm hoa thiết kế đơn giản mộc mạc, lòng bình tráng men ngọc giữ nước cắm hoa bền lâu.', 320000, 25, 1, 0, true, NOW(), NOW()),
+    ('VONG-TAY-TRAM-HUONG', 'Vòng tay gỗ trầm hương thiên nhiên', 2, 'Vòng hạt gỗ trầm hương tự nhiên từ rừng Khánh Hòa, mùi thơm dịu nhẹ thu hút tài lộc.', 1200000, 35, 0, 0, true, NOW(), NOW()),
+    ('NEN-THOM-QUE-HUONG-THAO', 'Nến thơm sáp ong hương quế & hương thảo', 3, 'Mùi hương ấm áp dễ chịu của quế pha chút thanh mát của hương thảo giúp khử mùi phòng hiệu quả.', 180000, 20, 0, 0, true, NOW(), NOW()),
+    ('HOP-TRANG-SUC-GO-HUONG', 'Hộp đựng trang sức gỗ hương khắc hoa văn', 4, 'Hộp gỗ hương đỏ quý hiếm chạm trổ hoa mẫu đơn tỉ mỉ, có lót nhung bảo vệ trang sức bên trong.', 950000, 18, 1, 0, true, NOW(), NOW()),
+    ('TRANH-THEU-PHONG-CANH', 'Tranh thêu tay phong cảnh làng quê', 5, 'Tác phẩm thêu chỉ tơ tằm sắc sảo, phác họa khung cảnh cây đa bến nước thanh bình cổ xưa.', 1650000, 200, 10, 0, true, NOW(), NOW()),
+    ('DEM-NGOI-COTTON-LINEN', 'Đệm ngồi thiền vải linen organic', 6, 'Ruột bông gòn tự nhiên đàn hồi tốt, vỏ bọc linen dày dặn tháo giặt dễ dàng, dùng ngồi bệt hay trà đạo.', 350000, 150, 3, 0, true, NOW(), NOW()),
+    ('THU-BONG-LEN-MOC-TAY', 'Thú bông thỏ len móc tay cho bé', 7, 'Móc len bằng tay hoàn toàn từ sợi cotton an toàn cho trẻ nhỏ, có thể ôm ngủ hay làm quà tặng.', 260000, 500, 20, 0, true, NOW(), NOW()),
+    ('TRA-THIET-QUAN-AM-TAY-BAC', 'Trà Thiết Quan Âm Tây Bắc thượng hạng', 8, 'Hương vị trà ô long đậm đà thu hái thủ công từ vùng cao Tây Bắc, sấy thủ công giữ hương hoa lan đặc trưng.', 190000, 300, 5, 0, true, NOW(), NOW()),
+    ('TRANH-SON-MAI-PHU-SI', 'Tranh sơn mài núi Phú Sĩ dát vàng', 9, 'Bức tranh sơn mài vẽ tay truyền thống qua 15 lớp mài, dát vàng quỳ sang trọng tạo chiều sâu.', 2500000, 60, 3, 0, true, NOW(), NOW()),
+    ('VI-DA-CAM-TAY-MINIMALIST', 'Ví da mini dáng đứng thủ công', 10, 'Thiết kế ví nhỏ gọn đựng được 6 thẻ và tiền mặt, da bò pullup càng dùng càng bóng đẹp.', 650000, 90, 2, 0, true, NOW(), NOW()),
+    ('BO-CHEN-TRA-MEN-HOA-BIEN', 'Bộ ấm chén trà gốm men hỏa biến lam ngọc', 1, 'Bộ trà gồm 1 ấm và 6 chén đất nung tráng men lam ngọc sáng bóng, thích hợp thưởng trà đón khách.', 1850000, 30, 0, 0, true, NOW(), NOW()),
+    ('VONG-TAY-BAC-MAT-XICH', 'Vòng tay bạc S925 mắt xích cổ điển', 2, 'Vòng tay bạc xước phong cách vintage tối giản, phù hợp cho cả nam và nữ.', 420000, 35, 0, 0, true, NOW(), NOW()),
+    ('NEN-THOM-GO-DONG-AM', 'Nến thơm tinh dầu gỗ thông & rêu ấm', 3, 'Hương thơm như bước vào rừng thông Đà Lạt sớm mai mang lại cảm giác bình yên dễ chịu.', 220000, 80, 2, 0, true, NOW(), NOW()),
+    ('LY-GO-SO-CAO-CAP', 'Ly gỗ sồi phong cách Bắc Âu', 4, 'Ly uống nước uống trà bằng gỗ sồi tự nhiên tiện tinh xảo, có tay cầm tiện lợi.', 150000, 25, 0, 0, true, NOW(), NOW()),
+    ('TUI-TOTE-THEU-HOA-SEN', 'Túi tote vải canvas thêu sen vàng', 5, 'Túi canvas trắng ngà dệt dày dặn thêu chỉ vàng hình đóa sen thanh khiết mang nét thanh lịch.', 310000, 120, 4, 0, true, NOW(), NOW()),
+    ('CHAN-GA-LINEN-WASHED', 'Chăn ga giường vải linen washed mềm', 6, 'Bộ ga phủ giường và vỏ gối từ chất liệu linen washed có độ nhăn tự nhiên, thấm hút mồ hôi cực tốt.', 2200000, 180, 6, 0, true, NOW(), NOW()),
+    ('MU-LEN-NOI-MOC-TAY', 'Mũ len nồi họa tiết hoa hồng móc tay', 7, 'Chiếc mũ bê rê cổ điển ấm áp làm điểm nhấn thời trang cho mùa đông thu hút ánh nhìn.', 280000, 60, 1, 0, true, NOW(), NOW()),
+    ('TRA-ATISO-DO-DALAT', 'Trà Atiso đỏ hữu cơ Đà Lạt thanh mát', 8, 'Cánh hoa Atiso đỏ sấy khô tự nhiên có vị chua thanh nhẹ, giúp thanh nhiệt giải độc gan.', 85000, 45, 2, 0, true, NOW(), NOW()),
+    ('TRANH-BO-PHONG-CANH-BIEN', 'Bộ 3 tranh canvas phong cảnh biển Địa Trung Hải', 9, 'Bộ 3 bức tranh màu sắc tươi mát mang hơi thở của nắng vàng biển xanh Địa Trung Hải vào căn nhà của bạn.', 750000, 300, 15, 0, true, NOW(), NOW()),
+    ('BAO-DA-IPAD-KRAFT-HANDMADE', 'Bao da iPad handmade từ da sáp ngựa điên', 10, 'Bao da khâu tay từ miếng da sáp dầy dặn chống va đập, bảo vệ tối đa máy tính bảng của bạn.', 890000, 150, 5, 0, true, NOW(), NOW());
 
 -- ---- SEED: Product Variants ----
 INSERT INTO product_variants (sku_code, name, price, total_stock, reserved_stock, product_id) VALUES
-    ('IPHONE-15-PRO-128', 'iPhone 15 Pro 128GB Titan Đen', 2000, 50, 2, 1),
-    ('IPHONE-15-PRO-256', 'iPhone 15 Pro 256GB Titan Tự Nhiên', 2000, 60, 3, 1),
-    ('IPHONE-15-PRO-512', 'iPhone 15 Pro 512GB Titan Trắng', 2000, 30, 0, 1),
-    ('IPHONE-15-128-BLUE', 'iPhone 15 128GB Xanh Dương', 2000, 80, 4, 2),
-    ('IPHONE-15-128-PINK', 'iPhone 15 128GB Hồng', 2000, 60, 2, 2),
-    ('IPHONE-15-256-BLACK', 'iPhone 15 256GB Đen', 2000, 40, 1, 2),
-    ('SAMSUNG-S24U-256', 'Samsung S24 Ultra 256GB Đen Titanium', 2000, 40, 1, 4),
-    ('SAMSUNG-S24U-512', 'Samsung S24 Ultra 512GB Xám Titanium', 2000, 20, 0, 4),
-    ('SAMSUNG-S24U-1TB', 'Samsung S24 Ultra 1TB Vàng Titanium', 2000, 10, 0, 4),
-    ('MACBOOK-M3-512', 'MacBook Pro M3 14" 512GB Bạc', 2000, 20, 0, 9),
-    ('MACBOOK-M3-1T', 'MacBook Pro M3 14" 1TB Đen Không Gian', 2000, 10, 0, 9),
-    ('MACBOOK-AIR-8-256', 'MacBook Air M2 8GB/256GB Bạc', 2000, 40, 2, 10),
-    ('MACBOOK-AIR-8-512', 'MacBook Air M2 8GB/512GB Xám', 2000, 25, 1, 10),
-    ('MACBOOK-AIR-16-512', 'MacBook Air M2 16GB/512GB Trắng Sao', 2000, 15, 1, 10),
-    ('IPAD-PRO-256-WIFI', 'iPad Pro M4 11" 256GB WiFi', 2000, 30, 2, 19),
-    ('IPAD-PRO-512-CELL', 'iPad Pro M4 11" 512GB WiFi+Cellular', 2000, 15, 1, 19),
-    ('WATCH-S9-41MM', 'Apple Watch S9 41mm Nhôm Hồng', 2000, 40, 1, 23),
-    ('WATCH-S9-45MM-STA', 'Apple Watch S9 45mm Thép Vàng', 2000, 20, 0, 23),
-    ('SSD-990PRO-1TB', 'Samsung 990 Pro 1TB PCIe Gen4', 2000, 150, 10, 29),
-    ('SSD-990PRO-2TB', 'Samsung 990 Pro 2TB PCIe Gen4', 2000, 80, 3, 29);
+    ('LY-SU-HB-01', 'Ly sứ men hỏa biến Lam Ngọc', 250000, 50, 2, 1),
+    ('LY-SU-HB-02', 'Ly sứ men hỏa biến Hổ Phách', 250000, 60, 3, 1),
+    ('LY-SU-HB-03', 'Ly sứ men hỏa biến Bạch Vân', 270000, 30, 0, 1),
+    ('NHAN-BAC-TA-TOC-VANG', 'Nhẫn bạc thạch anh tóc vàng', 380000, 80, 4, 2),
+    ('NHAN-BAC-TA-TOC-DO', 'Nhẫn bạc thạch anh tóc đỏ', 380000, 60, 2, 2),
+    ('NHAN-BAC-TA-TOC-DEN', 'Nhẫn bạc thạch anh tóc đen', 380000, 40, 1, 2),
+    ('KHAY-GO-OC-CHO-S', 'Khay trà gỗ óc chó Size S', 1200000, 40, 1, 4),
+    ('KHAY-GO-OC-CHO-M', 'Khay trà gỗ óc chó Size M', 1500000, 20, 0, 4),
+    ('KHAY-GO-OC-CHO-L', 'Khay trà gỗ óc chó Size L', 1800000, 10, 0, 4),
+    ('TRANH-SEN-KHO-40X60', 'Tranh sen khô 40x60cm', 550000, 20, 0, 9),
+    ('TRANH-SEN-KHO-60X90', 'Tranh sen khô 60x90cm', 750000, 10, 0, 9),
+    ('SO-TAY-DA-A6', 'Sổ tay da bò Size A6', 280000, 40, 2, 10),
+    ('SO-TAY-DA-A5', 'Sổ tay da bò Size A5', 380000, 25, 1, 10),
+    ('SO-TAY-DA-B5', 'Sổ tay da bò Size B5', 480000, 15, 1, 10),
+    ('TRANH-SM-PS-STD', 'Tranh sơn mài Phú Sĩ tiêu chuẩn', 2500000, 30, 2, 19),
+    ('TRANH-SM-PS-VIP', 'Tranh sơn mài Phú Sĩ dát vàng đặc biệt', 3500000, 15, 1, 19),
+    ('NEN-THOM-GO-DONG-AM-100G', 'Hũ nến thơm gỗ thông 100g', 220000, 40, 1, 23),
+    ('NEN-THOM-GO-DONG-AM-250G', 'Hũ nến thơm gỗ thông 250g', 390000, 20, 0, 23),
+    ('TRANH-BIEN-SMALL', 'Bộ tranh canvas biển 30x40cm x 3', 750000, 150, 10, 29),
+    ('TRANH-BIEN-MEDIUM', 'Bộ tranh canvas biển 40x60cm x 3', 1100000, 80, 3, 29);
 
 -- ---- SEED: Product Attributes ----
 INSERT INTO product_attributes (product_id, name, value) VALUES
-    (1, 'Màu sắc', 'Titan Tự Nhiên'), (1, 'Chip', 'A17 Pro'), (1, 'RAM', '8GB'), (1, 'Hệ điều hành', 'iOS 17'), (1, 'Pin', '3274 mAh'),
-    (2, 'Màu sắc', 'Xanh Dương'), (2, 'Chip', 'A16 Bionic'), (2, 'RAM', '6GB'), (2, 'Hệ điều hành', 'iOS 17'),
-    (3, 'Màu sắc', 'Đen'), (3, 'Chip', 'A15 Bionic'), (3, 'RAM', '6GB'),
-    (4, 'Màu sắc', 'Đen Titanium'), (4, 'Chip', 'Snapdragon 8 Gen 3'), (4, 'RAM', '12GB'), (4, 'Bút S Pen', 'Có'),
-    (5, 'Màu sắc', 'Đen Phantom'), (5, 'Chip', 'Snapdragon 8 Gen 3'), (5, 'RAM', '8GB'),
-    (9, 'Chip', 'Apple M3'), (9, 'RAM', '18GB'), (9, 'SSD', '512GB'), (9, 'Màn hình', '14.2 inch ProMotion'),
-    (10, 'Chip', 'Apple M2'), (10, 'RAM', '8GB'), (10, 'SSD', '256GB'), (10, 'Màn hình', '13.6 inch Liquid Retina'),
-    (11, 'CPU', 'Intel Core i9-13900H'), (11, 'GPU', 'NVIDIA RTX 4060'), (11, 'RAM', '32GB'), (11, 'Màn hình', '15.6 inch OLED 3.5K'),
-    (12, 'CPU', 'AMD Ryzen 7 7745HX'), (12, 'RAM', '16GB'), (12, 'Màn hình', '14 inch OLED 2.8K 120Hz'),
-    (15, 'ANC', 'Adaptive Transparency'), (15, 'Chip', 'H2'), (15, 'Pin', '6 giờ + 24 giờ'),
-    (19, 'Chip', 'Apple M4'), (19, 'Màn hình', '11 inch Ultra Retina XDR'), (19, 'Kết nối', 'WiFi 6E, Bluetooth 5.3'),
-    (22, 'Màn hình', '14.6 inch AMOLED 120Hz'), (22, 'RAM', '12GB'), (22, 'Bút S Pen', 'Có'),
-    (23, 'Vỏ', 'Titanium Grade 2'), (23, 'GPS', 'Dual-frequency L1/L5'), (23, 'Pin', '36 giờ'),
-    (24, 'Kích cỡ', '45mm'), (24, 'Chip', 'S9 SiP'), (24, 'Màn hình', 'Always-On Retina'),
-    (25, 'ANC', '30dB chống ồn'), (25, 'Pin', '30 giờ'), (25, 'Kết nối', 'Bluetooth 5.2'),
-    (28, 'Tấm nền', 'IPS'), (28, 'Độ phân giải', '2560x1440 QHD'), (28, 'Sync', 'G-Sync Compatible'),
-    (29, 'Giao diện', 'PCIe Gen4 x4'), (29, 'Đọc', '7450 MB/s'), (29, 'Ghi', '6900 MB/s'),
-    (30, 'Giao diện', 'PCIe Gen4 x4'), (30, 'Đọc', '7300 MB/s'), (30, 'Ghi', '7100 MB/s');
+    (1, 'Chất liệu', 'Đất sét cao lanh Tràng An'), (1, 'Nhiệt độ nung', '1300 độ C'), (1, 'Men gốm', 'Men hỏa biến tự nhiên độc bản'), (1, 'Dung tích', '350ml'), (1, 'Đóng gói', 'Hộp xi măng lót lụa cao cấp'),
+    (2, 'Chất liệu', 'Bạc S925 chuẩn quốc tế'), (2, 'Loại đá', 'Thạch anh tóc vàng tự nhiên'), (2, 'Size nhẫn', 'Tùy chỉnh (Free size)'), (2, 'Đánh bóng', 'Thủ công bằng vải nỉ'),
+    (3, 'Thành phần', 'Sáp đậu nành thiên nhiên, tinh dầu oải hương nguyên chất'), (3, 'Thời gian cháy', '40 giờ'), (3, 'Trọng lượng', '200g'),
+    (4, 'Chất liệu', 'Gỗ óc chó nhập khẩu Bắc Mỹ'), (4, 'Hoàn thiện', 'Lau dầu gỗ Rubio Monocoat cực kỳ an toàn'), (4, 'Kích thước', '40 x 25 x 2.5 cm'), (4, 'Khay lót', 'Lót da bò lộn bên dưới đáy khay'),
+    (5, 'Chất liệu', 'Vải linen bột tự nhiên nguyên bản'), (5, 'Họa tiết', 'Thêu tay thủ công cúc họa mi'), (5, 'Kích thước', '35 x 40 cm'),
+    (9, 'Chất liệu', 'Vải canvas sợi cotton cao cấp'), (9, 'Khung tranh', 'Khung gỗ thông tự nhiên đã qua sấy chống mối mọt'), (9, 'Mực in', 'Mực in UV sắc nét bền màu 10 năm'), (9, 'Kích thước mặc định', '60x90cm'),
+    (10, 'Chất liệu', 'Da bò Veg-tan mộc cao cấp càng xài càng bóng'), (10, 'Giấy viết', 'Giấy Kraft cổ điển không dòng kẻ chống lóa mắt'), (10, 'Số trang', '200 trang'), (10, 'Chỉ may', 'Chỉ sáp tết thủ công khâu tay tròn'),
+    (11, 'Chất liệu', 'Đất sét đỏ tráng men ngọc mờ cổ kính'), (11, 'Kích thước', 'Cao 25cm, đường kính miệng bình 8cm'), (11, 'Phong cách', 'Mộc mạc xưa cũ'),
+    (12, 'Chất liệu', 'Gỗ trầm hương kiến rừng tự nhiên'), (12, 'Kích thước hạt', '10mm - 108 hạt thiền định'), (12, 'Hương thơm', 'Thơm dịu ấm nhẹ, phát huy mùi tốt khi tiếp xúc nhiệt cơ thể'),
+    (15, 'Chất liệu vải thêu', 'Lụa tơ tằm thiên nhiên bảo hành trọn đời'), (15, 'Nghệ nhân', 'Làng thêu Quất Động danh tiếng'), (15, 'Thời gian hoàn thành', '30 ngày thêu liên tục'),
+    (19, 'Nền vẽ', 'Gỗ tấm tự nhiên sơn nền đen tuyền sâu thẳm'), (19, 'Chất liệu dát', 'Vàng lá quỳ 24K cực kỳ sang trọng'), (19, 'Số lớp mài hoàn thiện', '15 lớp sơn mài tỉ mỉ'),
+    (22, 'Chất liệu vỏ ấm', 'Đất nung lòng ấm không tráng men dưỡng hương trà'), (22, 'Phụ kiện đi kèm', 'Khay hứng nước thừa, kẹp gắp chén gỗ tre'), (22, 'Dung tích ấm', '250ml'),
+    (23, 'Hương thơm chủ đạo', 'Gỗ thông đỏ, rêu ẩm sâu, hổ phách ấm ngọt ngào'), (23, 'Thời gian khuyên dùng', 'Đốt buổi tối thư giãn đầu óc'), (23, 'Bấc nến', 'Bấc gỗ thông kêu lách tách vui tai khi cháy'),
+    (24, 'Chất liệu gỗ', 'Gỗ sồi Mỹ nguyên tấm nhập khẩu tiện tay'), (24, 'Độ hoàn thiện', 'Sơn phủ sáp ong bảo vệ bề mặt chống nước'), (24, 'Ứng dụng', 'Đựng nước, trà, cà phê ấm nóng cực ấm cúng'),
+    (25, 'Chất liệu vải', 'Vải canvas cotton 100% dày mềm tự nhiên'), (25, 'Họa tiết thêu', 'Sen vàng nhụy đỏ cách điệu'), (25, 'Kích thước túi', '38 x 42 cm'),
+    (28, 'Nguồn gốc thảo mộc', 'Cánh hoa Atiso đỏ thu hoạch từ nông trang Dalat Organic'), (28, 'Quy cách đóng gói', 'Lọ thủy tinh nắp thiếc kín khí 150g'), (28, 'Hạn sử dụng', '12 tháng từ ngày sản xuất'),
+    (29, 'Vật liệu in', 'Tranh in canvas căng khung gỗ nhựa composite chống nước'), (29, 'Số bức tranh', '3 bức tranh ghép nghệ thuật'), (29, 'Chủ đề tranh', 'Hoàng hôn biển Địa Trung Hải ấm áp sặc sỡ'),
+    (30, 'Chất liệu da', 'Da sáp ngựa điên (Crazy Horse Leather) tạo vết xước phong trần'), (30, 'Kích cỡ bảo vệ', 'Tương thích tốt các dòng iPad từ 10.2 đến 11 inch'), (30, 'Khâu viền', 'May thủ công chỉ dù sáp siêu bền bỉ');
 
 -- ---- SEED: Stock Movements ----
 INSERT INTO stock_movements (product_id, variant_id, quantity, type, reason, created_at) VALUES
-    (1, 1, 50, 'IMPORT', 'Nhập kho iPhone 15 Pro 128GB', NOW() - INTERVAL '35 days'),
-    (1, 2, 60, 'IMPORT', 'Nhập kho iPhone 15 Pro 256GB', NOW() - INTERVAL '35 days'),
-    (1, 3, 30, 'IMPORT', 'Nhập kho iPhone 15 Pro 512GB', NOW() - INTERVAL '35 days'),
+    (1, 1, 50, 'IMPORT', 'Nhập kho Ly sứ men hỏa biến Lam Ngọc', NOW() - INTERVAL '35 days'),
+    (1, 2, 60, 'IMPORT', 'Nhập kho Ly sứ men hỏa biến Hổ Phách', NOW() - INTERVAL '35 days'),
+    (1, 3, 30, 'IMPORT', 'Nhập kho Ly sứ men hỏa biến Bạch Vân', NOW() - INTERVAL '35 days'),
     (1, NULL, 5, 'RESERVE', 'Giữ chỗ đơn hàng ORD-20240501-001', NOW() - INTERVAL '10 days'),
-    (2, NULL, 200, 'IMPORT', 'Nhập kho iPhone 15', NOW() - INTERVAL '30 days'),
-    (2, NULL, 8, 'RESERVE', 'Giữ chỗ đợt sale 11.11', NOW() - INTERVAL '5 days'),
-    (4, 7, 40, 'IMPORT', 'Nhập kho Samsung S24 Ultra 256GB', NOW() - INTERVAL '28 days'),
-    (4, 8, 20, 'IMPORT', 'Nhập kho Samsung S24 Ultra 512GB', NOW() - INTERVAL '28 days'),
+    (2, NULL, 200, 'IMPORT', 'Nhập kho Nhẫn bạc thạch anh tóc vàng', NOW() - INTERVAL '30 days'),
+    (2, NULL, 8, 'RESERVE', 'Giữ chỗ đợt sale cuối tuần', NOW() - INTERVAL '5 days'),
+    (4, 7, 40, 'IMPORT', 'Nhập kho Khay trà gỗ óc chó Size S', NOW() - INTERVAL '28 days'),
+    (4, 8, 20, 'IMPORT', 'Nhập kho Khay trà gỗ óc chó Size M', NOW() - INTERVAL '28 days'),
     (4, NULL, 2, 'RESERVE', 'Giữ chỗ đơn hàng ORD-20240503-003', NOW() - INTERVAL '1 day'),
-    (9, NULL, 40, 'IMPORT', 'Nhập kho MacBook Pro M3', NOW() - INTERVAL '20 days'),
-    (10, NULL, 80, 'IMPORT', 'Nhập kho MacBook Air M2', NOW() - INTERVAL '22 days'),
+    (9, NULL, 40, 'IMPORT', 'Nhập kho Tranh canvas sen khô mùa thu', NOW() - INTERVAL '20 days'),
+    (10, NULL, 80, 'IMPORT', 'Nhập kho Sổ tay bìa da bò', NOW() - INTERVAL '22 days'),
     (10, NULL, 4, 'RESERVE', 'Giữ chỗ đơn hàng khách sỉ', NOW() - INTERVAL '3 days'),
-    (11, NULL, 25, 'IMPORT', 'Nhập kho Dell XPS 15', NOW() - INTERVAL '18 days'),
+    (11, NULL, 25, 'IMPORT', 'Nhập kho Bình hoa gốm mộc', NOW() - INTERVAL '18 days'),
     (11, NULL, 1, 'RESERVE', 'Đặt trước từ khách VIP', NOW() - INTERVAL '4 days'),
-    (15, NULL, 200, 'IMPORT', 'Nhập kho AirPods Pro 2', NOW() - INTERVAL '15 days'),
+    (15, NULL, 200, 'IMPORT', 'Nhập kho Tranh thêu tay phong cảnh', NOW() - INTERVAL '15 days'),
     (15, NULL, 10, 'RESERVE', 'Giữ chỗ đơn hàng ORD-20240502-002', NOW() - INTERVAL '3 days'),
-    (17, NULL, 500, 'IMPORT', 'Nhập kho MagSafe Charger', NOW() - INTERVAL '40 days'),
-    (17, NULL, 20, 'RESERVE', 'Giữ chỗ đợt sale Apple', NOW() - INTERVAL '2 days'),
-    (19, NULL, 60, 'IMPORT', 'Nhập kho iPad Pro M4', NOW() - INTERVAL '12 days'),
-    (19, NULL, 3, 'RESERVE', 'Đặt trước từ công ty', NOW() - INTERVAL '1 day'),
-    (24, NULL, 80, 'IMPORT', 'Nhập kho Apple Watch S9', NOW() - INTERVAL '25 days'),
-    (24, NULL, 2, 'RESERVE', 'Giữ chỗ đơn hàng', NOW() - INTERVAL '6 hours'),
-    (25, NULL, 120, 'IMPORT', 'Nhập kho Sony WH-1000XM5', NOW() - INTERVAL '14 days'),
+    (17, NULL, 500, 'IMPORT', 'Nhập kho Thú bông thỏ len móc tay', NOW() - INTERVAL '40 days'),
+    (17, NULL, 20, 'RESERVE', 'Giữ chỗ đợt sale cúc họa mi', NOW() - INTERVAL '2 days'),
+    (19, NULL, 60, 'IMPORT', 'Nhập kho Tranh sơn mài núi Phú Sĩ', NOW() - INTERVAL '12 days'),
+    (19, NULL, 3, 'RESERVE', 'Đặt trước từ công ty quà tặng doanh nghiệp', NOW() - INTERVAL '1 day'),
+    (24, NULL, 80, 'IMPORT', 'Nhập kho Ly gỗ sồi Bắc Âu', NOW() - INTERVAL '25 days'),
+    (24, NULL, 2, 'RESERVE', 'Giữ chỗ đơn hàng của khách', NOW() - INTERVAL '6 hours'),
+    (25, NULL, 120, 'IMPORT', 'Nhập kho Túi tote thêu hoa sen', NOW() - INTERVAL '14 days'),
     (25, NULL, 4, 'RESERVE', 'Giữ chỗ đơn hàng ORD-20240504-004', NOW() - INTERVAL '4 days'),
-    (29, NULL, 300, 'IMPORT', 'Nhập kho Samsung 990 Pro 1TB', NOW() - INTERVAL '10 days'),
-    (29, NULL, 15, 'RESERVE', 'Giữ chỗ đợt sale cuối tuần', NOW() - INTERVAL '3 hours'),
-    (30, NULL, 150, 'IMPORT', 'Nhập kho WD Black SN850X 2TB', NOW() - INTERVAL '8 days'),
-    (30, NULL, 5, 'RESERVE', 'Khách đặt trước gaming setup', NOW() - INTERVAL '1 day'),
-    (6, NULL, 60, 'IMPORT', 'Nhập kho OPPO Find X7 Pro', NOW() - INTERVAL '20 days'),
-    (7, NULL, 70, 'IMPORT', 'Nhập kho Xiaomi 14 Pro', NOW() - INTERVAL '18 days');
+    (29, NULL, 300, 'IMPORT', 'Nhập kho Bộ 3 tranh canvas biển', NOW() - INTERVAL '10 days'),
+    (29, NULL, 15, 'RESERVE', 'Giữ chỗ đợt sale khai trương chi nhánh', NOW() - INTERVAL '3 hours'),
+    (30, NULL, 150, 'IMPORT', 'Nhập kho Bao da iPad da sáp ngựa điên', NOW() - INTERVAL '8 days'),
+    (30, NULL, 5, 'RESERVE', 'Khách đặt trước combo da sáp', NOW() - INTERVAL '1 day'),
+    (6, NULL, 60, 'IMPORT', 'Nhập kho Áo linen dáng suông', NOW() - INTERVAL '20 days'),
+    (7, NULL, 70, 'IMPORT', 'Nhập kho Khăn choàng len móc tay', NOW() - INTERVAL '18 days');
 
 
 -- ================================================================
@@ -291,20 +291,20 @@ CREATE TABLE IF NOT EXISTS order_status_history (
 
 -- ---- SEED: Orders ----
 INSERT INTO orders (order_number, user_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, status, created_at, updated_at) VALUES
-    ('ORD-20240501-001', 1, 36480000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 3000000, 1650000, 'VAT10', 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
-    ('ORD-20240502-002', 2, 2000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 849000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
-    ('ORD-20240503-003', 3, 2000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 2909000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
-    ('ORD-20240504-004', 1, 2000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 50000, '2024-05-10', NULL, 0, 4817000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
-    ('ORD-20240505-005', 4, 2000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 590000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
+    ('ORD-20240501-001', 1, 770000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 50000, 74000, 'VAT10', 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
+    ('ORD-20240502-002', 2, 265000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 24000, 'VAT10', 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
+    ('ORD-20240503-003', 3, 380000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 38000, 'VAT10', 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+    ('ORD-20240504-004', 1, 510000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 30000, '2024-05-10', NULL, 0, 48000, 'VAT10', 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
+    ('ORD-20240505-005', 4, 310000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 29000, 'VAT10', 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
 
 -- ---- SEED: Order Items ----
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tax_amount, discount_amount) VALUES
-    (1, 1, 'iPhone 15 Pro 256GB', 1, 2000, 2999000, 3000000),
-    (1, 5, 'Apple AirPods Pro (2nd Gen)', 1, 2000, 649000, 0),
-    (2, 8, 'Sony WH-1000XM5', 1, 2000, 849000, 0),
-    (3, 2, 'Samsung Galaxy S24 Ultra', 1, 2000, 3199000, 0),
-    (4, 3, 'MacBook Pro M3 14 inch', 1, 2000, 5299000, 0),
-    (5, 5, 'Apple AirPods Pro (2nd Gen)', 1, 2000, 649000, 0);
+    (1, 1, 'Ly sứ men hỏa biến Hà Đông', 2, 250000, 50000, 50000),
+    (1, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0),
+    (2, 8, 'Trà hoa cúc dệt hương mật ong', 2, 120000, 24000, 0),
+    (3, 2, 'Nhẫn bạc thạch anh tóc vàng', 1, 380000, 38000, 0),
+    (4, 3, 'Nến thơm tinh dầu hoa oải hương', 3, 160000, 48000, 0),
+    (5, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0);
 
 -- ---- SEED: Order Status History ----
 INSERT INTO order_status_history (order_id, from_status, to_status, reason, changed_at) VALUES
@@ -352,17 +352,17 @@ CREATE TABLE IF NOT EXISTS payment_transactions (
 
 -- ---- SEED: Payments ----
 INSERT INTO payments (payment_code, order_id, user_id, amount, payment_method, status, processed_at, created_at) VALUES
-    ('PAY-INIT-1', 1, 1, 36480000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
-    ('PAY-INIT-2', 2, 2, 2000, 'WALLET', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
-    ('PAY-INIT-3', 3, 3, 2000, 'COD', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
-    ('PAY-INIT-4', 4, 1, 2000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
-    ('PAY-INIT-5', 5, 4, 2000, 'WALLET', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
+    ('PAY-INIT-1', 1, 1, 770000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+    ('PAY-INIT-2', 2, 2, 265000, 'WALLET', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    ('PAY-INIT-3', 3, 3, 380000, 'COD', 'PENDING', NULL, NOW() - INTERVAL '1 day'),
+    ('PAY-INIT-4', 4, 1, 510000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    ('PAY-INIT-5', 5, 4, 310000, 'WALLET', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
 
 -- ---- SEED: Payment Transactions ----
 INSERT INTO payment_transactions (order_id, transaction_id, gateway_provider, raw_response, status, created_at) VALUES
-    (1, 'VNPAY-TXN-00000001', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"3648000000"}', 'SUCCESS', NOW() - INTERVAL '10 days'),
+    (1, 'VNPAY-TXN-00000001', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"77000000"}', 'SUCCESS', NOW() - INTERVAL '10 days'),
     (2, 'MOMO-TXN-00000002', 'MoMo', '{"resultCode":0,"message":"Thành công","transId":"MOMO-3192837"}', 'SUCCESS', NOW() - INTERVAL '3 days'),
-    (4, 'VNPAY-TXN-00000004', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"5299000000"}', 'SUCCESS', NOW() - INTERVAL '4 days'),
+    (4, 'VNPAY-TXN-00000004', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"51000000"}', 'SUCCESS', NOW() - INTERVAL '4 days'),
     (5, 'MOMO-TXN-00000005', 'MoMo', '{"resultCode":0,"message":"Hoàn tiền thành công","transId":"MOMO-9876543"}', 'REFUNDED', NOW() - INTERVAL '5 days'),
     (3, NULL, 'InternalMock', '{"status":"pending","method":"COD"}', 'PENDING', NOW() - INTERVAL '1 day');
 
@@ -393,6 +393,3 @@ INSERT INTO notification_logs (user_id, recipient, subject, content, status, sen
     (3, 'cuong.le@gmail.com', 'Xác nhận đơn hàng ORD-20240503-003', 'Đơn hàng ORD-20240503-003 đã được tiếp nhận và đang chờ xử lý.', 'SENT', NOW() - INTERVAL '1 day'),
     (5, 'em.vo@gmail.com', 'Chào mừng bạn đến với hệ thống', 'Tài khoản của bạn đã được tạo thành công. Hãy bắt đầu mua sắm!', 'SENT', NOW() - INTERVAL '30 days'),
     (2, 'binh.tran@gmail.com', 'Lỗi kết nối gateway thanh toán', 'Không thể kết nối cổng thanh toán. Vui lòng thử lại.', 'FAILED', NOW() - INTERVAL '7 days');
-
-
-
