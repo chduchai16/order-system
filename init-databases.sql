@@ -328,9 +328,13 @@ CREATE TABLE IF NOT EXISTS voucher_usages (
 
 -- ---- SEED: Vouchers ----
 INSERT INTO vouchers (id, code, name, description, discount_type, discount_value, max_discount_value, min_order_value, total_quantity, used_quantity, start_date, end_date, is_active, created_at, updated_at) VALUES
-    (1, 'SALE10', 'Giam 10% toi da 50k', 'Ap dung cho don tu 300k', 'PERCENT', 10, 50000, 300000, 500, 1, NOW() - INTERVAL '30 days', NOW() + INTERVAL '60 days', true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '5 days'),
-    (2, 'ONLINEPAY', 'Uu dai thanh toan online', 'Giam truc tiep 30k cho don thanh toan online', 'FIXED', 30000, NULL, 200000, 300, 0, NOW() - INTERVAL '15 days', NOW() + INTERVAL '45 days', true, NOW() - INTERVAL '15 days', NOW() - INTERVAL '1 day'),
-    (3, 'FREESHIP', 'Mien phi van chuyen', 'Voucher ho tro phi ship', 'FREESHIP', 0, NULL, 0, 200, 1, NOW() - INTERVAL '10 days', NOW() + INTERVAL '30 days', true, NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days');
+    (1, 'SALE10', 'Giảm 10% tối đa 50k', 'Áp dụng cho đơn từ 300k', 'PERCENT', 10, 50000, 300000, 500, 1, NOW() - INTERVAL '30 days', NOW() + INTERVAL '60 days', true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '5 days'),
+    (2, 'ONLINEPAY', 'Ưu đãi thanh toán online', 'Giảm trực tiếp 30k cho đơn thanh toán online', 'FIXED', 30000, NULL, 200000, 300, 0, NOW() - INTERVAL '15 days', NOW() + INTERVAL '45 days', true, NOW() - INTERVAL '15 days', NOW() - INTERVAL '1 day'),
+    (3, 'FREESHIP', 'Miễn phí vận chuyển', 'Voucher hỗ trợ phí ship', 'FREESHIP', 0, NULL, 0, 200, 1, NOW() - INTERVAL '10 days', NOW() + INTERVAL '30 days', true, NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
+    (4, 'SALE20', 'Giảm 20% tối đa 80k', 'Áp dụng cho đơn từ 500k', 'PERCENT', 20, 80000, 500000, 150, 0, NOW() - INTERVAL '7 days', NOW() + INTERVAL '25 days', true, NOW() - INTERVAL '7 days', NOW() - INTERVAL '1 day'),
+    (5, 'WELCOME50', 'Chào mừng khách mới', 'Giảm trực tiếp 50k cho đơn đầu tiên từ 400k', 'FIXED', 50000, NULL, 400000, 120, 0, NOW() - INTERVAL '20 days', NOW() + INTERVAL '40 days', true, NOW() - INTERVAL '20 days', NOW() - INTERVAL '2 days'),
+    (6, 'SUMMER15', 'Ưu đãi mùa hè 15%', 'Giảm 15% tối đa 60k cho đơn từ 350k', 'PERCENT', 15, 60000, 350000, 220, 0, NOW() - INTERVAL '5 days', NOW() + INTERVAL '35 days', true, NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day'),
+    (7, 'VIPSHIP', 'Freeship khách thân thiết', 'Miễn phí vận chuyển cho khách hàng thân thiết', 'FREESHIP', 0, NULL, 200000, 100, 0, NOW() - INTERVAL '12 days', NOW() + INTERVAL '20 days', true, NOW() - INTERVAL '12 days', NOW() - INTERVAL '3 days');
 
 SELECT setval('vouchers_id_seq', (SELECT MAX(id) FROM vouchers));
 
@@ -338,44 +342,50 @@ SELECT setval('vouchers_id_seq', (SELECT MAX(id) FROM vouchers));
 INSERT INTO voucher_conditions (voucher_id, condition_type, value) VALUES
     (1, 'FIRST_ORDER', 'true'),
     (2, 'USER_GROUP', 'ONLINE_CUSTOMER'),
-    (3, 'CATEGORY', 'ALL');
+    (3, 'CATEGORY', 'ALL'),
+    (4, 'CATEGORY', 'HANDMADE'),
+    (5, 'FIRST_ORDER', 'true'),
+    (6, 'CATEGORY', 'SUMMER_COLLECTION'),
+    (7, 'USER_GROUP', 'VIP');
 
 -- ---- SEED: Voucher Usages ----
 INSERT INTO voucher_usages (voucher_id, user_id, order_id, discount_amount, used_at) VALUES
     (1, 1, 1, 50000, NOW() - INTERVAL '10 days'),
-    (3, 4, 5, 0, NOW() - INTERVAL '5 days');
+    (3, 4, 5, 0, NOW() - INTERVAL '5 days'),
+    (4, 2, 2, 80000, NOW() - INTERVAL '2 days'),
+    (6, 3, 3, 45000, NOW() - INTERVAL '1 day');
 
 -- ---- SEED: Orders ----
 INSERT INTO orders (order_number, user_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, voucher_id, voucher_code, voucher_discount_amount, status, created_at, updated_at) VALUES
-    ('ORD-20240501-001', 1, 770000, '123 Nguyen Hue', 'Ho Chi Minh', 'Quan 1', 'Viet Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 50000, 74000, 'VAT10', 1, 'SALE10', 50000, 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
-    ('ORD-20240502-002', 2, 265000, '789 Dinh Tien Hoang', 'Ha Noi', 'Hoan Kiem', 'Viet Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 24000, 'VAT10', NULL, NULL, NULL, 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
-    ('ORD-20240503-003', 3, 380000, '10 Tran Phu', 'Da Nang', 'Hai Chau', 'Viet Nam', NULL, NULL, NULL, NULL, NULL, 0, 38000, 'VAT10', NULL, NULL, NULL, 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
-    ('ORD-20240504-004', 1, 510000, '123 Nguyen Hue', 'Ho Chi Minh', 'Quan 1', 'Viet Nam', 'VNPost', 'VNPOST-TRK-004', 30000, '2024-05-10', NULL, 0, 48000, 'VAT10', NULL, NULL, NULL, 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
-    ('ORD-20240505-005', 4, 310000, '55 Hung Vuong', 'Can Tho', 'Ninh Kieu', 'Viet Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 29000, 'VAT10', 3, 'FREESHIP', 0, 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
+    ('ORD-20240501-001', 1, 770000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 50000, 74000, 'VAT10', 1, 'SALE10', 50000, 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
+    ('ORD-20240502-002', 2, 265000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 24000, 'VAT10', NULL, NULL, NULL, 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
+    ('ORD-20240503-003', 3, 380000, '10 Trần Phú', 'Đà Nẵng', 'Hải Châu', 'Việt Nam', NULL, NULL, NULL, NULL, NULL, 0, 38000, 'VAT10', NULL, NULL, NULL, 'PENDING', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),
+    ('ORD-20240504-004', 1, 510000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 30000, '2024-05-10', NULL, 0, 48000, 'VAT10', NULL, NULL, NULL, 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
+    ('ORD-20240505-005', 4, 310000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 29000, 'VAT10', 3, 'FREESHIP', 0, 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
 
 -- ---- SEED: Order Items ----
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tax_amount, discount_amount) VALUES
-    (1, 1, 'Ly su men hoa bien Ha Dong', 2, 250000, 50000, 50000),
-    (1, 5, 'Tui vai linen theu hoa cuc co dien', 1, 290000, 29000, 0),
-    (2, 8, 'Tra hoa cuc det huong mat ong', 2, 120000, 24000, 0),
-    (3, 2, 'Nhan bac thach anh toc vang', 1, 380000, 38000, 0),
-    (4, 3, 'Nen thom tinh dau hoa oai huong', 3, 160000, 48000, 0),
-    (5, 5, 'Tui vai linen theu hoa cuc co dien', 1, 290000, 29000, 0);
+    (1, 1, 'Ly sứ men hỏa biến Hà Đông', 2, 250000, 50000, 50000),
+    (1, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0),
+    (2, 8, 'Trà hoa cúc dệt hương mật ong', 2, 120000, 24000, 0),
+    (3, 2, 'Nhẫn bạc thạch anh tóc vàng', 1, 380000, 38000, 0),
+    (4, 3, 'Nến thơm tinh dầu hoa oải hương', 3, 160000, 48000, 0),
+    (5, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0);
 
 -- ---- SEED: Order Status History ----
 INSERT INTO order_status_history (order_id, from_status, to_status, reason, changed_at) VALUES
-    (1, NULL, 'PENDING', 'Don hang duoc tao tu dong tu gio hang', NOW() - INTERVAL '10 days'),
-    (1, 'PENDING', 'PAID', 'Thanh toan VNPay thanh cong', NOW() - INTERVAL '10 days' + INTERVAL '5 minutes'),
-    (1, 'PAID', 'SHIPPING', 'Da ban giao cho don vi van chuyen GHN', NOW() - INTERVAL '8 days'),
-    (1, 'SHIPPING', 'DELIVERED', 'Giao hang thanh cong', NOW() - INTERVAL '5 days'),
-    (2, NULL, 'PENDING', 'Don hang duoc tao tu checkout', NOW() - INTERVAL '3 days'),
-    (2, 'PENDING', 'PAID', 'Thanh toan Momo thanh cong', NOW() - INTERVAL '3 days' + INTERVAL '3 minutes'),
-    (3, NULL, 'PENDING', 'Don hang cho xu ly', NOW() - INTERVAL '1 day'),
-    (4, NULL, 'PENDING', 'Don hang duoc tao', NOW() - INTERVAL '4 days'),
-    (4, 'PENDING', 'PAID', 'Thanh toan VNPAY thanh cong', NOW() - INTERVAL '4 days' + INTERVAL '2 minutes'),
+    (1, NULL, 'PENDING', 'Đơn hàng được tạo tự động từ giỏ hàng', NOW() - INTERVAL '10 days'),
+    (1, 'PENDING', 'PAID', 'Thanh toán VNPay thành công', NOW() - INTERVAL '10 days' + INTERVAL '5 minutes'),
+    (1, 'PAID', 'SHIPPING', 'Đã bàn giao cho đơn vị vận chuyển GHN', NOW() - INTERVAL '8 days'),
+    (1, 'SHIPPING', 'DELIVERED', 'Giao hàng thành công', NOW() - INTERVAL '5 days'),
+    (2, NULL, 'PENDING', 'Đơn hàng được tạo từ checkout', NOW() - INTERVAL '3 days'),
+    (2, 'PENDING', 'PAID', 'Thanh toán Momo thành công', NOW() - INTERVAL '3 days' + INTERVAL '3 minutes'),
+    (3, NULL, 'PENDING', 'Đơn hàng chờ xử lý', NOW() - INTERVAL '1 day'),
+    (4, NULL, 'PENDING', 'Đơn hàng được tạo', NOW() - INTERVAL '4 days'),
+    (4, 'PENDING', 'PAID', 'Thanh toán VNPAY thành công', NOW() - INTERVAL '4 days' + INTERVAL '2 minutes'),
     (4, 'PAID', 'SHIPPING', 'Giao cho VNPost', NOW() - INTERVAL '2 days'),
-    (5, NULL, 'PENDING', 'Don hang duoc tao', NOW() - INTERVAL '6 days'),
-    (5, 'PENDING', 'CANCELLED', 'Khach hang huy don', NOW() - INTERVAL '5 days');
+    (5, NULL, 'PENDING', 'Đơn hàng được tạo', NOW() - INTERVAL '6 days'),
+    (5, 'PENDING', 'CANCELLED', 'Khách hàng hủy đơn', NOW() - INTERVAL '5 days');
 -- PAYMENT SERVICE SCHEMA & SEED DATA
 -- ================================================================
 \c payment_db;
