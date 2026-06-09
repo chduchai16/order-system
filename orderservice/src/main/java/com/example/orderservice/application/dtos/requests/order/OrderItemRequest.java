@@ -1,4 +1,4 @@
-package com.example.orderservice.application.dtos;
+package com.example.orderservice.application.dtos.requests.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

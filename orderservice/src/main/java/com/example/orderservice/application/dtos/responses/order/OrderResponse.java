@@ -1,4 +1,4 @@
-package com.example.orderservice.application.dtos;
+package com.example.orderservice.application.dtos.responses.order;
 
 import com.example.orderservice.domain.models.order.OrderStatus;
 import lombok.AllArgsConstructor;

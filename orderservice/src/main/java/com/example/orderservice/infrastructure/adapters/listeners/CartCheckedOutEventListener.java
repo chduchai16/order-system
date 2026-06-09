@@ -6,8 +6,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.example.commonlib.events.cart.CartCheckedOutEvent;
-import com.example.orderservice.application.dtos.OrderItemRequest;
-import com.example.orderservice.application.dtos.OrderRequest;
+import com.example.orderservice.application.dtos.requests.order.OrderItemRequest;
+import com.example.orderservice.application.dtos.requests.order.OrderRequest;
 import com.example.orderservice.application.services.IOrderService;
 
 import lombok.RequiredArgsConstructor;
