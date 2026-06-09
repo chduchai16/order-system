@@ -1,6 +1,6 @@
-package com.example.orderservice.infrastructure.persistence.entities;
+package com.example.orderservice.infrastructure.persistence.entities.order;
 
-import com.example.orderservice.domain.models.OrderStatus;
+import com.example.orderservice.domain.models.order.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

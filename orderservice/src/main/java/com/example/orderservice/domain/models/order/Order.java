@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.models;
+package com.example.orderservice.domain.models.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +21,14 @@ public class Order {
     private List<OrderItem> items;
     private BigDecimal totalPrice;
     private OrderStatus status;
+    private Long voucherId ;
+    private String voucherCode ;
+    private BigDecimal voucherDiscountAmount ;
     private Address shippingAddress;
     private ShippingInfo shippingInfo;
     private OrderDiscount discount;
     private TaxInfo tax;
+
     private List<OrderStatusHistory> statusHistory;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

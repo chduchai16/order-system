@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.example.commonlib.events.payment.PaymentCompletedEvent;
 import com.example.orderservice.application.dtos.OrderRequest;
-import com.example.orderservice.domain.models.Order;
+import com.example.orderservice.domain.models.order.Order;
 
 public interface IOrderService {
     Order createOrder(OrderRequest request);

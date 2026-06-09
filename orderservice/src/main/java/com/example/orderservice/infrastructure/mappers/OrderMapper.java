@@ -1,7 +1,14 @@
 package com.example.orderservice.infrastructure.mappers;
 
-import com.example.orderservice.domain.models.*;
-import com.example.orderservice.infrastructure.persistence.entities.*;
+import com.example.orderservice.domain.models.order.Address;
+import com.example.orderservice.domain.models.order.Order;
+import com.example.orderservice.domain.models.order.OrderDiscount;
+import com.example.orderservice.domain.models.order.OrderNumber;
+import com.example.orderservice.domain.models.order.ShippingInfo;
+import com.example.orderservice.domain.models.order.TaxInfo;
+import com.example.orderservice.infrastructure.persistence.entities.order.OrderEntity;
+import com.example.orderservice.infrastructure.persistence.entities.order.OrderItemEntity;
+import com.example.orderservice.infrastructure.persistence.entities.order.OrderStatusHistoryEntity;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -25,13 +32,16 @@ public class OrderMapper {
                 .orderNumber(entity.getOrderNumber() != null ? new OrderNumber(entity.getOrderNumber()) : null)
                 .userId(entity.getUserId())
                 .items(entity.getItems() != null ?
-                    entity.getItems().stream().map(OrderMapper::itemToDomain).collect(Collectors.toList()) :
+                    entity.getItems().stream().map(OrderItemMapper::toDomain).collect(Collectors.toList()) :
                     new ArrayList<>())
                 .statusHistory(entity.getStatusHistory() != null ?
-                    entity.getStatusHistory().stream().map(OrderMapper::historyToDomain).collect(Collectors.toList()) :
+                    entity.getStatusHistory().stream().map(OrderStatusHistoryMapper::toDomain).collect(Collectors.toList()) :
                     new ArrayList<>())
                 .totalPrice(entity.getTotalPrice())
                 .status(entity.getStatus())
+                .voucherId(entity.getVoucherId())
+                .voucherCode(entity.getVoucherCode())
+                .voucherDiscountAmount(entity.getVoucherDiscountAmount())
                 .shippingAddress(address)
                 .shippingInfo(ShippingInfo.builder()
                         .carrier(entity.getShippingCarrier())
@@ -52,28 +62,6 @@ public class OrderMapper {
                 .build();
     }
 
-    private static OrderItem itemToDomain(OrderItemEntity entity) {
-        return OrderItem.builder()
-                .id(entity.getId())
-                .productId(entity.getProductId())
-                .productName(entity.getProductName())
-                .quantity(entity.getQuantity())
-                .unitPrice(entity.getUnitPrice())
-                .discountAmount(entity.getDiscountAmount())
-                .taxAmount(entity.getTaxAmount())
-                .build();
-    }
-
-    private static OrderStatusHistory historyToDomain(OrderStatusHistoryEntity entity) {
-        return OrderStatusHistory.builder()
-                .id(entity.getId())
-                .fromStatus(entity.getFromStatus())
-                .toStatus(entity.getToStatus())
-                .reason(entity.getReason())
-                .changedAt(entity.getChangedAt())
-                .build();
-    }
-
     public static OrderEntity toEntity(Order domain) {
         if (domain == null) return null;
         OrderEntity entity = new OrderEntity();
@@ -82,6 +70,9 @@ public class OrderMapper {
         entity.setUserId(domain.getUserId());
         entity.setTotalPrice(domain.getTotalPrice());
         entity.setStatus(domain.getStatus());
+        entity.setVoucherId(domain.getVoucherId());
+        entity.setVoucherCode(domain.getVoucherCode());
+        entity.setVoucherDiscountAmount(domain.getVoucherDiscountAmount());
 
         if (domain.getShippingAddress() != null) {
             entity.setShippingStreet(domain.getShippingAddress().getStreet());
@@ -110,7 +101,7 @@ public class OrderMapper {
         if (domain.getItems() != null) {
             entity.setItems(domain.getItems().stream()
                 .map(item -> {
-                    OrderItemEntity itemEntity = itemToEntity(item);
+                    OrderItemEntity itemEntity = OrderItemMapper.toEntity(item);
                     itemEntity.setOrder(entity);
                     return itemEntity;
                 }).collect(Collectors.toList()));
@@ -119,34 +110,12 @@ public class OrderMapper {
         if (domain.getStatusHistory() != null) {
             entity.setStatusHistory(domain.getStatusHistory().stream()
                 .map(h -> {
-                    OrderStatusHistoryEntity histEntity = historyToEntity(h);
+                    OrderStatusHistoryEntity histEntity = OrderStatusHistoryMapper.toEntity(h);
                     histEntity.setOrder(entity);
                     return histEntity;
                 }).collect(Collectors.toList()));
         }
 
-        return entity;
-    }
-
-    private static OrderItemEntity itemToEntity(OrderItem domain) {
-        OrderItemEntity entity = new OrderItemEntity();
-        entity.setId(domain.getId());
-        entity.setProductId(domain.getProductId());
-        entity.setProductName(domain.getProductName());
-        entity.setQuantity(domain.getQuantity());
-        entity.setUnitPrice(domain.getUnitPrice());
-        entity.setDiscountAmount(domain.getDiscountAmount());
-        entity.setTaxAmount(domain.getTaxAmount());
-        return entity;
-    }
-
-    private static OrderStatusHistoryEntity historyToEntity(OrderStatusHistory domain) {
-        OrderStatusHistoryEntity entity = new OrderStatusHistoryEntity();
-        entity.setId(domain.getId());
-        entity.setFromStatus(domain.getFromStatus());
-        entity.setToStatus(domain.getToStatus());
-        entity.setReason(domain.getReason());
-        entity.setChangedAt(domain.getChangedAt());
         return entity;
     }
 }

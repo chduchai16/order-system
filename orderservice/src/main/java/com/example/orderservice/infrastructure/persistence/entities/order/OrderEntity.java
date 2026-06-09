@@ -1,6 +1,6 @@
-package com.example.orderservice.infrastructure.persistence.entities;
+package com.example.orderservice.infrastructure.persistence.entities.order;
 
-import com.example.orderservice.domain.models.OrderStatus;
+import com.example.orderservice.domain.models.order.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,6 +57,15 @@ public class OrderEntity {
 
     private BigDecimal taxAmount;
     private String taxType;
+
+    @Column(name = "voucher_id")
+    private Long voucherId ;
+
+    @Column(name = "voucher_code")
+    private String voucherCode ;
+
+    @Column(name = "voucher_discount_amount")
+    private BigDecimal voucherDiscountAmount ;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

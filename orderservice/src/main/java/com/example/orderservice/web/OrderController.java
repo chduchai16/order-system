@@ -2,7 +2,7 @@ package com.example.orderservice.web;
 
 import com.example.orderservice.application.dtos.*;
 import com.example.orderservice.application.services.IOrderService;
-import com.example.orderservice.domain.models.Order;
+import com.example.orderservice.domain.models.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

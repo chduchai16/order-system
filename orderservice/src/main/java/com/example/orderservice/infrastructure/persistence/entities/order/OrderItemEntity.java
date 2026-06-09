@@ -1,4 +1,4 @@
-package com.example.orderservice.infrastructure.persistence.entities;
+package com.example.orderservice.infrastructure.persistence.entities.order;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

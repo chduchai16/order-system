@@ -1,6 +1,6 @@
 package com.example.orderservice.infrastructure.adapters;
 
-import com.example.orderservice.domain.models.Order;
+import com.example.orderservice.domain.models.order.Order;
 import com.example.orderservice.domain.ports.external.PaymentService;
 
 import com.example.orderservice.infrastructure.adapters.clients.PaymentClient;

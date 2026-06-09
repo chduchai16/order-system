@@ -1,6 +1,6 @@
 package com.example.orderservice.domain.ports.persistence;
 
-import com.example.orderservice.domain.models.Order;
+import com.example.orderservice.domain.models.order.Order;
 import java.util.Optional;
 import java.util.List;
 
