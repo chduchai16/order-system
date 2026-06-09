@@ -16,7 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VoucherRepositoryAdapter implements VoucherRepository {
 
-    private final VoucherMapper voucherMapper ;
     private final JpaVoucherRepository voucherRepository ;
 
     @Override
