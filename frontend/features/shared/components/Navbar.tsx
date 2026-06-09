@@ -149,7 +149,7 @@ export default function Navbar() {
       {/* Top micro bar */}
       <div className="bg-[#F5EFE6]/50 text-[#555555] text-[11px] py-1.5 px-6 border-b border-[#EAE3D2]/40 hidden sm:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span className="font-medium">Chào mừng bạn đến với ShopVN — Nền tảng quà tặng và đồ thủ công độc đáo!</span>
+          <span className="font-medium">Chào mừng bạn đến với ShopVN — Nền tảng thương mại trực tuyến lớn nhất Việt Nam!</span>
           <div className="flex space-x-5 items-center">
             <Link href="/products?category=sale" className="hover:text-[#F1641E] transition-colors font-semibold text-[#1E5C3F]">Ưu đãi hè - Giảm tới 50%</Link>
             <span className="text-gray-300">|</span>
