@@ -8,9 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface JpaVoucherRepository extends JpaRepository<VoucherEntity , Long> {
 
+    Optional<VoucherEntity> findByCode(String code);
+    Optional<VoucherEntity> findByName(String name);
     @Query("""
         select v
         from VoucherEntity v

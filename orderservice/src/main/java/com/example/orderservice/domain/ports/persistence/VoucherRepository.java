@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface VoucherRepository {
     Voucher save(Voucher voucher);
     Optional<Voucher> findById(Long id);
+    Optional<Voucher> findByCode(String code);
+    Optional<Voucher> findByName(String name);
     Page<Voucher> findPaged(String search ,Pageable pageable);
     void deleteById(Long id);
 }

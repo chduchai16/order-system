@@ -3,6 +3,7 @@ package com.example.orderservice.domain.models.voucher;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class Voucher {
     private List<VoucherCondition> conditions;
     private List<VoucherUsage> usages;
 
+    // validate
     public void validate(LocalDateTime now) throws Exception {
         if (!isActive) {
             throw new Exception("Voucher is in active");
@@ -53,6 +55,7 @@ public class Voucher {
         }
     }
 
+    // tính toán
     public BigDecimal calculateDiscount(BigDecimal orderAmount) throws Exception {
         switch (discountType) {
             case FREESHIP:
@@ -72,5 +75,24 @@ public class Voucher {
             default:
                 throw new Exception("Unsupport discount type");
         }
+    }
+    // áp dụng
+    public void redeem(Long userId , Long orderId , BigDecimal discountAmount) throws Exception {
+        if(usedQuantity >= totalQuantity) {
+            throw new Exception ("Voucher is out of stock") ;
+        }
+
+        if (usages == null) {
+            usages = new ArrayList<>();
+        }
+
+        usedQuantity ++ ;
+        usages.add(VoucherUsage.builder()
+                .userId(userId)
+                .orderId(orderId)
+                .discountAmount(discountAmount)
+                .usedAt(LocalDateTime.now())
+                .build());
+        updatedAt = LocalDateTime.now();
     }
 }

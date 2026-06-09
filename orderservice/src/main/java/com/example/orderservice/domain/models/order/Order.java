@@ -45,6 +45,23 @@ public class Order {
         calculateTotalPrice();
     }
 
+    public void applyVoucher(Long voucherId, String voucherCode, BigDecimal voucherDiscountAmount) {
+        this.voucherId = voucherId;
+        this.voucherCode = voucherCode;
+        this.voucherDiscountAmount = voucherDiscountAmount;
+        if (this.discount != null) {
+            this.discount = OrderDiscount.builder()
+                    .code(voucherCode)
+                    .amount(voucherDiscountAmount)
+                    .description(this.discount.getDescription())
+                    .build();
+        }
+        if (this.totalPrice == null) {
+            calculateTotalPrice();
+        }
+        this.totalPrice = this.totalPrice.subtract(voucherDiscountAmount).max(BigDecimal.ZERO);
+    }
+
     private void transitionStatus(OrderStatus newStatus, String reason) {
         if (statusHistory == null) statusHistory = new ArrayList<>();
         statusHistory.add(OrderStatusHistory.record(this.status, newStatus, reason));
