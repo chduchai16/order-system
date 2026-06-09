@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.commonlib.events.payment.PaymentCompletedEvent;
-import com.example.orderservice.application.dtos.OrderRequest;
-import com.example.orderservice.domain.models.order.Order;
+import com.example.orderservice.application.dtos.requests.order.OrderRequest;
+import com.example.orderservice.application.dtos.responses.order.OrderResponse;
 
 public interface IOrderService {
-    Order createOrder(OrderRequest request);
+    OrderResponse createOrder(OrderRequest request);
     void cancelOrder(Long orderId, String reason);
-    Optional<Order> getOrderById(Long id);
-    List<Order> getAllOrders();
+    Optional<OrderResponse> getOrderById(Long id);
+    List<OrderResponse> getAllOrders();
     void handlePaymentCompleted(PaymentCompletedEvent event) ;
 }
