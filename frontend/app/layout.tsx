@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className={`${outfit.variable} ${playfair.variable} bg-[#FDFAF7] text-[#222222] font-sans antialiased`} suppressHydrationWarning>
         {children}
       </body>
