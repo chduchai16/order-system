@@ -93,6 +93,37 @@ export interface DiscountInfo {
   amount: number;
 }
 
+export interface VoucherCondition {
+  id: number;
+  conditionType: string;
+  value: string;
+}
+
+export interface Voucher {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  discountType: 'FIXED' | 'PERCENT' | 'FREESHIP';
+  discountValue: number;
+  maxDiscountValue?: number | null;
+  minOrderValue?: number | null;
+  totalQuantity: number;
+  usedQuantity: number;
+  startDate: string;
+  endDate: string;
+  active: boolean;
+  conditions: VoucherCondition[];
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
 export interface Order {
   id: string;
   orderNumber?: string;
@@ -137,7 +168,6 @@ export interface CreateOrderItemRequest {
 export interface CreateOrderRequest {
   userId: number;
   items: CreateOrderItemRequest[];
-  totalPrice: number;
   street: string;
   city: string;
   district: string;
