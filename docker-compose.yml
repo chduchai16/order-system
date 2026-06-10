@@ -195,28 +195,6 @@ services:
     networks:
       - order-network
 
-  notificationservice:
-    build:
-      context: .
-      dockerfile: ./notificationservice/Dockerfile
-    container_name: order-system-notificationservice
-    ports:
-      - "8086:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/notification_db"
-      SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
-      SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - postgres
-      - kafka
-    networks:
-      - order-network
-
   frontend:
     build:
       context: ./frontend

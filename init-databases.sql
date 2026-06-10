@@ -5,7 +5,6 @@ CREATE DATABASE user_db;
 CREATE DATABASE product_db;
 CREATE DATABASE order_db;
 CREATE DATABASE payment_db;
-CREATE DATABASE notification_db;
 
 
 -- ================================================================
@@ -430,29 +429,3 @@ INSERT INTO payment_transactions (order_id, transaction_id, gateway_provider, ra
     (3, NULL, 'InternalMock', '{"status":"pending","method":"COD"}', 'PENDING', NOW() - INTERVAL '1 day');
 
 
--- ================================================================
--- NOTIFICATION SERVICE SCHEMA & SEED DATA
--- ================================================================
-\c notification_db;
-
--- ---- DDL ----
-CREATE TABLE IF NOT EXISTS notification_logs (
-    id SERIAL PRIMARY KEY,
-    user_id BIGINT,
-    recipient VARCHAR(255),
-    subject VARCHAR(500),
-    content TEXT,
-    status VARCHAR(20),
-    sent_at TIMESTAMP DEFAULT NOW()
-);
-
--- ---- SEED: Notification Logs ----
-INSERT INTO notification_logs (user_id, recipient, subject, content, status, sent_at) VALUES
-    (1, 'an.nguyen@gmail.com', 'Xác nhận đơn hàng ORD-20240501-001', 'Cảm ơn bạn đã đặt hàng! Đơn hàng ORD-20240501-001 đã được xác nhận.', 'SENT', NOW() - INTERVAL '10 days'),
-    (1, 'an.nguyen@gmail.com', 'Đơn hàng ORD-20240501-001 đang được giao', 'Đơn hàng của bạn đã được bàn giao cho GHN. Mã tracking: GHN-TRK-001', 'SENT', NOW() - INTERVAL '8 days'),
-    (1, 'an.nguyen@gmail.com', 'Giao hàng thành công - ORD-20240501-001', 'Đơn hàng đã được giao thành công. Cảm ơn bạn đã mua sắm tại chúng tôi!', 'SENT', NOW() - INTERVAL '5 days'),
-    (2, 'binh.tran@gmail.com', 'Xác nhận đơn hàng ORD-20240502-002', 'Đơn hàng ORD-20240502-002 của bạn đã được xác nhận và đang được chuẩn bị.', 'SENT', NOW() - INTERVAL '3 days'),
-    (4, 'dung.pham@outlook.com', 'Huỷ đơn hàng ORD-20240505-005', 'Đơn hàng ORD-20240505-005 đã được huỷ theo yêu cầu của bạn. Hoàn tiền sẽ được xử lý trong 3-5 ngày.', 'SENT', NOW() - INTERVAL '5 days'),
-    (3, 'cuong.le@gmail.com', 'Xác nhận đơn hàng ORD-20240503-003', 'Đơn hàng ORD-20240503-003 đã được tiếp nhận và đang chờ xử lý.', 'SENT', NOW() - INTERVAL '1 day'),
-    (5, 'em.vo@gmail.com', 'Chào mừng bạn đến với hệ thống', 'Tài khoản của bạn đã được tạo thành công. Hãy bắt đầu mua sắm!', 'SENT', NOW() - INTERVAL '30 days'),
-    (2, 'binh.tran@gmail.com', 'Lỗi kết nối gateway thanh toán', 'Không thể kết nối cổng thanh toán. Vui lòng thử lại.', 'FAILED', NOW() - INTERVAL '7 days');

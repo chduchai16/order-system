@@ -12,7 +12,6 @@ Hệ thống bao gồm các dịch vụ sau:
 - Cart Service (cartservice): Dịch vụ giỏ hàng lưu trữ dữ liệu trên Redis cache.
 - Order Service (orderservice): Logic đặt hàng và xử lý quy trình mua hàng.
 - Payment Service (paymentservice): Giả lập và xử lý thanh toán đơn hàng, tích hợp SePay.
-- Notification Service (notificationservice): Gửi thông báo về trạng thái đơn hàng.
 - Shared Library (commonlib): Thư viện chứa các DTO, Exceptions, và Kafka Events dùng chung.
 
 ## Thiết kế kiến trúc và Tính năng nổi bật
@@ -51,7 +50,6 @@ Dưới đây là danh sách các cổng (port) mặc định:
 - Order Service: 8083
 - Payment Service: 8084
 - Cart Service: 8085
-- Notification Service: 8086
 - Frontend: 3000
 - PostgreSQL: 5432
 - Redis: 6380
@@ -101,4 +99,3 @@ npm run dev
 ```
 
 Ứng dụng frontend sẽ chạy tại địa chỉ: http://localhost:3000
-

@@ -8,7 +8,6 @@ import {
   Search,
   ShoppingCart,
   User,
-  Bell,
   Gift,
   Sparkles,
   Home as HomeIcon,
@@ -300,10 +299,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <button className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors relative flex items-center justify-center cursor-pointer group hidden sm:flex" title="Thông báo" aria-label="Notifications">
-            <Bell className="w-6 h-6 group-hover:scale-105 transition-transform" />
-            <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#F1641E] rounded-full border-2 border-[#FDFAF7]"></span>
-          </button>
 
           {isHydrated && !loadingProfile && profile ? (
             <div className="relative">

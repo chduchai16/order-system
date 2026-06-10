@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  Bell,
   Box,
   CheckCircle2,
   CreditCard,
@@ -491,7 +490,6 @@ export default function AccountOrdersView() {
             <Panel title="Cài đặt tài khoản nâng cao" subtitle="Quản lý tùy chỉnh thông tin bảo mật đăng nhập và quyền truy cập dữ liệu">
               <div className="grid gap-4 lg:grid-cols-2">
                 <SettingCard icon={ShieldCheck} title="Mật khẩu & Bảo mật" description="Thay đổi mật khẩu đăng nhập định kỳ, tăng cường xác thực 2 lớp." />
-                <SettingCard icon={Bell} title="Thiết lập Nhận tin thông báo" description="Đăng ký nhận cập nhật đơn hàng hoặc tin tức khuyến mãi qua Email/SMS." />
                 <SettingCard icon={Star} title="Đánh giá tài khoản" description="Lịch sử đánh giá chất lượng sản phẩm và mức độ uy tín của bạn." />
                 <SettingCard icon={User} title="Quyền riêng tư dữ liệu" description="Kiểm soát toàn bộ lịch sử truy vấn dữ liệu cá nhân của bạn trên ShopVN." />
               </div>

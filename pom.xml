@@ -22,7 +22,6 @@
         <module>orderservice</module>
         <module>paymentservice</module>
         <module>cartservice</module>
-        <module>notificationservice</module>
 
     </modules>
 
