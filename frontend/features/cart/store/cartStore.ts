@@ -1,88 +1,191 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { cartService, emptyCart } from '@/features/cart/api/cartService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
 import { CartItem } from '@/features/shared/types';
 
 interface CartStore {
+  id: string;
   items: CartItem[];
   savedItems: CartItem[];
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  saveForLater: (productId: string) => void;
-  moveToCart: (productId: string) => void;
-  clearCart: () => void;
+  totalPrice: number;
+  loading: boolean;
+  initializedForUserId: number | null;
+  initializeCart: () => Promise<void>;
+  addToCart: (item: CartItem) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
+  updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  saveForLater: (productId: string) => Promise<void>;
+  moveToCart: (productId: string) => Promise<void>;
+  clearCart: () => Promise<void>;
+  resetCartState: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
 }
 
-export const useCartStore = create<CartStore>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      savedItems: [],
-      
-      addToCart: (item: CartItem) =>
-        set((state) => {
-          const existingItem = state.items.find(i => i.productId === item.productId);
-          if (existingItem) {
-            return {
-              items: state.items.map(i =>
-                i.productId === item.productId
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i
-              ),
-            };
-          }
-          return { items: [...state.items, item] };
-        }),
-      
-      removeFromCart: (productId: string) =>
-        set((state) => ({
-          items: state.items.filter(i => i.productId !== productId),
-          savedItems: state.savedItems.filter(i => i.productId !== productId),
-        })),
-      
-      updateQuantity: (productId: string, quantity: number) =>
-        set((state) => ({
-          items: state.items.map(i =>
-            i.productId === productId ? { ...i, quantity: Math.max(1, quantity) } : i
-          ),
-        })),
+const applyCartState = (set: (partial: Partial<CartStore>) => void, cart: { id?: string; items?: CartItem[]; savedItems?: CartItem[]; totalPrice?: number }, userId: number | null) => {
+  set({
+    id: cart.id ?? (userId ? String(userId) : 'guest'),
+    items: cart.items ?? [],
+    savedItems: cart.savedItems ?? [],
+    totalPrice: Number(cart.totalPrice ?? 0),
+    initializedForUserId: userId,
+  });
+};
 
-      saveForLater: (productId: string) =>
-        set((state) => {
-          const item = state.items.find(i => i.productId === productId);
-          if (!item) return state;
-          return {
-            items: state.items.filter(i => i.productId !== productId),
-            savedItems: [...state.savedItems, item],
-          };
-        }),
+const buildGuestCart = (items: CartItem[], savedItems: CartItem[]) => ({
+  id: 'guest',
+  items,
+  savedItems,
+  totalPrice: items.reduce((total, item) => total + (item.unitPrice || 0) * item.quantity, 0),
+});
 
-      moveToCart: (productId: string) =>
-        set((state) => {
-          const item = state.savedItems.find(i => i.productId === productId);
-          if (!item) return state;
-          return {
-            savedItems: state.savedItems.filter(i => i.productId !== productId),
-            items: [...state.items, item],
-          };
-        }),
-      
-      clearCart: () => set({ items: [], savedItems: [] }),
-      
-      getTotalPrice: () => {
-        const state = get();
-        return state.items.reduce((total, item) => total + (item.unitPrice || 0) * item.quantity, 0);
-      },
+export const useCartStore = create<CartStore>()((set, get) => ({
+  id: 'guest',
+  items: [],
+  savedItems: [],
+  totalPrice: 0,
+  loading: false,
+  initializedForUserId: null,
 
-      getItemCount: () => {
-        const state = get();
-        return state.items.reduce((count, item) => count + item.quantity, 0);
-      },
-    }),
-    {
-      name: 'order-system-cart',
+  initializeCart: async () => {
+    const userId = tokenStore.getUserId();
+    const initializedForUserId = get().initializedForUserId;
+
+    if (userId === initializedForUserId) {
+      return;
     }
-  )
-);
+
+    if (!userId) {
+      applyCartState(set, emptyCart(), null);
+      return;
+    }
+
+    set({ loading: true });
+    try {
+      const cart = await cartService.getCart();
+      applyCartState(set, cart, userId);
+    } catch (error) {
+      console.error('Failed to initialize cart', error);
+      applyCartState(set, emptyCart(userId), userId);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  addToCart: async (item: CartItem) => {
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      set((state) => {
+        const existingItem = state.items.find((current) => current.productId === item.productId);
+        const items = existingItem
+          ? state.items.map((current) =>
+              current.productId === item.productId
+                ? { ...current, quantity: current.quantity + item.quantity, unitPrice: item.unitPrice, productName: item.productName, sku: item.sku }
+                : current
+            )
+          : [...state.items, item];
+        return buildGuestCart(items, state.savedItems);
+      });
+      return;
+    }
+
+    const cart = await cartService.addItem(item);
+    applyCartState(set, cart, userId);
+  },
+
+  removeFromCart: async (productId: string) => {
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      set((state) => {
+        const items = state.items.filter((item) => item.productId !== productId);
+        const savedItems = state.savedItems.filter((item) => item.productId !== productId);
+        return buildGuestCart(items, savedItems);
+      });
+      return;
+    }
+
+    const cart = await cartService.removeItem(productId);
+    applyCartState(set, cart, userId);
+  },
+
+  updateQuantity: async (productId: string, quantity: number) => {
+    const nextQuantity = Math.max(1, quantity);
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      set((state) => {
+        const items = state.items.map((item) =>
+          item.productId === productId ? { ...item, quantity: nextQuantity } : item
+        );
+        return buildGuestCart(items, state.savedItems);
+      });
+      return;
+    }
+
+    const cart = await cartService.updateItemQuantity(productId, nextQuantity);
+    applyCartState(set, cart, userId);
+  },
+
+  saveForLater: async (productId: string) => {
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      set((state) => {
+        const item = state.items.find((current) => current.productId === productId);
+        if (!item) {
+          return state;
+        }
+        return buildGuestCart(
+          state.items.filter((current) => current.productId !== productId),
+          [...state.savedItems, item]
+        );
+      });
+      return;
+    }
+
+    const cart = await cartService.saveForLater(productId);
+    applyCartState(set, cart, userId);
+  },
+
+  moveToCart: async (productId: string) => {
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      set((state) => {
+        const item = state.savedItems.find((current) => current.productId === productId);
+        if (!item) {
+          return state;
+        }
+        return buildGuestCart(
+          [...state.items, item],
+          state.savedItems.filter((current) => current.productId !== productId)
+        );
+      });
+      return;
+    }
+
+    const cart = await cartService.moveToCart(productId);
+    applyCartState(set, cart, userId);
+  },
+
+  clearCart: async () => {
+    const userId = tokenStore.getUserId();
+
+    if (!userId) {
+      applyCartState(set, emptyCart(), null);
+      return;
+    }
+
+    await cartService.clearCart();
+    applyCartState(set, emptyCart(userId), userId);
+  },
+
+  resetCartState: () => {
+    applyCartState(set, emptyCart(), tokenStore.getUserId());
+  },
+
+  getTotalPrice: () => get().items.reduce((total, item) => total + (item.unitPrice || 0) * item.quantity, 0),
+  getItemCount: () => get().items.reduce((count, item) => count + item.quantity, 0),
+}));
