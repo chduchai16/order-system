@@ -29,6 +29,11 @@ spring:
           predicates:
             - Path=/api/vouchers/**
 
+        - id: cartservice
+          uri: ${CART_SERVICE_URL:http://cartservice:8080}
+          predicates:
+            - Path=/api/cart/**
+
         - id: paymentservice
           uri: ${PAYMENT_SERVICE_URL:http://paymentservice:8080}
           predicates:
