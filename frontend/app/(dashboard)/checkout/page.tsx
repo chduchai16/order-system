@@ -102,7 +102,7 @@ function voucherLabel(voucher: Voucher) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getTotalPrice, clearCart, initializeCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -156,6 +156,10 @@ export default function CheckoutPage() {
       country: addr.country,
     });
   };
+
+  useEffect(() => {
+    void initializeCart();
+  }, [initializeCart]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -295,7 +299,7 @@ export default function CheckoutPage() {
       };
 
       const order = await orderService.createOrder(orderRequest);
-      clearCart();
+      await clearCart();
 
       if (paymentMethod === 'BANK_TRANSFER') {
         router.push(`/payment?orderId=${order.id}`);

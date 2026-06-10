@@ -45,12 +45,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const { id: productId } = use(params);
   const router = useRouter();
   const addToCart = useCartStore((state) => state.addToCart);
+  const initializeCart = useCartStore((state) => state.initializeCart);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(colorOptions[0].name);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [activeTab, setActiveTab] = useState('specs');
+
+  useEffect(() => {
+    void initializeCart();
+  }, [initializeCart]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -91,8 +96,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const stock = selectedVariant ? selectedVariant.stock : displayProduct.availableStock ?? displayProduct.stock;
   const specs = displayProduct.attributes?.length ? displayProduct.attributes : fallbackSpecs;
 
-  const handleAddToCart = () => {
-    addToCart({
+  const handleAddToCart = async () => {
+    await addToCart({
       productId: displayProduct.id,
       quantity,
       productName: selectedVariant ? `${displayProduct.name} - ${selectedVariant.name}` : displayProduct.name,
@@ -101,8 +106,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     });
   };
 
-  const handleBuyNow = () => {
-    handleAddToCart();
+  const handleBuyNow = async () => {
+    await handleAddToCart();
     router.push('/cart');
   };
 

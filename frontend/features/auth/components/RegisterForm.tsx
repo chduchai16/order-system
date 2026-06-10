@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2, Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
 import { authService } from '@/features/auth/api/authService';
+import { useCartStore } from '@/features/cart/store/cartStore';
 import { tokenStore } from '@/features/shared/api/tokenStore';
 
 export default function RegisterForm() {
   const router = useRouter();
+  const initializeCart = useCartStore((state) => state.initializeCart);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -58,6 +60,7 @@ export default function RegisterForm() {
         lastName: formData.lastName.trim(),
       });
       tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
+      await initializeCart();
       router.push('/products');
     } catch {
       setError('Đăng ký không thành công. Tên đăng nhập hoặc email đã được sử dụng.');

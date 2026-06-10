@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
 import { authService } from '@/features/auth/api/authService';
+import { useCartStore } from '@/features/cart/store/cartStore';
 import { tokenStore } from '@/features/shared/api/tokenStore';
 
 export default function LoginForm() {
   const router = useRouter();
+  const initializeCart = useCartStore((state) => state.initializeCart);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -24,6 +26,7 @@ export default function LoginForm() {
     try {
       const tokens = await authService.login({ username: username.trim(), password });
       tokenStore.setTokens(tokens.access_token, tokens.refresh_token);
+      await initializeCart();
       router.push('/products');
     } catch {
       setError('Tên đăng nhập hoặc mật khẩu không chính xác.');

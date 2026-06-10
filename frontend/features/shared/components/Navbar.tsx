@@ -118,12 +118,18 @@ const megaCategories: MegaCategory[] = [
 export default function Navbar() {
   const isHydrated = useSyncExternalStore(() => () => undefined, () => true, () => false);
   const cartItemCount = useCartStore((state) => state.items.reduce((count, item) => count + item.quantity, 0));
+  const initializeCart = useCartStore((state) => state.initializeCart);
+  const resetCartState = useCartStore((state) => state.resetCartState);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [profile, setProfile] = useState<UserType | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [activeMegaCategory, setActiveMegaCategory] = useState('home-living');
+
+  useEffect(() => {
+    void initializeCart();
+  }, [initializeCart]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -360,6 +366,7 @@ export default function Navbar() {
                       <button
                         onClick={() => {
                           tokenStore.clearTokens();
+                          resetCartState();
                           setProfile(null);
                           setShowUserDropdown(false);
                           window.location.reload();
@@ -501,6 +508,7 @@ export default function Navbar() {
                   <button 
                     onClick={() => {
                       tokenStore.clearTokens();
+                      resetCartState();
                       setProfile(null);
                       setShowMobileMenu(false);
                       window.location.reload();

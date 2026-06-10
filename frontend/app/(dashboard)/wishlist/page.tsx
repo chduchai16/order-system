@@ -31,10 +31,13 @@ function ProductIcon() {
 
 export default function WishlistPage() {
   const addToCart = useCartStore((state) => state.addToCart);
+  const initializeCart = useCartStore((state) => state.initializeCart);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    void initializeCart();
+
     const fetchWishlist = async () => {
       try {
         const items = await userService.getWishlist();
@@ -52,8 +55,8 @@ export default function WishlistPage() {
 
   const totalCount = wishlist.length;
 
-  const handleAddToCart = (item: WishlistItem) => {
-    addToCart({
+  const handleAddToCart = async (item: WishlistItem) => {
+    await addToCart({
       productId: item.productId,
       productName: item.productName,
       quantity: 1,

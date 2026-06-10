@@ -28,10 +28,10 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
     product.variants && product.variants.length > 0 ? product.variants[0] : null
   );
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart({
+    await addToCart({
       productId: product.id,
       quantity: 1,
       productName: selectedVariant ? `${product.name} - ${selectedVariant.name}` : product.name,

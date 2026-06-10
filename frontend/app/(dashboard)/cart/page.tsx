@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Check,
@@ -17,7 +18,6 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/features/cart/store/cartStore';
 import { CartItem } from '@/features/shared/types';
-import { useState } from 'react';
 
 const shippingOptions = [
   {
@@ -83,8 +83,12 @@ function QuantityControl({
 }
 
 export default function CartPage() {
-  const { items, savedItems, removeFromCart, updateQuantity, getTotalPrice, clearCart, saveForLater, moveToCart } = useCartStore();
+  const { items, savedItems, removeFromCart, updateQuantity, getTotalPrice, clearCart, saveForLater, moveToCart, initializeCart } = useCartStore();
   const [selectedShipping, setSelectedShipping] = useState(shippingOptions[0].id);
+
+  useEffect(() => {
+    void initializeCart();
+  }, [initializeCart]);
 
   const subtotal = getTotalPrice();
   const selectedShippingOption = shippingOptions.find((option) => option.id === selectedShipping) ?? shippingOptions[0];

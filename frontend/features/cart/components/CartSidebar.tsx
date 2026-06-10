@@ -1,11 +1,17 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/features/cart/store/cartStore';
 
 export default function CartSidebar() {
+  const initializeCart = useCartStore((state) => state.initializeCart);
   const itemCount = useCartStore(state => state.getItemCount());
+
+  useEffect(() => {
+    void initializeCart();
+  }, [initializeCart]);
 
   return (
     <Link
