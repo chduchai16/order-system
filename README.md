@@ -1,96 +1,263 @@
 # Hệ thống đặt hàng Microservices (Order System)
 
-Đây là một hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc Microservices hướng sự kiện (Event-Driven Architecture) với Spring Boot và Spring Cloud ở backend, cùng React và Next.js ở frontend.
+Đây là hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc microservices hướng sự kiện, sử dụng Spring Boot và Spring Cloud ở backend, Next.js ở frontend.
 
-## Kiến trúc hệ thống
+## Các thành phần chính
 
-Hệ thống bao gồm các dịch vụ sau:
+- `apigateway`: Cổng vào duy nhất, định tuyến request và xử lý JWT.
+- `userservice`: Đăng ký, đăng nhập, thông tin người dùng.
+- `productservice`: Danh mục sản phẩm và tồn kho.
+- `cartservice`: Giỏ hàng, lưu trên Redis.
+- `orderservice`: Xử lý đặt hàng.
+- `paymentservice`: Thanh toán và webhook SePay.
+- `mediaservice`: Module media mới, đã được thêm vào Maven reactor để build cùng backend.
+- `commonlib`: DTO, event và thành phần dùng chung.
+- `frontend`: Giao diện Next.js.
 
-- Gateway (apigateway): Cổng kết nối duy nhất, định tuyến các yêu cầu và xác thực JWT.
-- User Service (userservice): Quản lý người dùng, đăng ký, đăng nhập và bảo mật.
-- Product Service (productservice): Quản lý danh mục sản phẩm và kho hàng.
-- Cart Service (cartservice): Dịch vụ giỏ hàng lưu trữ dữ liệu trên Redis cache.
-- Order Service (orderservice): Logic đặt hàng và xử lý quy trình mua hàng.
-- Payment Service (paymentservice): Giả lập và xử lý thanh toán đơn hàng, tích hợp SePay.
-- Shared Library (commonlib): Thư viện chứa các DTO, Exceptions, và Kafka Events dùng chung.
+## Trạng thái hiện tại
 
-## Thiết kế kiến trúc và Tính năng nổi bật
+- `notificationservice` đã bị loại bỏ khỏi repo.
+- `mediaservice` đã có trong Maven modules.
+- `mediaservice` chưa được khai báo runtime trong `docker-compose.yml`.
 
-### Kiến trúc Clean Architecture
+## Công nghệ
 
-Các dịch vụ backend trong hệ thống được thiết kế tuân thủ nghiêm ngặt các nguyên lý của Clean Architecture nhằm đảm bảo tách biệt rõ ràng các mối quan tâm (separation of concerns), độc lập cấu trúc mã nguồn, dễ viết unit test và bảo trì lâu dài:
-- Domain Layer: Chứa các thực thể cốt lõi (entities) và các quy tắc nghiệp vụ cơ bản không phụ thuộc vào framework hay cơ sở dữ liệu bên ngoài.
-- Application Layer: Chứa các ca sử dụng (use cases), định nghĩa các cổng giao tiếp (interfaces) và điều phối luồng logic nghiệp vụ chính của từng dịch vụ.
-- Infrastructure Layer: Chứa triển khai cụ thể của các cổng giao tiếp (adapters) như tương tác cơ sở dữ liệu (Spring Data JPA), tích hợp dịch vụ bên ngoài, cấu hình Apache Kafka (producers/listeners) hay Redis.
-- Web Layer: Định nghĩa các REST API Controller để tiếp nhận và phản hồi yêu cầu từ phía Client thông qua API Gateway.
+- Java 17
+- Spring Boot 3.5.0
+- Spring Cloud 2025.0.0
+- PostgreSQL 15
+- Redis 7.2
+- Apache Kafka 7.6.0
+- React 19
+- Next.js 16
+- Tailwind CSS v4
 
-### Tích hợp cổng thanh toán SePay
+## DB Schema
 
-Hệ thống hỗ trợ thanh toán tự động qua cổng thanh toán SePay:
-- Cung cấp API Webhook tại đường dẫn `/sepay` để tiếp nhận thông tin chuyển khoản từ SePay theo thời gian thực.
-- Tự động phân tích nội dung chuyển khoản để trích xuất mã thanh toán (payment code).
-- Xác thực tính hợp lệ của thông tin giao dịch, cập nhật trạng thái đơn hàng ngay lập tức và phát hành sự kiện Kafka để các dịch vụ liên quan cập nhật trạng thái tương ứng.
+Các sơ đồ dưới đây mô tả các bảng chính đang được khởi tạo trong `init-databases.sql`, tách riêng theo từng service để dễ đọc hơn trên GitHub.
 
-## Công nghệ sử dụng
+### User Service (`user_db`)
 
-- Ngôn ngữ: Java 17, JavaScript/TypeScript.
-- Framework Backend: Spring Boot 3.5.0, Spring Cloud 2025.0.0, Spring Data JPA.
-- Framework Frontend: React 19, Next.js 16.2, Tailwind CSS v4, Zustand.
-- Cơ sở dữ liệu: PostgreSQL 15 (CSDL quan hệ), Redis 7.2 (InMemory cache).
-- Hệ thống tin nhắn: Apache Kafka 7.6.0.
-- Container hóa: Docker, Docker Compose.
+```mermaid
+erDiagram
+    ROLES ||--o{ USERS : has
+    USERS ||--o{ USER_ADDRESSES : owns
+    USERS ||--o{ USER_WISHLISTS : saves
+    USERS ||--o{ REFRESH_TOKENS : receives
 
-## Port và các dịch vụ
+    ROLES {
+        int id
+        string name
+    }
 
-Dưới đây là danh sách các cổng (port) mặc định:
+    USERS {
+        int id
+        string username
+        string email
+        int role_id
+        boolean active
+    }
 
-- Gateway: 8080
-- User Service: 8081
-- Product Service: 8082
-- Order Service: 8083
-- Payment Service: 8084
-- Cart Service: 8085
-- Frontend: 3000
-- PostgreSQL: 5432
-- Redis: 6380
-- Kafka: 9092, 9094
+    USER_ADDRESSES {
+        int id
+        int user_id
+        string label
+        string city
+        string district
+        boolean is_default
+    }
 
-## Hướng dẫn chạy hệ thống
+    USER_WISHLISTS {
+        int id
+        int user_id
+        bigint product_id
+        string product_name
+    }
 
-### Yêu cầu hệ thống
-
-Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã được cài đặt sẵn:
-
-- Java Development Kit (JDK) 17
-- Node.js và npm
-- Docker và Docker Compose
-- Maven (để build mã nguồn Java)
-
-### Bước 1: Build các dịch vụ backend
-
-Sử dụng Makefile để tự động build tất cả microservices qua Maven:
-
-```bash
-make build
+    REFRESH_TOKENS {
+        int id
+        int user_id
+        string token_hash
+        timestamp expires_at
+        boolean revoked
+    }
 ```
 
-Hoặc sử dụng lệnh Maven truyền thống từ thư mục gốc:
+### Product Service (`product_db`)
+
+```mermaid
+erDiagram
+    CATEGORIES ||--o{ PRODUCTS : groups
+    PRODUCTS ||--o{ PRODUCT_VARIANTS : has
+    PRODUCTS ||--o{ PRODUCT_ATTRIBUTES : describes
+    PRODUCTS ||--o{ STOCK_MOVEMENTS : tracks
+
+    CATEGORIES {
+        int id
+        string name
+        string description
+    }
+
+    PRODUCTS {
+        int id
+        string sku
+        string name
+        int category_id
+        decimal price
+        int stock
+        int reserved_stock
+        boolean active
+    }
+
+    PRODUCT_VARIANTS {
+        int id
+        int product_id
+        string sku_code
+        string name
+        decimal price
+        int total_stock
+    }
+
+    PRODUCT_ATTRIBUTES {
+        int product_id
+        string name
+        string value
+    }
+
+    STOCK_MOVEMENTS {
+        int id
+        bigint product_id
+        bigint variant_id
+        int quantity
+        string type
+    }
+```
+
+### Order Service (`order_db`)
+
+```mermaid
+erDiagram
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    ORDERS ||--o{ ORDER_STATUS_HISTORY : logs
+    VOUCHERS ||--o{ VOUCHER_CONDITIONS : defines
+    VOUCHERS ||--o{ VOUCHER_USAGES : records
+
+    ORDERS {
+        int id
+        string order_number
+        bigint user_id
+        decimal total_price
+        string status
+        bigint voucher_id
+        string voucher_code
+    }
+
+    ORDER_ITEMS {
+        int id
+        int order_id
+        bigint product_id
+        string product_name
+        int quantity
+        decimal unit_price
+    }
+
+    ORDER_STATUS_HISTORY {
+        int id
+        int order_id
+        string from_status
+        string to_status
+        timestamp changed_at
+    }
+
+    VOUCHERS {
+        int id
+        string code
+        string discount_type
+        decimal discount_value
+        boolean is_active
+    }
+
+    VOUCHER_CONDITIONS {
+        int id
+        bigint voucher_id
+        string condition_type
+        string value
+    }
+
+    VOUCHER_USAGES {
+        int id
+        bigint voucher_id
+        bigint user_id
+        bigint order_id
+        decimal discount_amount
+    }
+```
+
+### Payment Service (`payment_db`)
+
+```mermaid
+erDiagram
+    PAYMENTS ||--o{ PAYMENT_TRANSACTIONS : logs
+
+    PAYMENTS {
+        bigint order_id
+        bigint user_id
+        string payment_code
+        decimal amount
+        string payment_method
+        string status
+    }
+
+    PAYMENT_TRANSACTIONS {
+        bigint order_id
+        string transaction_id
+        string gateway_provider
+        string status
+    }
+```
+
+### Media Service
+
+`mediaservice` đã có module Maven nhưng hiện chưa có schema database trong `init-databases.sql`.
+
+## Port mặc định trong docker-compose
+
+- `apigateway`: `8080`
+- `userservice`: `8081`
+- `productservice`: `8082`
+- `orderservice`: `8083`
+- `paymentservice`: `8084`
+- `cartservice`: `8085`
+- `frontend`: `3000`
+- `postgres`: `5432`
+- `redis`: `6380`
+- `kafka`: `9092`, `9094`
+
+Lưu ý:
+
+- `mediaservice` hiện chưa có port/runtime trong `docker-compose.yml`.
+
+## Build backend
 
 ```bash
 mvn clean package -DskipTests
 ```
 
-### Bước 2: Khởi chạy cơ sở hạ tầng và các microservices
+Hoặc build riêng `mediaservice` cùng dependency:
 
 ```bash
-docker-compose up -d
+mvn -pl mediaservice -am -DskipTests validate
 ```
 
-Cơ sở dữ liệu PostgreSQL sẽ tự động được khởi tạo thông qua tập tin init-databases.sql.
+## Chạy bằng Docker Compose
 
-### Bước 3: Chạy frontend
+```bash
+docker compose up -d
+```
 
-Di chuyển vào thư mục frontend và khởi chạy môi trường phát triển (development):
+PostgreSQL được khởi tạo bằng `init-databases.sql`.
+
+## Chạy frontend local
 
 ```bash
 cd frontend
@@ -98,4 +265,4 @@ npm install
 npm run dev
 ```
 
-Ứng dụng frontend sẽ chạy tại địa chỉ: http://localhost:3000
+Frontend mặc định chạy tại `http://localhost:3000`.
