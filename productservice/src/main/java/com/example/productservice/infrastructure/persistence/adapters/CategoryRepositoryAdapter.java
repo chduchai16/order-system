@@ -44,6 +44,11 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
+    public Boolean existsById(Long id) {
+        return  jpaCategoryRepository.existsById(id);
+    }
+
+    @Override
     public List<Category> findAll() {
         return jpaCategoryRepository.findAll().stream()
                 .map(entity -> Category.builder()

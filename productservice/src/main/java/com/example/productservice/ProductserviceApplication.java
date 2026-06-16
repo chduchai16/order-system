@@ -2,8 +2,10 @@ package com.example.productservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication(scanBasePackages = "com.example")
+@EnableFeignClients(basePackages = "com.example.productservice.infrastructure.adapters.clients")
 public class ProductserviceApplication {
 
 	public static void main(String[] args) {

@@ -1,11 +1,11 @@
 package com.example.productservice.web;
 
-import com.example.productservice.application.dtos.product.ProductRequest;
-import com.example.productservice.application.dtos.product.ProductResponse;
-import com.example.productservice.application.dtos.product.VariantResponse;
-import com.example.productservice.application.dtos.product.AttributeResponse;
+import com.example.productservice.application.dtos.product.*;
 import com.example.productservice.application.services.IProductService;
 import com.example.productservice.domain.models.Product;
+import com.example.productservice.domain.models.StockMovement;
+import com.example.productservice.domain.models.external.MediaInfo;
+import com.example.productservice.domain.ports.externals.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductController {
     private final IProductService productService;
+    private final MediaService mediaService;
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
         Product product = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(product));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @RequestBody UpdateProductRequest request) {
+        request.setId(id);
+        Product product = productService.updateProduct(request);
+        return ResponseEntity.ok(toResponse(product));
     }
 
     @GetMapping("/{id}")
@@ -69,7 +79,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/stock-movements")
-    public ResponseEntity<List<com.example.productservice.domain.models.StockMovement>> getStockMovements(@PathVariable Long id) {
+    public ResponseEntity<List<StockMovement>> getStockMovements(@PathVariable Long id) {
         // lấy lịch sử kho
         return ResponseEntity.ok(productService.getStockMovements(id));
     }
@@ -101,7 +111,37 @@ public class ProductController {
                                 .value(a.getValue())
                                 .build())
                         .collect(Collectors.toList()) : null)
+                .images(buildImageResponses(product))
                 .createdAt(product.getCreatedAt())
                 .build();
+    }
+
+    private List<ProductImageResponse> buildImageResponses(Product product) {
+        if (product.getImages() == null || product.getImages().isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> mediaIds = product.getImages().stream()
+                .map(com.example.productservice.domain.models.ProductImage::getMediaId)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .toList();
+
+        List<MediaInfo> mediaInfos = mediaService.getByIds(mediaIds);
+
+        java.util.Map<Long, MediaInfo> mediaInfoMap = mediaInfos.stream()
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toMap(MediaInfo::getId, item -> item, (left, right) -> left));
+
+        return product.getImages().stream()
+                .map(image -> ProductImageResponse.builder()
+                        .id(image.getId())
+                        .mediaId(image.getMediaId())
+                        .productId(image.getProductId())
+                        .displayOrder(image.getDisplayOrder())
+                        .isPrimary(image.isPrimary())
+                        .url(mediaInfoMap.get(image.getMediaId()) != null ? mediaInfoMap.get(image.getMediaId()).getUrl() : null)
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
     }
 }

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -48,11 +50,14 @@ public class ProductEntity {
     private Long version;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<ProductVariantEntity> variants = new java.util.ArrayList<>();
+    private List<ProductVariantEntity> variants = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "product_attributes", joinColumns = @JoinColumn(name = "product_id"))
-    private java.util.List<ProductAttributeEmbeddable> attributes = new java.util.ArrayList<>();
+    private List<ProductAttributeEmbeddable> attributes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImageEntity> images = new ArrayList<>();
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

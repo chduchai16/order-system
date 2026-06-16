@@ -3,6 +3,7 @@ package com.example.productservice.application.dtos.product;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ProductRequest {
@@ -12,6 +13,7 @@ public class ProductRequest {
     private BigDecimal price;
 
     private Integer stock;
-    private java.util.List<VariantRequest> variants;
-    private java.util.List<AttributeRequest> attributes;
+    private List<VariantRequest> variants;
+    private List<AttributeRequest> attributes;
+    private List<ProductImageRequest> images;
 }

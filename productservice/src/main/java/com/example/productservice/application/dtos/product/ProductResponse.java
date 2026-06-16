@@ -26,5 +26,6 @@ public class ProductResponse {
     private boolean active;
     private List<VariantResponse> variants;
     private List<AttributeResponse> attributes;
+    private List<ProductImageResponse> images;
     private LocalDateTime createdAt;
 }

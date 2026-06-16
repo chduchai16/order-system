@@ -8,6 +8,7 @@ import com.example.productservice.infrastructure.persistence.jpas.JpaProductRepo
 import com.example.productservice.infrastructure.persistence.entities.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
     private final JpaProductRepository jpaProductRepository;
 
     @Override
+    @Transactional
     public Product save(Product product) {
         ProductEntity entity = ProductMapper.toEntity(product);
         ProductEntity savedEntity = jpaProductRepository.save(entity);
@@ -27,11 +29,18 @@ public class ProductRepositoryAdapter implements ProductRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Product> findById(Long id) {
         return jpaProductRepository.findById(id).map(ProductMapper::toDomain);
     }
 
     @Override
+    public Boolean existsById(Long id) {
+        return  jpaProductRepository.existsById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Product> findAll() {
         return jpaProductRepository.findAll().stream()
                 .map(ProductMapper::toDomain)
@@ -39,6 +48,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> findActiveProducts() {
         return jpaProductRepository.findByActiveTrue().stream()
                 .map(ProductMapper::toDomain)

@@ -14,23 +14,43 @@ import java.math.BigDecimal;
 public class ProductVariant {
     private Long id;
     private String skuCode;
-    private String name; // ví dụ "iPhone 15 Pro - Blue"
+    private String name;
     private BigDecimal price;
     private Integer totalStock;
     private Integer reservedStock;
 
     public Integer getAvailableStock() {
-        return totalStock - reservedStock;
+        int currentTotal = totalStock != null ? totalStock : 0;
+        int currentReserved = reservedStock != null ? reservedStock : 0;
+        return Math.max(0, currentTotal - currentReserved);
     }
 
     public void reserveStock(Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
         if (getAvailableStock() < quantity) {
             throw new RuntimeException("Insufficient stock for variant: " + skuCode);
         }
-        this.reservedStock += quantity;
+        this.reservedStock = (reservedStock != null ? reservedStock : 0) + quantity;
     }
 
     public void releaseStock(Integer quantity) {
-        this.reservedStock = Math.max(0, this.reservedStock - quantity);
+        if (quantity == null || quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+        int currentReserved = reservedStock != null ? reservedStock : 0;
+        this.reservedStock = Math.max(0, currentReserved - quantity);
+    }
+
+    public void updateFrom(ProductVariant other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Variant data cannot be null");
+        }
+        this.skuCode = other.skuCode;
+        this.name = other.name;
+        this.price = other.price;
+        this.totalStock = other.totalStock;
+        this.reservedStock = other.reservedStock != null ? other.reservedStock : 0;
     }
 }

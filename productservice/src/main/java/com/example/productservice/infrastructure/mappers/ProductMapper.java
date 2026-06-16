@@ -21,6 +21,7 @@ public class ProductMapper {
                 .active(entity.isActive())
                 .variants(entity.getVariants() != null ? entity.getVariants().stream().map(ProductMapper::variantToDomain).collect(Collectors.toList()) : null)
                 .attributes(entity.getAttributes() != null ? entity.getAttributes().stream().map(ProductMapper::attributeToDomain).collect(Collectors.toList()) : null)
+                .images(entity.getImages() != null ? entity.getImages().stream().map(ProductMapper::imageToDomain).collect(Collectors.toList()) : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -78,9 +79,17 @@ public class ProductMapper {
                 return ve;
             }).collect(Collectors.toList()));
         }
-        
+
         if (domain.getAttributes() != null) {
             entity.setAttributes(domain.getAttributes().stream().map(ProductMapper::attributeToEntity).collect(Collectors.toList()));
+        }
+
+        if (domain.getImages() != null) {
+            entity.setImages(domain.getImages().stream().map(image -> {
+                ProductImageEntity ie = imageToEntity(image);
+                ie.setProduct(entity);
+                return ie;
+            }).collect(Collectors.toList()));
         }
         
         return entity;
@@ -113,6 +122,27 @@ public class ProductMapper {
         entity.setName(domain.getName());
         entity.setDescription(domain.getDescription());
         return entity;
+    }
+
+    private static ProductImageEntity imageToEntity(ProductImage domain) {
+        if (domain == null) return null;
+        ProductImageEntity entity = new ProductImageEntity();
+        entity.setId(domain.getId());
+        entity.setMediaId(domain.getMediaId());
+        entity.setDisplayOrder(domain.getDisplayOrder());
+        entity.setPrimary(domain.isPrimary());
+        return entity;
+    }
+
+    private static ProductImage imageToDomain(ProductImageEntity entity) {
+        if (entity == null) return null;
+        return ProductImage.builder()
+                .id(entity.getId())
+                .mediaId(entity.getMediaId())
+                .productId(entity.getProduct() != null ? entity.getProduct().getId() : null)
+                .displayOrder(entity.getDisplayOrder())
+                .isPrimary(entity.isPrimary())
+                .build();
     }
 
     public static StockMovement toDomain(StockMovementEntity entity) {
