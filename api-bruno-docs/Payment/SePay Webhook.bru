@@ -1,0 +1,16 @@
+meta {
+  name: SePay Webhook
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/payments/webhook/sepay
+  body: json
+}
+
+body:json {
+  {
+    "content": "Demo webhook"
+  }
+}

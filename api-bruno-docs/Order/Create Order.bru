@@ -1,0 +1,26 @@
+meta {
+  name: Create Order
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "userId": 1,
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 1
+      }
+    ]
+  }
+}

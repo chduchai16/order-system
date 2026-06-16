@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "order-system",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

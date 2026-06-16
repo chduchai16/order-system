@@ -1,0 +1,13 @@
+meta {
+  name: Update Price
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/api/products/1/price?price=129000
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

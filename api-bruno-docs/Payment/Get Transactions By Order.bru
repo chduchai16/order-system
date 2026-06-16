@@ -1,0 +1,13 @@
+meta {
+  name: Get Transactions By Order
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/payments/transactions/order/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

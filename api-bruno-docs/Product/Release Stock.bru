@@ -1,0 +1,13 @@
+meta {
+  name: Release Stock
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/products/1/release-stock?quantity=1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

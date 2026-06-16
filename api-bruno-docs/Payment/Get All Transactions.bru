@@ -1,0 +1,13 @@
+meta {
+  name: Get All Transactions
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/payments/transactions
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

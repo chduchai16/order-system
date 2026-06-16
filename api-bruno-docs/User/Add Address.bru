@@ -1,0 +1,25 @@
+meta {
+  name: Add Address
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/users/1/addresses
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "label": "Home",
+    "street": "123 Nguyen Hue",
+    "city": "Ho Chi Minh",
+    "district": "District 1",
+    "country": "Vietnam",
+    "isDefault": true
+  }
+}

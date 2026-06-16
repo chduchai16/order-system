@@ -1,0 +1,13 @@
+meta {
+  name: Refund Payment
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/payments/refund/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

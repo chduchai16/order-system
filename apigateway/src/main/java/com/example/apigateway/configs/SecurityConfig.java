@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/products/**").permitAll()
+                        .pathMatchers("/api/media/**").permitAll()
                         .pathMatchers("/api/payments/webhook").permitAll()
                         .pathMatchers("/api/payments/webhook/**").permitAll()
                         .anyExchange().authenticated()

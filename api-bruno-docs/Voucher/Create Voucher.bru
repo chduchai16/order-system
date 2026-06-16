@@ -1,0 +1,30 @@
+meta {
+  name: Create Voucher
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/vouchers
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "code": "SALE10",
+    "name": "Giảm 10%",
+    "description": "Voucher Bruno",
+    "discountType": "PERCENT",
+    "discountValue": 10,
+    "maxDiscountValue": 50000,
+    "minOrderValue": 300000,
+    "totalQuantity": 100,
+    "startDate": "2026-06-16T00:00:00",
+    "endDate": "2026-12-31T23:59:59",
+    "isActive": true
+  }
+}

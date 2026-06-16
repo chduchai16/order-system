@@ -1,0 +1,13 @@
+meta {
+  name: Get Order
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/orders/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

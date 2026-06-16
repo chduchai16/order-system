@@ -1,0 +1,13 @@
+meta {
+  name: Get User By Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/users/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

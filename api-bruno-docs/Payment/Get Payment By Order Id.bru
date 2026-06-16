@@ -1,0 +1,13 @@
+meta {
+  name: Get Payment By Order Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/payments/order/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

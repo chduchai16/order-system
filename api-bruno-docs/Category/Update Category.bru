@@ -1,0 +1,22 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/categories
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "Updated Category",
+    "description": "Updated from Bruno"
+  }
+}

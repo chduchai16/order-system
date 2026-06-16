@@ -1,0 +1,27 @@
+meta {
+  name: Create Product
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/products
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Demo product",
+    "description": "Sample product created from Bruno",
+    "categoryId": 1,
+    "price": 99000,
+    "stock": 100,
+    "variants": [],
+    "attributes": [],
+    "images": []
+  }
+}

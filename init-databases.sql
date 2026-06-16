@@ -5,14 +5,13 @@ CREATE DATABASE user_db;
 CREATE DATABASE product_db;
 CREATE DATABASE order_db;
 CREATE DATABASE payment_db;
-
+CREATE DATABASE media_db;
 
 -- ================================================================
 -- PRODUCT SERVICE SCHEMA & SEED DATA
 -- ================================================================
 \c product_db;
 
--- ---- DDL ----
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -50,61 +49,78 @@ CREATE TABLE IF NOT EXISTS product_attributes (
     value VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS product_images (
+    id SERIAL PRIMARY KEY,
+    media_id BIGINT NOT NULL,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    display_order INTEGER DEFAULT 0,
+    is_primary BOOLEAN DEFAULT false
+);
+
 CREATE TABLE IF NOT EXISTS stock_movements (
     id SERIAL PRIMARY KEY,
-    product_id BIGINT NOT NULL,
-    variant_id BIGINT,
+    product_id INTEGER NOT NULL,
+    variant_id INTEGER,
     quantity INTEGER NOT NULL,
     type VARCHAR(20) NOT NULL,
     reason TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- ---- SEED: Categories ----
+-- Categories are flat, no tree structure.
 INSERT INTO categories (name, description) VALUES
-    ('Gốm sứ trang trí', 'Đồ gốm men hỏa biến và gốm sứ trang trí thủ công nghệ thuật'),
-    ('Trang sức thủ công', 'Trang sức bạc S925, thạch anh và đá quý tự nhiên độc bản'),
-    ('Nến thơm tự nhiên', 'Nến thơm tinh dầu thiên nhiên, sáp đậu nành bảo vệ sức khỏe'),
-    ('Đồ gỗ mỹ nghệ', 'Nội thất, khay gỗ và dụng cụ trang trí gỗ óc chó tự nhiên'),
-    ('Thêu tay nghệ thuật', 'Tranh thêu tay, túi vải và phụ kiện thêu tay họa tiết truyền thống'),
-    ('Thời trang linen', 'Quần áo, chăn ga làm bằng chất liệu vải linen và cotton organic'),
-    ('Đồ len móc tay', 'Khăn len choàng cổ, mũ nồi và thú bông đan móc thủ công'),
-    ('Trà & Thảo mộc', 'Các loại trà hoa tự nhiên dệt hương và trà thảo mộc organic'),
-    ('Tranh vẽ & Canvas', 'Tranh canvas, tranh sơn mài và tác phẩm nghệ thuật trang trí'),
-    ('Sổ tay & Đồ da', 'Sổ tay da bò veg-tan, ví da và phụ kiện da thiết kế thủ công');
+    ('Food - Bakery', 'Bread, cakes and baked goods'),
+    ('Food - Drinks', 'Coffee, tea and beverage products'),
+    ('Food - Pantry', 'Kitchen and pantry staples'),
+    ('Food - Snacks', 'Snack items and quick bites'),
+    ('Craft - Jewelry', 'Handmade jewelry and accessories'),
+    ('Craft - Home Decor', 'Decorative handmade home goods'),
+    ('Craft - Accessories', 'Bags, scarves and wearable crafts'),
+    ('Craft - Stationery', 'Journals, notebooks and paper goods');
 
--- ---- SEED: Products (30 sản phẩm) ----
 INSERT INTO products (sku, name, category_id, description, price, stock, reserved_stock, version, active, created_at, updated_at) VALUES
-    ('LY-SU-HOA-BIEN', 'Ly sứ men hỏa biến Hà Đông', 1, 'Ly sứ được nung ở nhiệt độ cao với lớp men hỏa biến tự sắc xanh biển sâu độc bản.', 250000, 150, 5, 0, true, NOW(), NOW()),
-    ('NHAN-BAC-THACH-ANH', 'Nhẫn bạc thạch anh tóc vàng', 2, 'Nhẫn làm thủ công từ bạc ta đính đá thạch anh tóc vàng thiên nhiên mang năng lượng tích cực.', 380000, 200, 8, 0, true, NOW(), NOW()),
-    ('NEN-THOM-HOA-OAI-HUONG', 'Nến thơm tinh dầu hoa oải hương', 3, 'Nến thơm làm từ sáp đậu nành organic phối trộn tinh dầu oải hương giúp ngủ ngon, thư giãn tinh thần.', 160000, 100, 2, 0, true, NOW(), NOW()),
-    ('KHAY-TRA-GO-OC-CHO', 'Khay trà gỗ óc chó nguyên khối', 4, 'Khay trà gỗ óc chó cao cấp vân gỗ tự nhiên sang trọng, bề mặt chống nước hoàn thiện thủ công.', 1500000, 80, 2, 0, true, NOW(), NOW()),
-    ('TUI-LINEN-THEU-TAY', 'Túi vải linen thêu hoa cúc cổ điển', 5, 'Túi tote linen thêu tay cúc họa mi tỉ mỉ, ngăn chứa rộng phù hợp sử dụng hàng ngày.', 290000, 120, 3, 0, true, NOW(), NOW()),
-    ('AO-LINEN-DANG-SUONG', 'Áo linen dáng suông cao cấp', 6, 'Áo kiểu cổ thuyền vải linen tự nhiên mềm mát, thoáng mát và sang trọng cho mùa hè.', 580000, 60, 1, 0, true, NOW(), NOW()),
-    ('KHAN-CHOANG-LEN-MOC', 'Khăn choàng len móc tay thủ công', 7, 'Khăn quàng cổ đan từ sợi len cừu mềm mịn, họa tiết quả dâu xinh xắn nổi bật.', 450000, 70, 0, 0, true, NOW(), NOW()),
-    ('TRA-HOA-CUC-MAT-ONG', 'Trà hoa cúc dệt hương mật ong', 8, 'Trà hoa cúc nguyên bông phơi sấy sạch tự nhiên kết hợp mật ong ngọt thanh thanh, tốt cho mắt.', 120000, 50, 0, 0, true, NOW(), NOW()),
-    ('TRANH-CANVAS-SEN-KHO', 'Tranh canvas sen khô mùa thu', 9, 'Tác phẩm nghệ thuật tối giản với hình ảnh sen tàn mộc mạc mang cảm hứng thiền định tĩnh lặng.', 750000, 40, 0, 0, true, NOW(), NOW()),
-    ('SO-TAY-DA-HANDMADE', 'Sổ tay bìa da bò thật khắc tên', 10, 'Sổ tay chế tác thủ công bìa da bò sáp, ruột giấy Kraft kem cổ điển không dòng kẻ.', 480000, 80, 4, 0, true, NOW(), NOW()),
-    ('BINH-HOA-GOM-MOC', 'Bình hoa gốm mộc tráng men ngọc', 1, 'Bình cắm hoa thiết kế đơn giản mộc mạc, lòng bình tráng men ngọc giữ nước cắm hoa bền lâu.', 320000, 25, 1, 0, true, NOW(), NOW()),
-    ('VONG-TAY-TRAM-HUONG', 'Vòng tay gỗ trầm hương thiên nhiên', 2, 'Vòng hạt gỗ trầm hương tự nhiên từ rừng Khánh Hòa, mùi thơm dịu nhẹ thu hút tài lộc.', 1200000, 35, 0, 0, true, NOW(), NOW()),
-    ('NEN-THOM-QUE-HUONG-THAO', 'Nến thơm sáp ong hương quế & hương thảo', 3, 'Mùi hương ấm áp dễ chịu của quế pha chút thanh mát của hương thảo giúp khử mùi phòng hiệu quả.', 180000, 20, 0, 0, true, NOW(), NOW()),
-    ('HOP-TRANG-SUC-GO-HUONG', 'Hộp đựng trang sức gỗ hương khắc hoa văn', 4, 'Hộp gỗ hương đỏ quý hiếm chạm trổ hoa mẫu đơn tỉ mỉ, có lót nhung bảo vệ trang sức bên trong.', 950000, 18, 1, 0, true, NOW(), NOW()),
-    ('TRANH-THEU-PHONG-CANH', 'Tranh thêu tay phong cảnh làng quê', 5, 'Tác phẩm thêu chỉ tơ tằm sắc sảo, phác họa khung cảnh cây đa bến nước thanh bình cổ xưa.', 1650000, 200, 10, 0, true, NOW(), NOW()),
-    ('DEM-NGOI-COTTON-LINEN', 'Đệm ngồi thiền vải linen organic', 6, 'Ruột bông gòn tự nhiên đàn hồi tốt, vỏ bọc linen dày dặn tháo giặt dễ dàng, dùng ngồi bệt hay trà đạo.', 350000, 150, 3, 0, true, NOW(), NOW()),
-    ('THU-BONG-LEN-MOC-TAY', 'Thú bông thỏ len móc tay cho bé', 7, 'Móc len bằng tay hoàn toàn từ sợi cotton an toàn cho trẻ nhỏ, có thể ôm ngủ hay làm quà tặng.', 260000, 500, 20, 0, true, NOW(), NOW()),
-    ('TRA-THIET-QUAN-AM-TAY-BAC', 'Trà Thiết Quan Âm Tây Bắc thượng hạng', 8, 'Hương vị trà ô long đậm đà thu hái thủ công từ vùng cao Tây Bắc, sấy thủ công giữ hương hoa lan đặc trưng.', 190000, 300, 5, 0, true, NOW(), NOW()),
-    ('TRANH-SON-MAI-PHU-SI', 'Tranh sơn mài núi Phú Sĩ dát vàng', 9, 'Bức tranh sơn mài vẽ tay truyền thống qua 15 lớp mài, dát vàng quỳ sang trọng tạo chiều sâu.', 2500000, 60, 3, 0, true, NOW(), NOW()),
-    ('VI-DA-CAM-TAY-MINIMALIST', 'Ví da mini dáng đứng thủ công', 10, 'Thiết kế ví nhỏ gọn đựng được 6 thẻ và tiền mặt, da bò pullup càng dùng càng bóng đẹp.', 650000, 90, 2, 0, true, NOW(), NOW()),
-    ('BO-CHEN-TRA-MEN-HOA-BIEN', 'Bộ ấm chén trà gốm men hỏa biến lam ngọc', 1, 'Bộ trà gồm 1 ấm và 6 chén đất nung tráng men lam ngọc sáng bóng, thích hợp thưởng trà đón khách.', 1850000, 30, 0, 0, true, NOW(), NOW()),
-    ('VONG-TAY-BAC-MAT-XICH', 'Vòng tay bạc S925 mắt xích cổ điển', 2, 'Vòng tay bạc xước phong cách vintage tối giản, phù hợp cho cả nam và nữ.', 420000, 35, 0, 0, true, NOW(), NOW()),
-    ('NEN-THOM-GO-DONG-AM', 'Nến thơm tinh dầu gỗ thông & rêu ấm', 3, 'Hương thơm như bước vào rừng thông Đà Lạt sớm mai mang lại cảm giác bình yên dễ chịu.', 220000, 80, 2, 0, true, NOW(), NOW()),
-    ('LY-GO-SO-CAO-CAP', 'Ly gỗ sồi phong cách Bắc Âu', 4, 'Ly uống nước uống trà bằng gỗ sồi tự nhiên tiện tinh xảo, có tay cầm tiện lợi.', 150000, 25, 0, 0, true, NOW(), NOW()),
-    ('TUI-TOTE-THEU-HOA-SEN', 'Túi tote vải canvas thêu sen vàng', 5, 'Túi canvas trắng ngà dệt dày dặn thêu chỉ vàng hình đóa sen thanh khiết mang nét thanh lịch.', 310000, 120, 4, 0, true, NOW(), NOW()),
-    ('CHAN-GA-LINEN-WASHED', 'Chăn ga giường vải linen washed mềm', 6, 'Bộ ga phủ giường và vỏ gối từ chất liệu linen washed có độ nhăn tự nhiên, thấm hút mồ hôi cực tốt.', 2200000, 180, 6, 0, true, NOW(), NOW()),
-    ('MU-LEN-NOI-MOC-TAY', 'Mũ len nồi họa tiết hoa hồng móc tay', 7, 'Chiếc mũ bê rê cổ điển ấm áp làm điểm nhấn thời trang cho mùa đông thu hút ánh nhìn.', 280000, 60, 1, 0, true, NOW(), NOW()),
-    ('TRA-ATISO-DO-DALAT', 'Trà Atiso đỏ hữu cơ Đà Lạt thanh mát', 8, 'Cánh hoa Atiso đỏ sấy khô tự nhiên có vị chua thanh nhẹ, giúp thanh nhiệt giải độc gan.', 85000, 45, 2, 0, true, NOW(), NOW()),
-    ('TRANH-BO-PHONG-CANH-BIEN', 'Bộ 3 tranh canvas phong cảnh biển Địa Trung Hải', 9, 'Bộ 3 bức tranh màu sắc tươi mát mang hơi thở của nắng vàng biển xanh Địa Trung Hải vào căn nhà của bạn.', 750000, 300, 15, 0, true, NOW(), NOW()),
-    ('BAO-DA-IPAD-KRAFT-HANDMADE', 'Bao da iPad handmade từ da sáp ngựa điên', 10, 'Bao da khâu tay từ miếng da sáp dầy dặn chống va đập, bảo vệ tối đa máy tính bảng của bạn.', 890000, 150, 5, 0, true, NOW(), NOW());
+    ('FOOD-001', 'Artisan sourdough loaf', 1, 'Sample product for food image set 001.', 95000, 120, 0, 0, true, NOW(), NOW()),
+    ('FOOD-002', 'Butter croissant box', 1, 'Sample product for food image set 002.', 85000, 120, 0, 0, true, NOW(), NOW()),
+    ('FOOD-003', 'Chocolate brownie tray', 1, 'Sample product for food image set 003.', 110000, 120, 0, 0, true, NOW(), NOW()),
+    ('FOOD-004', 'Breakfast toast set', 1, 'Sample product for food image set 004.', 120000, 120, 0, 0, true, NOW(), NOW()),
+    ('FOOD-005', 'Fruit tart slice', 1, 'Sample product for food image set 005.', 130000, 120, 0, 0, true, NOW(), NOW()),
+    ('FOOD-006', 'Cold brew bottle', 2, 'Sample product for food image set 006.', 75000, 150, 0, 0, true, NOW(), NOW()),
+    ('FOOD-007', 'Cappuccino cup', 2, 'Sample product for food image set 007.', 65000, 150, 0, 0, true, NOW(), NOW()),
+    ('FOOD-008', 'Matcha latte', 2, 'Sample product for food image set 008.', 70000, 150, 0, 0, true, NOW(), NOW()),
+    ('FOOD-009', 'Herbal tea tin', 2, 'Sample product for food image set 009.', 90000, 150, 0, 0, true, NOW(), NOW()),
+    ('FOOD-010', 'Pour over coffee set', 2, 'Sample product for food image set 010.', 180000, 150, 0, 0, true, NOW(), NOW()),
+    ('FOOD-011', 'Olive oil bottle', 3, 'Sample product for food image set 011.', 140000, 100, 0, 0, true, NOW(), NOW()),
+    ('FOOD-012', 'Spice jar bundle', 3, 'Sample product for food image set 012.', 160000, 100, 0, 0, true, NOW(), NOW()),
+    ('FOOD-013', 'Ceramic meal bowl', 3, 'Sample product for food image set 013.', 99000, 100, 0, 0, true, NOW(), NOW()),
+    ('FOOD-014', 'Honey jar', 3, 'Sample product for food image set 014.', 125000, 100, 0, 0, true, NOW(), NOW()),
+    ('FOOD-015', 'Cooking salt pack', 3, 'Sample product for food image set 015.', 45000, 100, 0, 0, true, NOW(), NOW()),
+    ('FOOD-016', 'Sea salt snack pack', 4, 'Sample product for food image set 016.', 55000, 130, 0, 0, true, NOW(), NOW()),
+    ('FOOD-017', 'Potato chips bag', 4, 'Sample product for food image set 017.', 60000, 130, 0, 0, true, NOW(), NOW()),
+    ('FOOD-018', 'Granola cup', 4, 'Sample product for food image set 018.', 72000, 130, 0, 0, true, NOW(), NOW()),
+    ('FOOD-019', 'Cookie pack', 4, 'Sample product for food image set 019.', 65000, 130, 0, 0, true, NOW(), NOW()),
+    ('FOOD-020', 'Fruit snack jar', 4, 'Sample product for food image set 020.', 88000, 130, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-021', 'Handmade silver ring', 5, 'Sample product for craft image set 021.', 320000, 80, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-022', 'Stone bead bracelet', 5, 'Sample product for craft image set 022.', 290000, 80, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-023', 'Minimal pendant necklace', 5, 'Sample product for craft image set 023.', 340000, 80, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-024', 'Copper cufflinks', 5, 'Sample product for craft image set 024.', 260000, 80, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-025', 'Leather charm bracelet', 5, 'Sample product for craft image set 025.', 310000, 80, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-026', 'Clay vase', 6, 'Sample product for craft image set 026.', 450000, 60, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-027', 'Candle holder set', 6, 'Sample product for craft image set 027.', 390000, 60, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-028', 'Wall art print', 6, 'Sample product for craft image set 028.', 420000, 60, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-029', 'Wooden tray', 6, 'Sample product for craft image set 029.', 360000, 60, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-030', 'Woven basket decor', 6, 'Sample product for craft image set 030.', 330000, 60, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-031', 'Canvas tote bag', 7, 'Sample product for craft image set 031.', 240000, 90, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-032', 'Embroidered scarf', 7, 'Sample product for craft image set 032.', 280000, 90, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-033', 'Wool beanie', 7, 'Sample product for craft image set 033.', 210000, 90, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-034', 'Leather wallet', 7, 'Sample product for craft image set 034.', 390000, 90, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-035', 'Fabric pouch', 7, 'Sample product for craft image set 035.', 170000, 90, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-036', 'Leather notebook', 8, 'Sample product for craft image set 036.', 260000, 70, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-037', 'Handbound journal', 8, 'Sample product for craft image set 037.', 280000, 70, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-038', 'Paper gift tag set', 8, 'Sample product for craft image set 038.', 120000, 70, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-039', 'Desk sketchbook', 8, 'Sample product for craft image set 039.', 220000, 70, 0, 0, true, NOW(), NOW()),
+    ('CRAFT-040', 'Planner notebook', 8, 'Sample product for craft image set 040.', 240000, 70, 0, 0, true, NOW(), NOW());
+
+-- Keep seed light; variants/attributes/stock movements can be added later when needed.
 
 -- ---- SEED: Product Variants ----
 INSERT INTO product_variants (sku_code, name, price, total_stock, reserved_stock, product_id) VALUES
@@ -181,7 +197,21 @@ INSERT INTO stock_movements (product_id, variant_id, quantity, type, reason, cre
     (30, NULL, 150, 'IMPORT', 'Nhập kho Bao da iPad da sáp ngựa điên', NOW() - INTERVAL '8 days'),
     (30, NULL, 5, 'RESERVE', 'Khách đặt trước combo da sáp', NOW() - INTERVAL '1 day'),
     (6, NULL, 60, 'IMPORT', 'Nhập kho Áo linen dáng suông', NOW() - INTERVAL '20 days'),
-    (7, NULL, 70, 'IMPORT', 'Nhập kho Khăn choàng len móc tay', NOW() - INTERVAL '18 days');
+(7, NULL, 70, 'IMPORT', 'Nhập kho Khăn choàng len móc tay', NOW() - INTERVAL '18 days');
+
+-- ================================================================
+-- MEDIA SERVICE SCHEMA & SEED DATA
+-- ================================================================
+\c media_db;
+
+CREATE TABLE IF NOT EXISTS medias (
+    id SERIAL PRIMARY KEY,
+    url VARCHAR(500) NOT NULL,
+    public_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    size BIGINT NOT NULL,
+    content_type VARCHAR(100) NOT NULL
+);
 
 
 -- ================================================================
@@ -189,7 +219,6 @@ INSERT INTO stock_movements (product_id, variant_id, quantity, type, reason, cre
 -- ================================================================
 \c user_db;
 
--- ---- DDL ----
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
@@ -245,7 +274,6 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 -- ================================================================
 \c order_db;
 
--- ---- DDL ----
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     order_number VARCHAR(50) NOT NULL UNIQUE,
@@ -325,7 +353,6 @@ CREATE TABLE IF NOT EXISTS voucher_usages (
     used_at TIMESTAMP NOT NULL
 );
 
--- ---- SEED: Vouchers ----
 INSERT INTO vouchers (id, code, name, description, discount_type, discount_value, max_discount_value, min_order_value, total_quantity, used_quantity, start_date, end_date, is_active, created_at, updated_at) VALUES
     (1, 'SALE10', 'Giảm 10% tối đa 50k', 'Áp dụng cho đơn từ 300k', 'PERCENT', 10, 50000, 300000, 500, 1, NOW() - INTERVAL '30 days', NOW() + INTERVAL '60 days', true, NOW() - INTERVAL '30 days', NOW() - INTERVAL '5 days'),
     (2, 'ONLINEPAY', 'Ưu đãi thanh toán online', 'Giảm trực tiếp 30k cho đơn thanh toán online', 'FIXED', 30000, NULL, 200000, 300, 0, NOW() - INTERVAL '15 days', NOW() + INTERVAL '45 days', true, NOW() - INTERVAL '15 days', NOW() - INTERVAL '1 day'),
@@ -337,7 +364,6 @@ INSERT INTO vouchers (id, code, name, description, discount_type, discount_value
 
 SELECT setval('vouchers_id_seq', (SELECT MAX(id) FROM vouchers));
 
--- ---- SEED: Voucher Conditions ----
 INSERT INTO voucher_conditions (voucher_id, condition_type, value) VALUES
     (1, 'FIRST_ORDER', 'true'),
     (2, 'USER_GROUP', 'ONLINE_CUSTOMER'),
@@ -347,14 +373,12 @@ INSERT INTO voucher_conditions (voucher_id, condition_type, value) VALUES
     (6, 'CATEGORY', 'SUMMER_COLLECTION'),
     (7, 'USER_GROUP', 'VIP');
 
--- ---- SEED: Voucher Usages ----
 INSERT INTO voucher_usages (voucher_id, user_id, order_id, discount_amount, used_at) VALUES
     (1, 1, 1, 50000, NOW() - INTERVAL '10 days'),
     (3, 4, 5, 0, NOW() - INTERVAL '5 days'),
     (4, 2, 2, 80000, NOW() - INTERVAL '2 days'),
     (6, 3, 3, 45000, NOW() - INTERVAL '1 day');
 
--- ---- SEED: Orders ----
 INSERT INTO orders (order_number, user_id, total_price, shipping_street, shipping_city, shipping_district, shipping_country, shipping_carrier, tracking_number, shipping_fee, estimated_delivery, discount_code, discount_amount, tax_amount, tax_type, voucher_id, voucher_code, voucher_discount_amount, status, created_at, updated_at) VALUES
     ('ORD-20240501-001', 1, 770000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'GHN', 'GHN-TRK-001', 30000, '2024-05-05', 'SALE10', 50000, 74000, 'VAT10', 1, 'SALE10', 50000, 'DELIVERED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '5 days'),
     ('ORD-20240502-002', 2, 265000, '789 Đinh Tiên Hoàng', 'Hà Nội', 'Hoàn Kiếm', 'Việt Nam', 'GHTK', 'GHTK-TRK-002', 25000, '2024-05-07', NULL, 0, 24000, 'VAT10', NULL, NULL, NULL, 'PAID', NOW() - INTERVAL '3 days', NOW() - INTERVAL '2 days'),
@@ -362,7 +386,6 @@ INSERT INTO orders (order_number, user_id, total_price, shipping_street, shippin
     ('ORD-20240504-004', 1, 510000, '123 Nguyễn Huệ', 'Hồ Chí Minh', 'Quận 1', 'Việt Nam', 'VNPost', 'VNPOST-TRK-004', 30000, '2024-05-10', NULL, 0, 48000, 'VAT10', NULL, NULL, NULL, 'SHIPPING', NOW() - INTERVAL '4 days', NOW() - INTERVAL '1 day'),
     ('ORD-20240505-005', 4, 310000, '55 Hùng Vương', 'Cần Thơ', 'Ninh Kiều', 'Việt Nam', 'GHN', 'GHN-TRK-005', 20000, '2024-05-08', 'FREESHIP', 0, 29000, 'VAT10', 3, 'FREESHIP', 0, 'CANCELLED', NOW() - INTERVAL '6 days', NOW() - INTERVAL '5 days');
 
--- ---- SEED: Order Items ----
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tax_amount, discount_amount) VALUES
     (1, 1, 'Ly sứ men hỏa biến Hà Đông', 2, 250000, 50000, 50000),
     (1, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0),
@@ -371,7 +394,6 @@ INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_pric
     (4, 3, 'Nến thơm tinh dầu hoa oải hương', 3, 160000, 48000, 0),
     (5, 5, 'Túi vải linen thêu hoa cúc cổ điển', 1, 290000, 29000, 0);
 
--- ---- SEED: Order Status History ----
 INSERT INTO order_status_history (order_id, from_status, to_status, reason, changed_at) VALUES
     (1, NULL, 'PENDING', 'Đơn hàng được tạo tự động từ giỏ hàng', NOW() - INTERVAL '10 days'),
     (1, 'PENDING', 'PAID', 'Thanh toán VNPay thành công', NOW() - INTERVAL '10 days' + INTERVAL '5 minutes'),
@@ -385,11 +407,12 @@ INSERT INTO order_status_history (order_id, from_status, to_status, reason, chan
     (4, 'PAID', 'SHIPPING', 'Giao cho VNPost', NOW() - INTERVAL '2 days'),
     (5, NULL, 'PENDING', 'Đơn hàng được tạo', NOW() - INTERVAL '6 days'),
     (5, 'PENDING', 'CANCELLED', 'Khách hàng hủy đơn', NOW() - INTERVAL '5 days');
+
+-- ================================================================
 -- PAYMENT SERVICE SCHEMA & SEED DATA
 -- ================================================================
 \c payment_db;
 
--- ---- DDL ----
 CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,
     payment_code VARCHAR(255) NOT NULL UNIQUE,
@@ -412,7 +435,6 @@ CREATE TABLE IF NOT EXISTS payment_transactions (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- ---- SEED: Payments ----
 INSERT INTO payments (payment_code, order_id, user_id, amount, payment_method, status, processed_at, created_at) VALUES
     ('PAY-INIT-1', 1, 1, 770000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
     ('PAY-INIT-2', 2, 2, 265000, 'WALLET', 'COMPLETED', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
@@ -420,12 +442,9 @@ INSERT INTO payments (payment_code, order_id, user_id, amount, payment_method, s
     ('PAY-INIT-4', 4, 1, 510000, 'BANK_TRANSFER', 'COMPLETED', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
     ('PAY-INIT-5', 5, 4, 310000, 'WALLET', 'REFUNDED', NOW() - INTERVAL '5 days', NOW() - INTERVAL '6 days');
 
--- ---- SEED: Payment Transactions ----
 INSERT INTO payment_transactions (order_id, transaction_id, gateway_provider, raw_response, status, created_at) VALUES
     (1, 'VNPAY-TXN-00000001', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"77000000"}', 'SUCCESS', NOW() - INTERVAL '10 days'),
     (2, 'MOMO-TXN-00000002', 'MoMo', '{"resultCode":0,"message":"Thành công","transId":"MOMO-3192837"}', 'SUCCESS', NOW() - INTERVAL '3 days'),
     (4, 'VNPAY-TXN-00000004', 'VNPay', '{"vnp_ResponseCode":"00","vnp_TransactionStatus":"00","vnp_Amount":"51000000"}', 'SUCCESS', NOW() - INTERVAL '4 days'),
     (5, 'MOMO-TXN-00000005', 'MoMo', '{"resultCode":0,"message":"Hoàn tiền thành công","transId":"MOMO-9876543"}', 'REFUNDED', NOW() - INTERVAL '5 days'),
     (3, NULL, 'InternalMock', '{"status":"pending","method":"COD"}', 'PENDING', NOW() - INTERVAL '1 day');
-
-

@@ -68,6 +68,7 @@ services:
       USER_SERVICE_URL: "${DOCKER_USER_SERVICE_URL:-http://host.docker.internal:8081}"
       ORDER_SERVICE_URL: "${DOCKER_ORDER_SERVICE_URL:-http://host.docker.internal:8083}"
       PAYMENT_SERVICE_URL: "${DOCKER_PAYMENT_SERVICE_URL:-http://host.docker.internal:8084}"
+      MEDIA_SERVICE_URL: "${DOCKER_MEDIA_SERVICE_URL:-http://host.docker.internal:8086}"
       JWT_SECRET: "${JWT_SECRET:-8AxlbLwQ+6BD0yJ63kG93DG4ES8VyD3Yiy0v8qrCy2s=}"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx192M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
@@ -172,6 +173,29 @@ services:
     depends_on:
       - postgres
       - kafka
+    networks:
+      - order-network
+
+  mediaservice:
+    build:
+      context: .
+      dockerfile: ./mediaservice/Dockerfile
+    container_name: order-system-mediaservice
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/media_db"
+      SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
+      CLOUDINARY_CLOUD_NAME: "${CLOUDINARY_CLOUD_NAME}"
+      CLOUDINARY_API_KEY: "${CLOUDINARY_API_KEY}"
+      CLOUDINARY_API_SECRET: "${CLOUDINARY_API_SECRET}"
+      JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
     networks:
       - order-network
 

@@ -1,0 +1,27 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/products/1
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Updated product name",
+    "description": "Updated from Bruno",
+    "categoryId": 1,
+    "price": 129000,
+    "stock": 80,
+    "variants": [],
+    "attributes": [],
+    "images": []
+  }
+}

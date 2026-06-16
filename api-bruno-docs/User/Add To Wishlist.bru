@@ -1,0 +1,13 @@
+meta {
+  name: Add To Wishlist
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/users/1/wishlist?productId=1&productName=Demo%20product
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

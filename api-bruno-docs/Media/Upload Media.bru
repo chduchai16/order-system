@@ -1,0 +1,15 @@
+meta {
+  name: Upload Media
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/media/upload
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  file: @file(C:\Users\chudu\OneDrive\Pictures\download (10).jpg)
+}

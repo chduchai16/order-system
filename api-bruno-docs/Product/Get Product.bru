@@ -1,0 +1,13 @@
+meta {
+  name: Get Product
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/products/1
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
