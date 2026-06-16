@@ -38,6 +38,15 @@ export interface ProductAttribute {
   value: string;
 }
 
+export interface ProductImage {
+  id?: number;
+  mediaId: number;
+  productId?: number;
+  displayOrder: number;
+  isPrimary: boolean;
+  url?: string;
+}
+
 export interface Product {
   id: string;
   sku?: string;
@@ -47,6 +56,7 @@ export interface Product {
   availableStock?: number;
   description?: string;
   image?: string;
+  images?: ProductImage[];
   categoryName?: string;
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];

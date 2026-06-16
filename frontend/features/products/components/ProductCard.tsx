@@ -22,6 +22,12 @@ function getStableVisualMetrics(product: Product) {
   };
 }
 
+function getProductImage(product: Product) {
+  const primaryImage = product.images?.find((image) => image.isPrimary && image.url);
+  const firstImage = product.images?.find((image) => image.url);
+  return primaryImage?.url ?? firstImage?.url ?? product.image ?? null;
+}
+
 export default function ProductCard({ product, variant = 'standard' }: ProductCardProps) {
   const addToCart = useCartStore(state => state.addToCart);
   const [selectedVariant] = useState<ProductVariant | null>(
@@ -48,6 +54,7 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
   const oldPrice = currentPrice * (1 + discount / 100);
   const cardPadding = variant === 'compact' ? 'p-3' : 'p-4';
   const titleClassName = variant === 'compact' ? 'text-xs h-8' : 'text-xs md:text-sm h-10';
+  const productImage = getProductImage(product);
 
   return (
     <Link 
@@ -66,9 +73,9 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
 
       {/* Image Container */}
       <div className="relative bg-[#FDFAF7]/40 overflow-hidden aspect-square flex items-center justify-center p-4 border-b border-[#EAE3D2]/30">
-        {product.image ? (
+        {productImage ? (
           <Image
-            src={product.image}
+            src={productImage}
             alt={product.name}
             fill
             className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"

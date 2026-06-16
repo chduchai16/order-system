@@ -41,6 +41,13 @@ const fallbackSpecs: ProductAttribute[] = [
 
 const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
+function getProductImage(product: Product | null) {
+  if (!product) return null;
+  const primaryImage = product.images?.find((image) => image.isPrimary && image.url);
+  const firstImage = product.images?.find((image) => image.url);
+  return primaryImage?.url ?? firstImage?.url ?? product.image ?? null;
+}
+
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = use(params);
   const router = useRouter();
@@ -52,6 +59,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [selectedColor, setSelectedColor] = useState(colorOptions[0].name);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [activeTab, setActiveTab] = useState('specs');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     void initializeCart();
@@ -63,6 +71,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         const data = await productService.getProductById(productId);
         setProduct(data);
         setSelectedVariant(data.variants?.[0] ?? null);
+        setSelectedImageIndex(0);
       } catch (err) {
         console.error('Fetch product error:', err);
       } finally {
@@ -95,6 +104,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const saving = originalPrice - displayPrice;
   const stock = selectedVariant ? selectedVariant.stock : displayProduct.availableStock ?? displayProduct.stock;
   const specs = displayProduct.attributes?.length ? displayProduct.attributes : fallbackSpecs;
+  const productImages = displayProduct.images?.filter((image) => image.url) ?? [];
+  const displayImage = productImages[selectedImageIndex]?.url ?? getProductImage(displayProduct);
 
   const handleAddToCart = async () => {
     await addToCart({
@@ -130,17 +141,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         <section className="grid grid-cols-1 lg:grid-cols-[55%_45%]">
           
           {/* Left Column: Image Preview Gallery */}
-          <div className="p-6 lg:border-r border-[#EAE3D2]/50 flex flex-col justify-between">
-            <div className="relative aspect-square max-w-[500px] w-full mx-auto bg-[#FDFAF7]/60 rounded-xl flex items-center justify-center overflow-hidden border border-[#EAE3D2]/30 shadow-inner">
+          <div className="p-6 lg:border-r border-[#EAE3D2]/50">
+            <div className="max-w-[500px] w-full mx-auto flex flex-col gap-2">
+            <div className="relative aspect-square w-full bg-[#FDFAF7]/60 rounded-xl flex items-center justify-center overflow-hidden border border-[#EAE3D2]/30 shadow-inner">
               <span className="absolute top-4 left-4 bg-[#EBF2EE] text-[#1E5C3F] text-[10px] font-bold px-2.5 py-0.5 rounded-sm">
                 Độ độc quyền cao
               </span>
               <span className="absolute top-4 right-4 bg-[#ff3333] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
                 Giảm 35%
               </span>
-              {displayProduct.image ? (
+              {displayImage ? (
                 <Image
-                  src={displayProduct.image}
+                  src={displayImage}
                   alt={displayProduct.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -157,21 +169,51 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* Micro visual thumb previews */}
-            <div className="flex gap-3 justify-center mt-6">
-              {[1, 2, 3, 4].map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  className={`w-14 h-14 rounded-lg border flex items-center justify-center bg-gray-50/50 hover:border-[#F1641E] cursor-pointer transition-all duration-200 ${
-                    num === 1 ? 'border-[#F1641E] ring-1 ring-[#F1641E]' : 'border-gray-200'
-                  }`}
-                  aria-label={`Ảnh xem trước ${num}`}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-gray-400">
-                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                  </svg>
-                </button>
-              ))}
+            <div className="mt-0">
+              {productImages.length > 0 ? (
+                <div className="flex gap-2 justify-center flex-wrap">
+                  {productImages.map((image, index) => (
+                    <button
+                      key={image.id ?? `${image.mediaId}-${index}`}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`w-14 h-14 rounded-lg border overflow-hidden bg-white flex items-center justify-center transition-all duration-200 shadow-sm ${
+                        index === selectedImageIndex
+                          ? 'border-[#F1641E] ring-1 ring-[#F1641E]'
+                          : 'border-gray-200 hover:border-[#F1641E]'
+                      }`}
+                      aria-label={`Ảnh xem trước ${index + 1}`}
+                    >
+                      <Image
+                        src={image.url as string}
+                        alt={`${displayProduct.name} ${index + 1}`}
+                        width={56}
+                        height={56}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex gap-2 justify-center">
+                  {[1, 2, 3, 4].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      className={`w-14 h-14 rounded-lg border flex items-center justify-center bg-gray-50/50 cursor-default transition-all duration-200 ${
+                        num === 1 ? 'border-[#F1641E] ring-1 ring-[#F1641E]' : 'border-gray-200'
+                      }`}
+                      aria-label={`Ảnh xem trước ${num}`}
+                      disabled
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6 text-gray-400">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             </div>
           </div>
 
