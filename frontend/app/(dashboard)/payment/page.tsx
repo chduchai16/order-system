@@ -36,10 +36,12 @@ function PaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
+  const missingOrderIdError = 'Mã đơn hàng không hợp lệ.';
+  const hasOrderId = Boolean(orderId);
 
   const [payment, setPayment] = useState<Payment | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(hasOrderId);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [pollingActive, setPollingActive] = useState(false);
@@ -47,8 +49,6 @@ function PaymentContent() {
   // Fetch initial payment & order data
   useEffect(() => {
     if (!orderId) {
-      setError('Mã đơn hàng không hợp lệ.');
-      setLoading(false);
       return;
     }
 
@@ -153,12 +153,12 @@ function PaymentContent() {
     );
   }
 
-  if (error || !payment) {
+  if (!hasOrderId || error || !payment) {
     return (
       <div className="bg-white border border-[#EAE3D2]/60 rounded-2xl p-10 text-center max-w-lg mx-auto shadow-sm space-y-4">
         <AlertCircle className="w-12 h-12 mx-auto text-red-500" />
         <h2 className="font-serif text-xl font-bold text-gray-900">Đã xảy ra lỗi tải hóa đơn</h2>
-        <p className="text-xs text-gray-500">{error || 'Không tìm thấy thông tin thanh toán hợp lệ.'}</p>
+        <p className="text-xs text-gray-500">{error || missingOrderIdError || 'Không tìm thấy thông tin thanh toán hợp lệ.'}</p>
         <Link href="/products" className="inline-flex px-6 py-2.5 rounded-full bg-[#222222] text-white font-bold text-xs transition-colors">
           Quay lại cửa hàng
         </Link>
