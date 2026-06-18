@@ -292,6 +292,11 @@ export default function Navbar() {
 
         {/* Right Action Icons */}
         <div className="flex items-center space-x-3 sm:space-x-5 text-gray-700 shrink-0">
+          <Link href="/business" className="hidden md:flex items-center gap-1.5 bg-[#EBF2EE] hover:bg-[#d5ebdcf5] text-[#1E5C3F] font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 border border-[#1E5C3F]/20 cursor-pointer mr-0.5" title="Kênh người bán - Shop Manager">
+            <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+            <span>Kênh người bán</span>
+          </Link>
+
           <Link href="/wishlist" className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors relative flex items-center justify-center cursor-pointer group" title="Danh sách yêu thích">
             <Heart className="w-6 h-6 group-hover:scale-105 transition-transform" />
             <span className="absolute top-1 right-1 bg-[#1E5C3F] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FDFAF7]">
@@ -354,6 +359,14 @@ export default function Navbar() {
                       >
                         <Heart className="w-4 h-4 text-gray-450" />
                         <span>Sản phẩm yêu thích</span>
+                      </Link>
+                      <Link 
+                        href="/business" 
+                        onClick={() => setShowUserDropdown(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#1E5C3F] hover:bg-[#EBF2EE] transition-colors cursor-pointer border-t border-gray-100 mt-1 pt-2"
+                      >
+                        <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+                        <span>Kênh Người Bán</span>
                       </Link>
                     </div>
                     
@@ -485,6 +498,12 @@ export default function Navbar() {
               <li>
                 <Link href="/products?category=sale" onClick={() => setShowMobileMenu(false)} className="block py-1 text-red-500">
                   Ưu đãi Đặc biệt %
+                </Link>
+              </li>
+              <li className="border-t border-gray-200/80 pt-3 mt-2">
+                <Link href="/business" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-2 py-1 text-[#1E5C3F] font-bold">
+                  <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+                  <span>Kênh Người Bán</span>
                 </Link>
               </li>
             </ul>
