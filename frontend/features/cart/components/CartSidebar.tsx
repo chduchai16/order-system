@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
-import { useCartStore } from '@/features/cart/store/cartStore';
+import { useCartStore } from '@/features/cart/store';
 
 export default function CartSidebar() {
   const initializeCart = useCartStore((state) => state.initializeCart);

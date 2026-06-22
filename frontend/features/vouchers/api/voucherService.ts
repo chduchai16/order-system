@@ -1,5 +1,5 @@
-import apiClient from '@/features/shared/api/client';
-import { PageResponse, Voucher } from '@/features/shared/types';
+import apiClient from '@/lib/axios';
+import { PageResponse, Voucher } from '@/components/types';
 
 export const voucherService = {
   getVouchers: async (search = '', page = 0, size = 10): Promise<PageResponse<Voucher>> => {

@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
-import { authService } from '@/features/auth/api/authService';
-import { useCartStore } from '@/features/cart/store/cartStore';
-import { tokenStore } from '@/features/shared/api/tokenStore';
+import { authService } from '@/features/auth/api';
+import { useCartStore } from '@/features/cart/store';
+import { tokenStore } from '@/lib/auth';
 
 export default function LoginForm() {
   const router = useRouter();

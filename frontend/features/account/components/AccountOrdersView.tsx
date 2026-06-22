@@ -21,10 +21,10 @@ import {
   X,
   Gift,
 } from 'lucide-react';
-import { orderService } from '@/features/orders/api/orderService';
+import { orderService } from '@/features/order/api';
 import { userService } from '@/features/account/api/userService';
-import { tokenStore } from '@/features/shared/api/tokenStore';
-import { Address, Order, User as UserProfile, WishlistItem } from '@/features/shared/types';
+import { tokenStore } from '@/lib/auth';
+import { Address, Order, User as UserProfile, WishlistItem } from '@/components/types';
 
 type SectionKey = 'overview' | 'orders' | 'wishlist' | 'profile' | 'addresses' | 'payments' | 'settings';
 type OrderStatus = 'processing' | 'shipping' | 'completed' | 'cancelled';

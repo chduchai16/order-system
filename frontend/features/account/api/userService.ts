@@ -1,6 +1,6 @@
-import apiClient from '@/features/shared/api/client';
-import { tokenStore } from '@/features/shared/api/tokenStore';
-import { User, Address, WishlistItem } from '@/features/shared/types';
+import apiClient from '@/lib/axios';
+import { tokenStore } from '@/lib/auth';
+import { User, Address, WishlistItem } from '@/components/types';
 
 const getCurrentUserId = (): number => {
   const userId = tokenStore.getUserId();

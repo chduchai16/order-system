@@ -1,5 +1,5 @@
-import apiClient from '@/features/shared/api/client';
-import { Payment } from '@/features/shared/types';
+import apiClient from '@/lib/axios';
+import { Payment } from '@/components/types';
 
 export const paymentService = {
   getPaymentByOrderId: async (orderId: number): Promise<Payment> => {
