@@ -50,6 +50,11 @@ export default function ProductGrid() {
     return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   }, [currentPage, totalPages]);
 
+  const goToPage = (page: number) => {
+    window.scrollTo(0, 0);
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -282,7 +287,7 @@ export default function ProductGrid() {
             <div className="py-16 text-center text-gray-500 text-sm font-semibold">Không tìm thấy sản phẩm nào phù hợp.</div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {paginatedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -292,7 +297,7 @@ export default function ProductGrid() {
               <div className="flex items-center justify-center gap-2 pt-6">
                 <button
                   type="button"
-                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  onClick={() => goToPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                   className="inline-flex items-center justify-center w-8 h-8 border border-[#EAE3D2] rounded-full text-gray-600 hover:border-[#222222] hover:text-[#222222] disabled:text-gray-300 disabled:border-gray-200 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                   aria-label="Previous page"
@@ -305,7 +310,7 @@ export default function ProductGrid() {
                     <button
                       key={page}
                       type="button"
-                      onClick={() => setCurrentPage(page)}
+                      onClick={() => goToPage(page)}
                       aria-current={page === currentPage ? 'page' : undefined}
                       className={`w-8 h-8 rounded-full border text-xs font-bold transition-all duration-200 cursor-pointer ${
                         page === currentPage
@@ -320,7 +325,7 @@ export default function ProductGrid() {
 
                 <button
                   type="button"
-                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
                   className="inline-flex items-center justify-center w-8 h-8 border border-[#EAE3D2] rounded-full text-gray-600 hover:border-[#222222] hover:text-[#222222] disabled:text-gray-300 disabled:border-gray-200 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                   aria-label="Next page"

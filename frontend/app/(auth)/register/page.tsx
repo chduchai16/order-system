@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Check, Gift, Lock, ShieldCheck, Trash2, Zap } from 'lucide-react';
-import AuthHeader from '@/features/auth/components/AuthHeader';
 import RegisterForm from '@/features/auth/components/RegisterForm';
 
 const perks = [
@@ -14,9 +13,7 @@ const perks = [
 export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#FDFAF7] font-sans">
-      <AuthHeader />
-
-      <div className="grid min-h-[calc(100vh-64px)] grid-cols-1 lg:grid-cols-[45%_55%]">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[45%_55%]">
         {/* Left perk column */}
         <aside className="bg-[#231F2D] text-white px-8 sm:px-12 lg:px-16 py-12 lg:py-16 flex flex-col justify-center border-r border-[#342F42]">
           <div className="space-y-8">

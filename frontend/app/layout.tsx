@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Playfair_Display } from 'next/font/google';
 import './globals.css';
+import ScrollManager from '@/components/layout/ScrollManager';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="vi" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className={`${outfit.variable} ${playfair.variable} bg-[#FDFAF7] text-[#222222] font-sans antialiased`} suppressHydrationWarning>
+        <ScrollManager />
         {children}
       </body>
     </html>

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { CreditCard, Gift, Lock, RefreshCw, ShieldCheck, Truck, Sparkles } from 'lucide-react';
-import AuthHeader from '@/features/auth/components/AuthHeader';
 import LoginForm from '@/features/auth/components/LoginForm';
 
 const benefits = [
@@ -29,9 +28,7 @@ const benefits = [
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#FDFAF7] font-sans">
-      <AuthHeader />
-
-      <div className="grid min-h-[calc(100vh-64px)] grid-cols-1 lg:grid-cols-[45%_55%]">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[45%_55%]">
         {/* Left decoration column */}
         <aside className="bg-[#231F2D] text-white px-8 sm:px-12 lg:px-16 py-12 lg:py-16 flex flex-col justify-between border-r border-[#342F42]">
           <div className="space-y-10">

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Product, ProductVariant } from '../types';
 import { useCartStore } from '@/features/cart/store';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 
 interface ProductCardProps {
@@ -29,6 +29,7 @@ function getProductImage(product: Product) {
 }
 
 export default function ProductCard({ product, variant = 'standard' }: ProductCardProps) {
+  const router = useRouter();
   const addToCart = useCartStore(state => state.addToCart);
   const [selectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
@@ -56,9 +57,22 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
   const titleClassName = variant === 'compact' ? 'text-xs h-8' : 'text-xs md:text-sm h-10';
   const productImage = getProductImage(product);
 
+  const handleOpenProduct = () => {
+    window.scrollTo(0, 0);
+    router.push(`/products/${product.id}`);
+  };
+
   return (
-    <Link 
-      href={`/products/${product.id}`}
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={handleOpenProduct}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleOpenProduct();
+        }
+      }}
       className="bg-white border border-[#EAE3D2]/50 rounded-2xl overflow-hidden flex flex-col h-full hover:shadow-md hover:border-[#F1641E]/20 transition-all duration-300 group cursor-pointer relative"
     >
       {/* Discount Badge - Etsy Forest Green Style */}
@@ -127,6 +141,6 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
           {currentStock === 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
         </button>
       </div>
-    </Link>
+    </div>
   );
 }
