@@ -43,6 +43,13 @@ def get_products(product_base_url: str, user_agent: str) -> list[dict]:
     return response.json()
 
 
+def get_product(product_base_url: str, product_id: int, user_agent: str) -> dict:
+    url = f"{product_base_url.rstrip('/')}/api/products/{product_id}"
+    response = requests.get(url, headers={"User-Agent": user_agent}, timeout=180)
+    response.raise_for_status()
+    return response.json()
+
+
 def delete_media(media_base_url: str, media_id: int, user_agent: str) -> None:
     url = f"{media_base_url.rstrip('/')}/api/media/{media_id}"
     response = requests.delete(url, headers={"User-Agent": user_agent}, timeout=180)
@@ -71,35 +78,58 @@ def clear_existing_product_images(media_base_url: str, product: dict, user_agent
 def update_product_images(
     product_base_url: str,
     product_id: int,
-    product_name: str,
     media_ids: list[int],
     user_agent: str,
 ) -> dict:
     url = f"{product_base_url.rstrip('/')}/api/products/{product_id}"
-    payload = {
-        "name": product_name,
-        "description": "",
-        "price": 0,
-        "stock": 0,
-        "variants": [],
-        "attributes": [],
-        "images": [
-            {
-                "mediaId": media_id,
-                "displayOrder": index,
-                "isPrimary": index == 0,
-            }
-            for index, media_id in enumerate(media_ids)
-        ],
-    }
-    response = requests.put(
+    response = requests.get(
         url,
-        json=payload,
         headers={"User-Agent": user_agent},
         timeout=180,
     )
     response.raise_for_status()
     return response.json()
+
+
+def replace_product_images_in_db(product_id: int, media_ids: list[int]) -> None:
+    delete_command = [
+        "docker",
+        "exec",
+        "order-system-postgres",
+        "psql",
+        "-U",
+        "postgres",
+        "-d",
+        "product_db",
+        "-c",
+        f"DELETE FROM product_images WHERE product_id = {product_id};",
+    ]
+    result = subprocess.run(delete_command, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Failed to clear product images for product {product_id}: {result.stderr.strip() or result.stdout.strip()}")
+
+    if not media_ids:
+        return
+
+    values = ", ".join(
+        f"({media_id}, {product_id}, {index}, {'TRUE' if index == 0 else 'FALSE'})"
+        for index, media_id in enumerate(media_ids)
+    )
+    insert_command = [
+        "docker",
+        "exec",
+        "order-system-postgres",
+        "psql",
+        "-U",
+        "postgres",
+        "-d",
+        "product_db",
+        "-c",
+        f"INSERT INTO product_images (media_id, product_id, display_order, is_primary) VALUES {values};",
+    ]
+    result = subprocess.run(insert_command, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Failed to insert product images for product {product_id}: {result.stderr.strip() or result.stdout.strip()}")
 
 
 def read_subfolders(images_dir: Path) -> list[Path]:
@@ -225,6 +255,7 @@ def main() -> None:
 
             product_id = int(product["id"])
             product_name = product.get("name") or folder.name
+            full_product = get_product(args.product_base_url, product_id, args.user_agent)
             image_group = image_groups[local_index]
 
             print(f"  product id={product_id} name={product_name} ({len(image_group)} images)")
@@ -261,10 +292,10 @@ def main() -> None:
                     updated_product = update_product_images(
                         args.product_base_url,
                         product_id,
-                        product_name,
                         media_ids,
                         args.user_agent,
                     )
+                    replace_product_images_in_db(product_id, media_ids)
                     print(f"    success: updated product id={product_id}")
 
                 results.append(

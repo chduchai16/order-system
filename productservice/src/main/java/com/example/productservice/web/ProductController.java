@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -45,12 +47,21 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllProducts()
+    public ResponseEntity<PagedProductResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int limit) {
+        Page<Product> result = productService.getAllProducts(PageRequest.of(page, limit));
+        List<ProductResponse> products = result.getContent()
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(PagedProductResponse.builder()
+                .content(products)
+                .page(result.getNumber())
+                .size(result.getSize())
+                .totalElements(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .build());
     }
 
     @PostMapping("/{id}/reserve-stock")

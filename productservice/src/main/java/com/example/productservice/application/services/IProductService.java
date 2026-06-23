@@ -4,6 +4,8 @@ import com.example.commonlib.events.cart.CartItemDto;
 import com.example.productservice.application.dtos.product.ProductRequest;
 import com.example.productservice.application.dtos.product.UpdateProductRequest;
 import com.example.productservice.domain.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,7 @@ public interface IProductService {
     Product updateProduct(UpdateProductRequest productRequest);
     Optional<Product> getProductById(Long id);
     List<Product> getAllProducts();
+    Page<Product> getAllProducts(Pageable pageable);
     void reserveStock(Long productId, Integer quantity);
     void reserveStockForOrder(Long orderId, Long userId, List<CartItemDto> items, BigDecimal totalPrice);
     void releaseStock(Long productId, Integer quantity);

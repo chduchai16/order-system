@@ -36,6 +36,8 @@ import com.example.productservice.infrastructure.persistence.jpas.StockMovementR
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -221,6 +223,10 @@ public class ProductService implements IProductService {
     public List<Product> getAllProducts() {
         // lấy danh sách sản phẩm
         return productRepository.findAll();
+    }
+
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     @Override

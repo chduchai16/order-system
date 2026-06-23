@@ -114,6 +114,7 @@ services:
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      MEDIA_SERVICE_URL: "http://mediaservice:8086"
       JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
     extra_hosts:
       - "host.docker.internal:host-gateway"
