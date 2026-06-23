@@ -7,7 +7,7 @@ import ProductCard from './ProductCard';
 import { ChevronLeft, ChevronRight, Clock, Truck, ShieldCheck, RefreshCw, Star, Gift, Filter, X, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 
-const PRODUCTS_PER_PAGE = 8;
+const PRODUCTS_PER_PAGE = 20;
 
 const categoriesList = [
   { name: 'Tất cả sản phẩm', count: '1.2k', slug: 'all' },
@@ -23,11 +23,12 @@ export default function ProductGrid() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFiltersDrawer, setShowFiltersDrawer] = useState(false);
   const [sortOption, setSortOption] = useState('featured');
 
-  const totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
   const paginatedProducts = useMemo(() => {
     const sortedProducts = [...products].sort((left, right) => {
       if (sortOption === 'price-asc') return left.price - right.price;
@@ -36,12 +37,11 @@ export default function ProductGrid() {
       if (sortOption === 'name-desc') return right.name.localeCompare(left.name, 'vi');
       return 0;
     });
-    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-    return sortedProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+    return sortedProducts;
   }, [currentPage, products, sortOption]);
 
-  const firstProductNumber = products.length === 0 ? 0 : (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
-  const lastProductNumber = Math.min(currentPage * PRODUCTS_PER_PAGE, products.length);
+  const firstProductNumber = totalElements === 0 ? 0 : (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
+  const lastProductNumber = Math.min(currentPage * PRODUCTS_PER_PAGE, totalElements);
   
   const pageNumbers = useMemo(() => {
     const maxVisiblePages = 5;
@@ -57,10 +57,12 @@ export default function ProductGrid() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        const data = await productService.getProducts();
-        setProducts(data);
-        setCurrentPage(1);
+        const response = await productService.getProductsPage(currentPage - 1, PRODUCTS_PER_PAGE);
+        setProducts(response.content ?? []);
+        setTotalPages(Math.max(1, response.totalPages ?? 1));
+        setTotalElements(response.totalElements ?? 0);
       } catch (err) {
         console.error('Fetch products error:', err);
       } finally {
@@ -68,7 +70,7 @@ export default function ProductGrid() {
       }
     };
     fetchProducts();
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

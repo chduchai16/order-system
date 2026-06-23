@@ -28,12 +28,33 @@ interface OverlayProduct extends Partial<Product> {
   _isDeleted?: boolean;
 }
 
+type PagedProductResponse = {
+  content?: Product[];
+  page?: number;
+  size?: number;
+  totalElements?: number;
+  totalPages?: number;
+};
+
 export const productService = {
+  getProductsPage: async (page = 0, limit = 20): Promise<PagedProductResponse> => {
+    const response = await apiClient.get<PagedProductResponse>('/api/products', {
+      params: { page, limit },
+    });
+    return response.data;
+  },
+
   getProducts: async (): Promise<Product[]> => {
     let backendProducts: Product[] = [];
     try {
-      const response = await apiClient.get<Product[]>('/api/products');
-      backendProducts = response.data;
+      const firstPage = await productService.getProductsPage(0, 100);
+      const totalPages = Math.max(1, firstPage.totalPages ?? 1);
+      backendProducts = [...(firstPage.content ?? [])];
+
+      for (let page = 1; page < totalPages; page += 1) {
+        const nextPage = await productService.getProductsPage(page, 100);
+        backendProducts.push(...(nextPage.content ?? []));
+      }
     } catch (err) {
       console.warn('Fallback to mocked/seeded products due to network error:', err);
     }
