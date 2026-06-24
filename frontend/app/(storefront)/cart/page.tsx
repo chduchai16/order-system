@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/features/cart/store';
 import { CartItem } from '@/components/types';
+import { productService } from '@/features/product/api';
 
 const shippingOptions = [
   {
@@ -85,10 +86,47 @@ function QuantityControl({
 export default function CartPage() {
   const { items, savedItems, removeFromCart, updateQuantity, getTotalPrice, clearCart, saveForLater, moveToCart, initializeCart } = useCartStore();
   const [selectedShipping, setSelectedShipping] = useState(shippingOptions[0].id);
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     void initializeCart();
   }, [initializeCart]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const allItems = [...items, ...(savedItems || [])];
+      const uniqueProductIds = Array.from(new Set(allItems.map(item => item.productId)));
+      const imageMap: Record<string, string> = { ...productImages };
+      
+      const idsToFetch = uniqueProductIds.filter(id => !imageMap[id]);
+      if (idsToFetch.length === 0) return;
+      
+      try {
+        await Promise.all(
+          idsToFetch.map(async (id) => {
+            try {
+              const product = await productService.getProductById(id);
+              const primaryImage = product.images?.find((img) => img.isPrimary && img.url);
+              const firstImage = product.images?.find((img) => img.url);
+              const url = primaryImage?.url ?? firstImage?.url ?? product.image ?? '';
+              if (url) {
+                imageMap[id] = url;
+              }
+            } catch (err) {
+              console.error(`Failed to fetch product image for ${id}:`, err);
+            }
+          })
+        );
+        setProductImages(imageMap);
+      } catch (err) {
+        console.error('Error fetching product images:', err);
+      }
+    };
+    
+    if (items.length > 0 || (savedItems && savedItems.length > 0)) {
+      fetchImages();
+    }
+  }, [items, savedItems]);
 
   const subtotal = getTotalPrice();
   const selectedShippingOption = shippingOptions.find((option) => option.id === selectedShipping) ?? shippingOptions[0];
@@ -139,7 +177,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
         <div className="space-y-6">
           <section className="bg-white border border-[#EAE3D2]/50 rounded-2xl overflow-hidden shadow-sm">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-[#F5EFE6]/10">
@@ -155,7 +193,17 @@ export default function CartPage() {
 
                   return (
                     <article key={item.productId} className="p-5 flex gap-4">
-                      <ProductIcon />
+                      {productImages[item.productId] ? (
+                        <div className="w-16 h-16 rounded-xl overflow-hidden relative shrink-0 border border-[#EAE3D2]/40 bg-[#FDFAF7]/40 flex items-center justify-center">
+                          <img
+                            src={productImages[item.productId]}
+                            alt={item.productName}
+                            className="w-full h-full object-contain p-1"
+                          />
+                        </div>
+                      ) : (
+                        <ProductIcon />
+                      )}
                       <div className="min-w-0 flex-1 space-y-3">
                         <div className="flex justify-between gap-4">
                           <div className="min-w-0 space-y-1">
@@ -226,9 +274,24 @@ export default function CartPage() {
               <div className="divide-y divide-gray-100">
                 {savedItems.map((item) => (
                   <div key={item.productId} className="p-5 flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="font-bold text-xs md:text-sm text-gray-800 truncate">{item.productName}</p>
-                      <p className="text-xs text-gray-500 font-semibold mt-0.5">{formatVnd(item.unitPrice || 0)}</p>
+                    <div className="flex gap-3 items-center min-w-0">
+                      {productImages[item.productId] ? (
+                        <div className="w-12 h-12 rounded-lg overflow-hidden relative shrink-0 border border-gray-100 bg-[#FDFAF7]/40 flex items-center justify-center">
+                          <img
+                            src={productImages[item.productId]}
+                            alt={item.productName}
+                            className="w-full h-full object-contain p-0.5"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-[#F5EFE6]/50 flex items-center justify-center shrink-0 border border-gray-150">
+                          <Gift className="w-5 h-5 text-[#F1641E]/70" />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs md:text-sm text-gray-800 truncate">{item.productName}</p>
+                        <p className="text-xs text-gray-500 font-semibold mt-0.5">{formatVnd(item.unitPrice || 0)}</p>
+                      </div>
                     </div>
                     <div className="flex gap-4 shrink-0">
                       <button type="button" onClick={() => moveToCart(item.productId)} className="text-xs font-bold text-[#F1641E] hover:underline cursor-pointer">
