@@ -7,7 +7,7 @@ import { X, Calendar, DollarSign, Percent, ShieldCheck } from 'lucide-react';
 interface VoucherModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (voucher: any) => Promise<void>;
+  onSave: (voucher: Omit<Voucher, 'id' | 'usedQuantity'>) => Promise<void>;
 }
 
 export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalProps) {
@@ -27,6 +27,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
   const [active, setActive] = useState(true);
 
   // Reset form when modal opens
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isOpen) {
       setCode('');
@@ -176,7 +177,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                     key={opt.type}
                     type="button"
                     onClick={() => {
-                      setDiscountType(opt.type as any);
+                      setDiscountType(opt.type as 'FIXED' | 'PERCENT' | 'FREESHIP');
                       if (opt.type === 'FREESHIP') setDiscountValue(0);
                       else if (opt.type === 'PERCENT') setDiscountValue(10);
                       else setDiscountValue(30000);

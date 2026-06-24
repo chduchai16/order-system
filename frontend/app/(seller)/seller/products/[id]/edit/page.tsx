@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProductForm from '@/features/product/components/ProductForm';
 import { productService } from '@/features/product/api';
-import { Product } from '@/features/product/types';
+import { Product, ProductFormPayload } from '@/features/product/types';
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = use(params);
@@ -26,7 +26,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     fetchProduct();
   }, [productId]);
 
-  const handleSave = async (payload: any) => {
+  const handleSave = async (payload: ProductFormPayload) => {
     await productService.updateProduct(productId, payload);
     router.push('/seller/products');
   };

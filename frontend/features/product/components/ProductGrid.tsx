@@ -38,7 +38,7 @@ export default function ProductGrid() {
       return 0;
     });
     return sortedProducts;
-  }, [currentPage, products, sortOption]);
+  }, [products, sortOption]);
 
   const firstProductNumber = totalElements === 0 ? 0 : (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
   const lastProductNumber = Math.min(currentPage * PRODUCTS_PER_PAGE, totalElements);

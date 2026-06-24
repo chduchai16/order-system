@@ -32,6 +32,7 @@ export default function SellerVouchers() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchVouchers();
   }, []);
@@ -62,7 +63,7 @@ export default function SellerVouchers() {
   };
 
   // Save new voucher
-  const handleSaveVoucher = async (payload: any) => {
+  const handleSaveVoucher = async (payload: Omit<Voucher, 'id' | 'usedQuantity'>) => {
     const created = await sellerVouchersService.createVoucher(payload);
     setVouchers([created, ...vouchers]);
   };

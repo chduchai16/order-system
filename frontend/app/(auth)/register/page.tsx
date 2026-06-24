@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Check, Gift, Lock, ShieldCheck, Trash2, Zap } from 'lucide-react';
+import { Check, Gift, Lock, ShieldCheck, Trash2 } from 'lucide-react';
 import RegisterForm from '@/features/auth/components/RegisterForm';
 
 const perks = [

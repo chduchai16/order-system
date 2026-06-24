@@ -50,7 +50,7 @@ export const orderService = {
       console.warn('Fallback to mocked/seeded orders due to network error:', err);
     }
 
-    const overlay = getOverlay<any>(ORDERS_OVERLAY_KEY);
+    const overlay = getOverlay<{ status: string; shippingInfo: Record<string, unknown> }>(ORDERS_OVERLAY_KEY);
 
     return backendOrders.map((order) => {
       const id = String(order.id);
@@ -69,10 +69,10 @@ export const orderService = {
   },
 
   updateOrderStatus: async (orderId: string, status: string, carrier?: string, trackingNumber?: string): Promise<void> => {
-    const overlay = getOverlay<any>(ORDERS_OVERLAY_KEY);
+    const overlay = getOverlay<{ status: string; shippingInfo: Record<string, unknown> }>(ORDERS_OVERLAY_KEY);
     const existing = overlay[orderId] || {};
 
-    const shippingInfoUpdates: any = {};
+    const shippingInfoUpdates: Record<string, string> = {};
     if (carrier) shippingInfoUpdates.carrier = carrier;
     if (trackingNumber) shippingInfoUpdates.trackingNumber = trackingNumber;
 

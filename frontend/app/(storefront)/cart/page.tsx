@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   ShoppingCart,
   Trash2,
-  Truck,
 } from 'lucide-react';
 import { useCartStore } from '@/features/cart/store';
 import { CartItem } from '@/components/types';
@@ -126,6 +125,7 @@ export default function CartPage() {
     if (items.length > 0 || (savedItems && savedItems.length > 0)) {
       fetchImages();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, savedItems]);
 
   const subtotal = getTotalPrice();
@@ -135,8 +135,10 @@ export default function CartPage() {
   const itemCount = items.reduce((count, item) => count + item.quantity, 0);
 
   const freeShippingThreshold = 300000;
-  const isFreeShipping = subtotal >= freeShippingThreshold;
-  const progressPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+  // isFreeShipping and progressPercent kept for future feature use
+  const _isFreeShipping = subtotal >= freeShippingThreshold;
+  const _progressPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+  void _isFreeShipping; void _progressPercent;
 
   if (items.length === 0 && (!savedItems || savedItems.length === 0)) {
     return (

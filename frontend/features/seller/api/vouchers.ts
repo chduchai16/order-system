@@ -85,7 +85,7 @@ export const sellerVouchersService = {
       console.warn('Backend voucher creation failed, saving locally:', err);
     }
 
-    const overlay = getOverlay<Voucher>(VOUCHERS_OVERLAY_KEY);
+    const overlay = getOverlay<Partial<Voucher>>(VOUCHERS_OVERLAY_KEY);
     overlay[String(newVoucher.id)] = newVoucher;
     saveOverlay(VOUCHERS_OVERLAY_KEY, overlay);
 
@@ -93,7 +93,7 @@ export const sellerVouchersService = {
   },
 
   toggleVoucherActive: async (voucherId: number, active: boolean): Promise<void> => {
-    const overlay = getOverlay<any>(VOUCHERS_OVERLAY_KEY);
+    const overlay = getOverlay<Partial<Voucher>>(VOUCHERS_OVERLAY_KEY);
     const key = String(voucherId);
     if (!overlay[key]) {
       overlay[key] = { id: voucherId };

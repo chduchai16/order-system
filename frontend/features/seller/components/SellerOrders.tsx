@@ -43,6 +43,7 @@ export default function SellerOrders() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -96,7 +97,9 @@ export default function SellerOrders() {
     e.stopPropagation();
     setShippingOrderId(orderId);
     setCarrier('GHN');
-    setTrackingNumber(`GHN-${Date.now().toString().slice(-6)}`);
+    // Generate a pseudo-random tracking number based on the order ID to avoid Date.now() in render
+    const suffix = orderId.toString().replace(/\D/g, '').slice(-6).padStart(6, '0');
+    setTrackingNumber(`GHN-${suffix}`);
   };
 
   const handleConfirmShip = async (e: React.FormEvent) => {

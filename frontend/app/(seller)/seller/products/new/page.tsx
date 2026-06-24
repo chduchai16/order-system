@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import ProductForm from '@/features/product/components/ProductForm';
 import { productService } from '@/features/product/api';
+import { ProductFormPayload } from '@/features/product/types';
 
 export default function NewProductPage() {
   const router = useRouter();
 
-  const handleSave = async (payload: any) => {
+  const handleSave = async (payload: ProductFormPayload) => {
     await productService.createProduct(payload);
     router.push('/seller/products');
   };

@@ -12,7 +12,6 @@ import {
   Sparkles,
   Home as HomeIcon,
   Menu,
-  ChevronDown,
   Globe,
   LogOut,
   ShoppingBag,

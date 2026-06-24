@@ -1,6 +1,6 @@
 'use client';
 
-import { Product } from '@/features/product/types';
+import { Product, ProductFormPayload } from '@/features/product/types';
 import { X } from 'lucide-react';
 import ProductForm from '@/features/product/components/ProductForm';
 
@@ -8,7 +8,7 @@ interface ProductModalProps {
   product: Product | null; // null means adding a new product
   isOpen: boolean;
   onClose: () => void;
-  onSave: (product: any) => Promise<void>;
+  onSave: (product: ProductFormPayload) => Promise<void>;
 }
 
 export default function ProductModal({ product, isOpen, onClose, onSave }: ProductModalProps) {
@@ -43,7 +43,7 @@ export default function ProductModal({ product, isOpen, onClose, onSave }: Produ
         {/* Reusable Product Form */}
         <div className="overflow-y-auto max-h-[70vh]">
           <ProductForm 
-            product={product as any} 
+            product={product} 
             onSave={onSave} 
             onCancel={onClose} 
           />

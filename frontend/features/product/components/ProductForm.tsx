@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Product, ProductVariant, ProductAttribute } from '../types';
+import { Product, ProductVariant, ProductAttribute, ProductFormPayload } from '../types';
 import { Plus, Trash2, Settings, FileText, Layers } from 'lucide-react';
 
 interface ProductFormProps {
   product: Product | null; // null means adding a new product
-  onSave: (product: any) => Promise<void>;
+  onSave: (product: ProductFormPayload) => Promise<void>;
   onCancel: () => void;
   submitting?: boolean;
 }
@@ -37,6 +37,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
   const [variants, setVariants] = useState<Omit<ProductVariant, 'id'>[]>([]);
 
   // Load product if editing
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (product) {
       setName(product.name);
@@ -100,7 +101,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
     setVariants(variants.filter((_, i) => i !== idx));
   };
 
-  const handleVariantChange = (idx: number, field: keyof Omit<ProductVariant, 'id'>, val: any) => {
+  const handleVariantChange = (idx: number, field: keyof Omit<ProductVariant, 'id'>, val: string | number) => {
     const updated = [...variants];
     updated[idx] = { ...updated[idx], [field]: val };
     setVariants(updated);

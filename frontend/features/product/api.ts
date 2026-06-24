@@ -1,5 +1,5 @@
 import apiClient from '@/lib/axios';
-import { Product } from './types';
+import { Product, ProductImage, ProductAttribute, ProductVariant, ProductFormPayload } from './types';
 
 const PRODUCTS_OVERLAY_KEY = 'shop_vn_seller_products_overlay';
 
@@ -24,8 +24,21 @@ const saveOverlay = <T>(key: string, data: Record<string, T>) => {
   }
 };
 
-interface OverlayProduct extends Partial<Product> {
+interface OverlayProduct {
   _isDeleted?: boolean;
+  id?: string;
+  sku?: string;
+  name?: string;
+  price?: number;
+  stock?: number;
+  availableStock?: number;
+  description?: string;
+  image?: string;
+  images?: (ProductImage | Omit<ProductImage, 'id'>)[];
+  categoryId?: number;
+  categoryName?: string;
+  variants?: (ProductVariant | Omit<ProductVariant, 'id'>)[];
+  attributes?: ProductAttribute[];
 }
 
 type PagedProductResponse = {
@@ -119,9 +132,9 @@ export const productService = {
     }
   },
 
-  createProduct: async (productData: Omit<Product, 'id'>): Promise<Product> => {
+  createProduct: async (productData: ProductFormPayload): Promise<Product> => {
     const newProduct: Product = {
-      ...productData,
+      ...(productData as unknown as Omit<Product, 'id'>),
       id: `local_${Date.now()}`,
     };
 
@@ -147,7 +160,7 @@ export const productService = {
     return newProduct;
   },
 
-  updateProduct: async (id: string, updates: Partial<Product>): Promise<Product> => {
+  updateProduct: async (id: string, updates: ProductFormPayload): Promise<Product> => {
     try {
       if (!id.startsWith('local_')) {
         await apiClient.put(`/api/products/${id}`, {

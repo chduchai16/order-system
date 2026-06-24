@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { sellerSettingsService } from '../api/settings';
-import { ShopSettings } from '../types';
 import { Save, Store, Mail, Phone, MapPin, Eye, Calendar, Sparkles } from 'lucide-react';
 
 export default function SellerSettings() {
@@ -288,7 +287,7 @@ export default function SellerSettings() {
 
             {/* Bio */}
             <p className="text-xs text-gray-550 leading-relaxed italic bg-[#FDFAF7] border border-[#EAE3D2]/35 p-3 rounded-xl">
-              "{description || 'Chưa cấu hình mô tả tiểu sử về gian hàng thủ công của bạn.'}"
+              &ldquo;{description || 'Chưa cấu hình mô tả tiểu sử về gian hàng thủ công của bạn.'}&rdquo;
             </p>
 
             {/* Quick Stats list */}

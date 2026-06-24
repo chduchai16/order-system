@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Product } from '@/features/product/types';
+import { Product, ProductFormPayload } from '@/features/product/types';
 import { productService } from '@/features/product/api';
 import ProductModal from './ProductModal';
 import { Plus, Search, Edit2, Trash2, Eye, Package, Layers, SlidersHorizontal } from 'lucide-react';
@@ -33,6 +33,7 @@ export default function SellerProducts() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -86,7 +87,7 @@ export default function SellerProducts() {
     setIsModalOpen(true);
   };
 
-  const handleSaveProduct = async (payload: any) => {
+  const handleSaveProduct = async (payload: ProductFormPayload) => {
     if (selectedProduct) {
       const updated = await productService.updateProduct(selectedProduct.id, payload);
       setProducts(products.map((p) => (p.id === selectedProduct.id ? updated : p)));

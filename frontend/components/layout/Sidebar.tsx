@@ -28,6 +28,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [settings, setSettings] = useState<ShopSettings | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setSettings(sellerSettingsService.getShopSettings());
     

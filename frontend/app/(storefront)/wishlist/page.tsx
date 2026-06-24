@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Eye, Heart, PackageCheck, ShoppingCart, Star, Trash2, Sparkles, Gift } from 'lucide-react';
+import { Eye, Heart, ShoppingCart, Sparkles, Gift } from 'lucide-react';
 import { userService } from '@/features/account/api/userService';
 import { useCartStore } from '@/features/cart/store';
 import { WishlistItem } from '@/components/types';
@@ -51,6 +51,7 @@ export default function WishlistPage() {
     };
 
     fetchWishlist();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const totalCount = wishlist.length;

@@ -34,3 +34,15 @@ export interface Product {
   variants?: ProductVariant[];
   attributes?: ProductAttribute[];
 }
+export interface ProductFormPayload {
+  name: string;
+  description?: string;
+  categoryId?: number;
+  categoryName?: string;
+  price: number;
+  stock: number;
+  image?: string;
+  images?: Omit<ProductImage, 'id'>[];
+  attributes?: ProductAttribute[];
+  variants?: Omit<ProductVariant, 'id'>[];
+}

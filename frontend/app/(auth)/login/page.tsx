@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CreditCard, Gift, Lock, RefreshCw, ShieldCheck, Truck, Sparkles } from 'lucide-react';
+import { CreditCard, Gift, Lock, RefreshCw, ShieldCheck, Truck } from 'lucide-react';
 import LoginForm from '@/features/auth/components/LoginForm';
 
 const benefits = [
