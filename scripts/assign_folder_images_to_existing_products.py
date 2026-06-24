@@ -43,52 +43,48 @@ def get_products(product_base_url: str, user_agent: str) -> list[dict]:
     return response.json()
 
 
-def get_product(product_base_url: str, product_id: int, user_agent: str) -> dict:
-    url = f"{product_base_url.rstrip('/')}/api/products/{product_id}"
-    response = requests.get(url, headers={"User-Agent": user_agent}, timeout=180)
-    response.raise_for_status()
-    return response.json()
-
-
 def delete_media(media_base_url: str, media_id: int, user_agent: str) -> None:
     url = f"{media_base_url.rstrip('/')}/api/media/{media_id}"
     response = requests.delete(url, headers={"User-Agent": user_agent}, timeout=180)
     response.raise_for_status()
 
 
-def clear_existing_product_images(media_base_url: str, product: dict, user_agent: str, dry_run: bool) -> None:
-    existing_images = product.get("images") or []
-    if not existing_images:
+def clear_existing_product_images(media_base_url: str, product_id: int, user_agent: str, dry_run: bool) -> None:
+    query_command = [
+        "docker",
+        "exec",
+        "order-system-postgres",
+        "psql",
+        "-U",
+        "postgres",
+        "-d",
+        "product_db",
+        "-t",
+        "-A",
+        "-c",
+        f"SELECT media_id FROM product_images WHERE product_id = {product_id} ORDER BY display_order;",
+    ]
+    result = subprocess.run(query_command, capture_output=True, text=True)
+    if result.returncode != 0:
+        # If DB is not available or query fails, skip checking
+        print(f"  warning: could not read existing images for product {product_id}")
+        return
+
+    media_ids = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    if not media_ids:
         print("  no existing images to clear")
         return
 
-    print(f"  clearing {len(existing_images)} existing images")
-    for image in existing_images:
-        media_id = image.get("mediaId") or image.get("media_id")
-        if media_id is None:
-            print("  skip: existing image without mediaId")
-            continue
+    print(f"  clearing {len(media_ids)} existing images")
+    for media_id in media_ids:
         if dry_run:
             print(f"  dry-run delete mediaId={media_id}")
             continue
-        delete_media(media_base_url, int(media_id), user_agent)
-        print(f"  deleted old mediaId={media_id}")
-
-
-def update_product_images(
-    product_base_url: str,
-    product_id: int,
-    media_ids: list[int],
-    user_agent: str,
-) -> dict:
-    url = f"{product_base_url.rstrip('/')}/api/products/{product_id}"
-    response = requests.get(
-        url,
-        headers={"User-Agent": user_agent},
-        timeout=180,
-    )
-    response.raise_for_status()
-    return response.json()
+        try:
+            delete_media(media_base_url, int(media_id), user_agent)
+            print(f"  deleted old mediaId={media_id}")
+        except Exception as exc:
+            print(f"  warning: failed to delete old mediaId={media_id}: {exc}")
 
 
 def replace_product_images_in_db(product_id: int, media_ids: list[int]) -> None:
@@ -168,6 +164,82 @@ def build_folder_map(folders: list[Path]) -> list[Path]:
     return ordered
 
 
+def get_categories_from_db() -> dict[str, int]:
+    try:
+        cmd = [
+            "docker",
+            "exec",
+            "order-system-postgres",
+            "psql",
+            "-U",
+            "postgres",
+            "-d",
+            "product_db",
+            "-t",
+            "-A",
+            "-c",
+            "SELECT id, name FROM categories;",
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            cat_map = {}
+            for line in result.stdout.splitlines():
+                if line.strip() and "|" in line:
+                    cat_id, cat_name = line.split("|", 1)
+                    cat_map[cat_name.lower().strip()] = int(cat_id)
+            if cat_map:
+                return cat_map
+    except Exception:
+        pass
+    
+    # Fallback to static IDs matching standard initialization
+    return {"foods": 1, "crafts": 2, "bags": 3, "pants": 4, "shirts": 5, "shoes": 6}
+
+
+def get_products_by_category_from_db(category_id: int) -> list[dict]:
+    try:
+        cmd = [
+            "docker",
+            "exec",
+            "order-system-postgres",
+            "psql",
+            "-U",
+            "postgres",
+            "-d",
+            "product_db",
+            "-t",
+            "-A",
+            "-c",
+            f"SELECT id, name FROM products WHERE category_id = {category_id} ORDER BY id;",
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            products = []
+            for line in result.stdout.splitlines():
+                if line.strip() and "|" in line:
+                    p_id, p_name = line.split("|", 1)
+                    products.append({"id": int(p_id), "name": p_name.strip()})
+            return products
+    except Exception:
+        pass
+    return []
+
+
+def normalize_folder_name(name: str) -> str:
+    name = name.lower().strip()
+    synonyms = {
+        "clothes": "shirts",
+        "clothing": "shirts",
+        "food": "foods",
+        "craft": "crafts",
+        "bag": "bags",
+        "pant": "pants",
+        "shirt": "shirts",
+        "shoe": "shoes",
+    }
+    return synonyms.get(name, name)
+
+
 def clear_db_tables(dry_run: bool) -> None:
     print("clearing db tables: product_images, medias")
     if dry_run:
@@ -210,7 +282,6 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Upload 5 images per folder and assign them to existing products.")
     parser.add_argument("--images-dir", required=True, help="Root directory containing numeric folders like 001, 002...")
     parser.add_argument("--media-base-url", default="http://localhost:8080", help="Base URL of gateway/media route")
-    parser.add_argument("--product-base-url", default="http://localhost:8080", help="Base URL of gateway/product route")
     parser.add_argument("--user-agent", default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
     parser.add_argument("--dry-run", action="store_true", help="Do not call APIs, only print what would happen")
     parser.add_argument("--clear-db-data", action="store_true", help="Truncate product_images and medias before importing")
@@ -225,47 +296,54 @@ def main() -> None:
         raise SystemExit(f"No numeric folders found in: {images_dir}")
 
     print(f"start: images_dir={images_dir}")
-    print(f"config: media_base_url={args.media_base_url}, product_base_url={args.product_base_url}, dry_run={args.dry_run}, clear_db_data={args.clear_db_data}")
+    print(f"config: media_base_url={args.media_base_url}, dry_run={args.dry_run}, clear_db_data={args.clear_db_data}")
 
     if args.clear_db_data:
         clear_db_tables(args.dry_run)
 
-    products = get_products(args.product_base_url, args.user_agent)
-    products = sorted(products, key=lambda p: p.get("id", 0))
-    print(f"loaded products: {len(products)}")
-
-    if len(products) < len(folders) * PRODUCTS_PER_FOLDER:
-        print(f"warning: only {len(products)} products found, but {len(folders) * PRODUCTS_PER_FOLDER} are needed")
+    categories_map = get_categories_from_db()
+    print(f"Loaded category map from database: {categories_map}")
 
     results = []
-    for folder_index, folder in enumerate(folders):
-        start_index = folder_index * PRODUCTS_PER_FOLDER
-        end_index = start_index + PRODUCTS_PER_FOLDER
-        folder_products = products[start_index:end_index]
+    for folder in folders:
         images = read_images(folder)
         image_groups = chunk_images(images, IMAGES_PER_PRODUCT)
 
-        print(f"[{folder.name}] -> {len(folder_products)} products, {len(images)} images, {len(image_groups)} groups")
-        if len(image_groups) < len(folder_products):
-            print(f"  warning: not enough images for all products in {folder.name}")
+        normalized_name = normalize_folder_name(folder.name)
+        category_id = categories_map.get(normalized_name)
+        if not category_id:
+            print(f"[{folder.name}] -> warning: no matching category found in database (normalized: {normalized_name})")
+            continue
 
-        for local_index, product in enumerate(folder_products):
-            if local_index >= len(image_groups):
+        products = get_products_by_category_from_db(category_id)
+        if not products:
+            print(f"[{folder.name}] -> warning: no products found in DB for category {category_id}, using fallback generation")
+            products = [
+                {
+                    "id": (category_id - 1) * PRODUCTS_PER_FOLDER + i + 1,
+                    "name": f"{folder.name.capitalize()} Product {i + 1}"
+                }
+                for i in range(len(image_groups))
+            ]
+
+        print(f"\n[{folder.name}] (category_id={category_id}) -> {len(images)} images, {len(products)} products mapped")
+        for local_index, image_group in enumerate(image_groups):
+            if local_index >= len(products):
+                print(f"  warning: more image groups ({len(image_groups)}) than products ({len(products)}), stopping.")
                 break
 
-            product_id = int(product["id"])
-            product_name = product.get("name") or folder.name
-            full_product = get_product(args.product_base_url, product_id, args.user_agent)
-            image_group = image_groups[local_index]
+            product = products[local_index]
+            product_id = product["id"]
+            product_name = product["name"]
 
-            print(f"  product id={product_id} name={product_name} ({len(image_group)} images)")
+            print(f"  product id={product_id} name='{product_name}' ({len(image_group)} images)")
             if len(image_group) < IMAGES_PER_PRODUCT:
                 print(f"    warning: expected {IMAGES_PER_PRODUCT} images, found {len(image_group)}")
 
             media_ids = []
             uploaded_media = []
             try:
-                clear_existing_product_images(args.media_base_url, product, args.user_agent, args.dry_run)
+                clear_existing_product_images(args.media_base_url, product_id, args.user_agent, args.dry_run)
                 for image_path in image_group:
                     print(f"    uploading: {image_path.name}")
                     if args.dry_run:
@@ -281,20 +359,9 @@ def main() -> None:
                         print(f"    success: uploaded file={image_path.name} mediaId={media_id}")
 
                 if args.dry_run:
-                    updated_product = {
-                        "dry_run": True,
-                        "product_id": product_id,
-                        "product_name": product_name,
-                        "media_ids": media_ids,
-                    }
+                    updated_product = {"dry_run": True, "product_id": product_id, "product_name": product_name, "media_ids": media_ids}
                     print(f"    success: dry-run update product id={product_id}")
                 else:
-                    updated_product = update_product_images(
-                        args.product_base_url,
-                        product_id,
-                        media_ids,
-                        args.user_agent,
-                    )
                     replace_product_images_in_db(product_id, media_ids)
                     print(f"    success: updated product id={product_id}")
 
@@ -304,7 +371,7 @@ def main() -> None:
                         "product_id": product_id,
                         "product_name": product_name,
                         "uploaded_media": uploaded_media,
-                        "product": updated_product,
+                        "product": updated_product if args.dry_run else {"product_id": product_id, "media_ids": media_ids},
                     }
                 )
             except Exception as exc:
@@ -312,7 +379,7 @@ def main() -> None:
                 if not args.dry_run:
                     continue
 
-    print(f"done: processed={len(results)}")
+    print(f"\ndone: processed={len(results)}")
     print(json.dumps(results, ensure_ascii=False, indent=2))
 
 

@@ -365,7 +365,7 @@ export default function SellerOverview() {
             <tbody className="divide-y divide-[#EAE3D2]/35">
               {orders.slice(0, 4).map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50/50">
-                  <td className="p-3 font-mono font-bold text-gray-800">{order.orderNumber || `ORD-${order.id.slice(0, 8)}`}</td>
+                  <td className="p-3 font-mono font-bold text-gray-800">{order.orderNumber || `ORD-${String(order.id).slice(0, 8)}`}</td>
                   <td className="p-3 text-gray-500">{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
                   <td className="p-3 font-medium max-w-[200px] truncate" title={order.items.map(item => item.productName).join(', ')}>
                     {order.items[0]?.productName} {order.items.length > 1 && `và ${order.items.length - 1} món khác`}

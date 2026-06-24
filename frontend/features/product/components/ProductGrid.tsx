@@ -7,7 +7,7 @@ import ProductCard from './ProductCard';
 import { ChevronLeft, ChevronRight, Clock, Truck, ShieldCheck, RefreshCw, Star, Gift, Filter, X, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 
-const PRODUCTS_PER_PAGE = 20;
+const PRODUCTS_PER_PAGE = 42;
 
 const categoriesList = [
   { name: 'Tất cả sản phẩm', count: '1.2k', slug: 'all' },
@@ -289,7 +289,7 @@ export default function ProductGrid() {
             <div className="py-16 text-center text-gray-500 text-sm font-semibold">Không tìm thấy sản phẩm nào phù hợp.</div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {paginatedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

@@ -258,7 +258,7 @@ export default function SellerOrders() {
               </thead>
               <tbody className="divide-y divide-[#EAE3D2]/35">
                 {filteredOrders.map((order) => {
-                  const orderNo = order.orderNumber || `ORD-${order.id.slice(0, 8)}`;
+                  const orderNo = order.orderNumber || `ORD-${String(order.id).slice(0, 8)}`;
                   const addressStr = order.shippingAddress 
                     ? `${order.shippingAddress.street}, ${order.shippingAddress.district}, ${order.shippingAddress.city}`
                     : 'N/A';
