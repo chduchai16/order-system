@@ -82,7 +82,7 @@ export default function SellerOrders() {
       case 'DELIVERED':
         return <span className="bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã giao</span>;
       case 'PAID':
-        return <span className="bg-[#EBF2EE] text-[#1E5C3F] border border-[#1e5c3f]/20 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã thanh toán</span>;
+        return <span className="bg-[#FFF2EB] text-[#F1641E] border border-[#F1641E]/20 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã thanh toán</span>;
       case 'SHIPPING':
         return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full text-[10px] font-bold">Đang giao</span>;
       case 'CANCELLED':
@@ -286,7 +286,7 @@ export default function SellerOrders() {
                             <button
                               type="button"
                               onClick={(e) => handleOpenShipModal(order.id, e)}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#1E5C3F] hover:bg-[#113a26] text-white text-[10.5px] font-bold rounded-lg cursor-pointer transition-all shadow-sm"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white text-[10.5px] font-bold rounded-lg cursor-pointer transition-all shadow-sm"
                             >
                               <Truck className="w-3.5 h-3.5" />
                               Gửi hàng
@@ -379,7 +379,7 @@ export default function SellerOrders() {
                 {/* Carrier info */}
                 <div className="space-y-3">
                   <h4 className="font-serif font-black text-sm text-gray-700 flex items-center gap-1.5 border-b border-gray-100 pb-1.5">
-                    <Truck className="w-4 h-4 text-[#1E5C3F]" />
+                    <Truck className="w-4 h-4 text-[#F1641E]" />
                     Trạng thái & Vận chuyển
                   </h4>
                   <div className="text-xs space-y-1.5 text-gray-655">
@@ -459,7 +459,7 @@ export default function SellerOrders() {
                 <button
                   type="button"
                   onClick={(e) => handleOpenShipModal(selectedOrder.id, e)}
-                  className="px-5 py-2 rounded-full bg-[#1E5C3F] hover:bg-[#113a26] text-white text-xs font-bold transition-all cursor-pointer shadow-md flex items-center gap-1"
+                  className="px-5 py-2 rounded-full bg-[#F1641E] hover:bg-[#D64F13] text-white text-xs font-bold transition-all cursor-pointer shadow-md flex items-center gap-1"
                 >
                   <Truck className="w-4 h-4" />
                   Xác nhận & Giao hàng
@@ -541,7 +541,7 @@ export default function SellerOrders() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#1E5C3F] hover:bg-[#103a25] text-white rounded-full text-xs font-bold cursor-pointer transition-all"
+                  className="px-5 py-2 bg-[#F1641E] hover:bg-[#D64F13] text-white rounded-full text-xs font-bold cursor-pointer transition-all"
                 >
                   Xác nhận gửi hàng
                 </button>

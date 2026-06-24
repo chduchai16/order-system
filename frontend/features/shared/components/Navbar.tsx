@@ -155,7 +155,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <span className="font-medium">Chào mừng bạn đến với ShopVN — Nền tảng thương mại trực tuyến lớn nhất Việt Nam!</span>
           <div className="flex space-x-5 items-center">
-            <Link href="/products?category=sale" className="hover:text-[#F1641E] transition-colors font-semibold text-[#1E5C3F]">Ưu đãi hè - Giảm tới 50%</Link>
+            <Link href="/products?category=sale" className="hover:text-[#D64F13] transition-colors font-semibold text-[#F1641E]">Ưu đãi hè - Giảm tới 50%</Link>
             <span className="text-gray-300">|</span>
             <div className="flex items-center space-x-1 hover:text-black cursor-pointer">
               <Globe className="w-3.5 h-3.5" />
@@ -291,14 +291,14 @@ export default function Navbar() {
 
         {/* Right Action Icons */}
         <div className="flex items-center space-x-3 sm:space-x-5 text-gray-700 shrink-0">
-          <Link href="/business" className="hidden md:flex items-center gap-1.5 bg-[#EBF2EE] hover:bg-[#d5ebdcf5] text-[#1E5C3F] font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 border border-[#1E5C3F]/20 cursor-pointer mr-0.5" title="Kênh người bán - Shop Manager">
-            <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+          <Link href="/business" className="hidden md:flex items-center gap-1.5 bg-[#FFF2EB] hover:bg-[#FCE6D8] text-[#F1641E] font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 border border-[#F1641E]/20 cursor-pointer mr-0.5" title="Kênh người bán - Shop Manager">
+            <ShoppingBag className="w-4 h-4 text-[#F1641E]" />
             <span>Kênh người bán</span>
           </Link>
 
           <Link href="/wishlist" className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors relative flex items-center justify-center cursor-pointer group" title="Danh sách yêu thích">
             <Heart className="w-6 h-6 group-hover:scale-105 transition-transform" />
-            <span className="absolute top-1 right-1 bg-[#1E5C3F] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FDFAF7]">
+            <span className="absolute top-1 right-1 bg-[#F1641E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FDFAF7]">
               5
             </span>
           </Link>
@@ -362,9 +362,9 @@ export default function Navbar() {
                       <Link 
                         href="/business" 
                         onClick={() => setShowUserDropdown(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#1E5C3F] hover:bg-[#EBF2EE] transition-colors cursor-pointer border-t border-gray-100 mt-1 pt-2"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#F1641E] hover:bg-[#FFF2EB] transition-colors cursor-pointer border-t border-gray-100 mt-1 pt-2"
                       >
-                        <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+                        <ShoppingBag className="w-4 h-4 text-[#F1641E]" />
                         <span>Kênh Người Bán</span>
                       </Link>
                     </div>
@@ -391,11 +391,8 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-1">
-              <Link href="/login" className="text-sm font-semibold hover:text-[#F1641E] transition-colors py-1.5 px-3 rounded-full hover:bg-gray-100/60 hidden md:block">
+              <Link href="/login" className="text-sm font-semibold hover:text-[#F1641E] transition-colors py-1.5 px-3 rounded-full hover:bg-gray-100/60">
                 Đăng nhập
-              </Link>
-              <Link href="/login" className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors flex items-center justify-center cursor-pointer group" title="Đăng nhập">
-                <User className="w-6 h-6 group-hover:scale-105 transition-transform" />
               </Link>
             </div>
           )}
@@ -432,7 +429,7 @@ export default function Navbar() {
             <Gift className="w-3.5 h-3.5 text-[#F1641E]" />
             <span>Ý tưởng Quà tặng</span>
           </Link>
-          <Link href="/products?category=fathers-day" className="hover:bg-[#F5EFE6]/60 px-3 py-2 rounded-full transition-colors whitespace-nowrap text-[#1E5C3F] font-bold">
+          <Link href="/products?category=fathers-day" className="hover:bg-[#F5EFE6]/60 px-3 py-2 rounded-full transition-colors whitespace-nowrap text-[#F1641E] font-bold">
             Quà Ngày của Cha 🎁
           </Link>
           <Link href="/products?category=home-living" className="flex items-center gap-1 hover:bg-[#F5EFE6]/60 px-3 py-2 rounded-full transition-colors whitespace-nowrap">
@@ -465,7 +462,7 @@ export default function Navbar() {
             </div>
             <ul className="space-y-4 font-semibold text-sm text-gray-700 flex-1 overflow-y-auto">
               <li>
-                <Link href="/products?category=fathers-day" onClick={() => setShowMobileMenu(false)} className="block text-[#1E5C3F] font-bold">
+                <Link href="/products?category=fathers-day" onClick={() => setShowMobileMenu(false)} className="block text-[#F1641E] font-bold">
                   Quà Ngày của Cha 🎁
                 </Link>
               </li>
@@ -500,8 +497,8 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className="border-t border-gray-200/80 pt-3 mt-2">
-                <Link href="/business" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-2 py-1 text-[#1E5C3F] font-bold">
-                  <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+                <Link href="/business" onClick={() => setShowMobileMenu(false)} className="flex items-center gap-2 py-1 text-[#F1641E] font-bold">
+                  <ShoppingBag className="w-4 h-4 text-[#F1641E]" />
                   <span>Kênh Người Bán</span>
                 </Link>
               </li>

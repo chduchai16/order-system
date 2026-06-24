@@ -87,7 +87,7 @@ export default function SellerVouchers() {
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 font-bold text-[#1E5C3F]">
+      <span className="inline-flex items-center gap-1.5 font-bold text-[#F1641E]">
         <DollarSign className="w-3.5 h-3.5" />
         Giảm -{formatVnd(v.discountValue)}
       </span>
@@ -105,7 +105,7 @@ export default function SellerVouchers() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-1.5 bg-[#1E5C3F] hover:bg-[#123926] text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer shrink-0"
+          className="inline-flex items-center gap-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer shrink-0"
         >
           <Plus className="w-4.5 h-4.5" />
           Tạo mã giảm giá mới
@@ -173,7 +173,7 @@ export default function SellerVouchers() {
                         <div className="space-y-1">
                           <span className="font-bold text-gray-755">{v.usedQuantity} / {v.totalQuantity}</span>
                           <div className="w-full bg-[#EAE3D2]/40 rounded-full h-1">
-                            <div className="bg-[#1E5C3F] h-1 rounded-full" style={{ width: `${usagePercent}%` }}></div>
+                            <div className="bg-[#F1641E] h-1 rounded-full" style={{ width: `${usagePercent}%` }}></div>
                           </div>
                         </div>
                       </td>
@@ -187,7 +187,7 @@ export default function SellerVouchers() {
                           onClick={() => handleToggleActive(v)}
                           className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] font-bold border transition-colors cursor-pointer ${
                             isActive
-                              ? 'bg-[#EBF2EE] text-[#1E5C3F] border-[#1e5c3f]/25 hover:bg-red-55 hover:text-red-650 hover:border-red-200'
+                              ? 'bg-[#FFF2EB] text-[#F1641E] border-[#F1641E]/25 hover:bg-red-55 hover:text-red-650 hover:border-red-200'
                               : 'bg-red-50 text-red-650 border-red-200 hover:bg-green-50 hover:text-green-705 hover:border-green-200'
                           }`}
                         >

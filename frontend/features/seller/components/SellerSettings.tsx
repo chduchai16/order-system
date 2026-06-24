@@ -232,7 +232,7 @@ export default function SellerSettings() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-1.5 bg-[#1E5C3F] hover:bg-[#113a26] text-white px-6 py-3 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer"
+              className="inline-flex items-center gap-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white px-6 py-3 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer"
             >
               <Save className="w-4 h-4" />
               {saving ? 'Đang lưu cấu hình...' : 'Lưu thông tin cửa hàng'}
@@ -250,7 +250,7 @@ export default function SellerSettings() {
               <Eye className="w-4 h-4 text-[#F1641E]" />
               Xem trước hiển thị
             </h3>
-            <span className="text-[9.5px] bg-[#EBF2EE] text-[#1E5C3F] font-bold px-2 py-0.5 rounded-sm">
+            <span className="text-[9.5px] bg-[#FFF2EB] text-[#F1641E] font-bold px-2 py-0.5 rounded-sm">
               Live Preview
             </span>
           </div>
@@ -295,7 +295,7 @@ export default function SellerSettings() {
             <div className="border-t border-[#EAE3D2]/40 pt-4 grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-gray-400 block text-[9.5px] font-bold uppercase tracking-wider">Người bán được xác thực</span>
-                <span className="font-bold text-[#1E5C3F] flex items-center gap-1 mt-0.5">
+                <span className="font-bold text-[#F1641E] flex items-center gap-1 mt-0.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   Nghệ nhân ShopVN
                 </span>

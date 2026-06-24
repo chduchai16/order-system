@@ -291,14 +291,14 @@ export default function Header() {
 
         {/* Right Action Icons */}
         <div className="flex items-center space-x-3 sm:space-x-5 text-gray-700 shrink-0">
-          <Link href="/seller" className="hidden md:flex items-center gap-1.5 bg-[#EBF2EE] hover:bg-[#d5ebdcf5] text-[#1E5C3F] font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 border border-[#1E5C3F]/20 cursor-pointer mr-0.5" title="Kênh người bán - Shop Manager">
-            <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+          <Link href="/seller" className="hidden md:flex items-center gap-1.5 bg-[#FFF2EB] hover:bg-[#FCE6D8] text-[#F1641E] font-bold text-xs px-4 py-2 rounded-full transition-all duration-200 border border-[#F1641E]/20 cursor-pointer mr-0.5" title="Kênh người bán - Shop Manager">
+            <ShoppingBag className="w-4 h-4 text-[#F1641E]" />
             <span>Kênh người bán</span>
           </Link>
 
           <Link href="/wishlist" className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors relative flex items-center justify-center cursor-pointer group" title="Danh sách yêu thích">
             <Heart className="w-6 h-6 group-hover:scale-105 transition-transform" />
-            <span className="absolute top-1 right-1 bg-[#1E5C3F] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FDFAF7]">
+            <span className="absolute top-1 right-1 bg-[#F1641E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FDFAF7]">
               5
             </span>
           </Link>
@@ -362,9 +362,9 @@ export default function Header() {
                       <Link 
                         href="/seller" 
                         onClick={() => setShowUserDropdown(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#1E5C3F] hover:bg-[#EBF2EE] transition-colors cursor-pointer border-t border-gray-100 mt-1 pt-2"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#F1641E] hover:bg-[#FFF2EB] transition-colors cursor-pointer border-t border-gray-100 mt-1 pt-2"
                       >
-                        <ShoppingBag className="w-4 h-4 text-[#1E5C3F]" />
+                        <ShoppingBag className="w-4 h-4 text-[#F1641E]" />
                         <span>Kênh Người Bán</span>
                       </Link>
                     </div>
@@ -391,11 +391,8 @@ export default function Header() {
             </div>
           ) : (
             <div className="flex items-center gap-1">
-              <Link href="/login" className="text-sm font-semibold hover:text-[#F1641E] transition-colors py-1.5 px-3 rounded-full hover:bg-gray-100/60 hidden md:block">
+              <Link href="/login" className="text-sm font-semibold hover:text-[#F1641E] transition-colors py-1.5 px-3 rounded-full hover:bg-gray-100/60">
                 Đăng nhập
-              </Link>
-              <Link href="/login" className="p-2.5 rounded-full hover:bg-gray-100/80 transition-colors flex items-center justify-center cursor-pointer group" title="Đăng nhập">
-                <User className="w-6 h-6 group-hover:scale-105 transition-transform" />
               </Link>
             </div>
           )}

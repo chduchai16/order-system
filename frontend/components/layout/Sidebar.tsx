@@ -54,12 +54,12 @@ export default function Sidebar({ children }: SidebarProps) {
   const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-[#FDFAF7] border-r border-[#EAE3D2]/70 py-6 px-4">
+    <div className="flex flex-col h-full bg-[#1E1A17] border-r border-[#3A332E] py-6 px-4">
       {/* Brand logo */}
-      <div className="px-3 pb-6 border-b border-[#EAE3D2]/50 flex items-center justify-between">
+      <div className="px-3 pb-6 border-b border-white/10 flex items-center justify-between">
         <Link href="/seller" className="flex items-center space-x-2">
           <span className="font-serif text-2xl font-black text-[#F1641E] tracking-tight">ShopVN</span>
-          <span className="bg-[#1E5C3F] text-white text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">Kênh Người Bán</span>
+          <span className="bg-[#F1641E] text-white text-[9px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">Kênh Người Bán</span>
         </Link>
         <button 
           onClick={() => setShowMobileSidebar(false)}
@@ -73,8 +73,8 @@ export default function Sidebar({ children }: SidebarProps) {
 
       {/* Seller Mini Profile */}
       {settings && (
-        <div className="my-6 px-3 py-4 bg-[#F5EFE6]/35 border border-[#EAE3D2]/50 rounded-2xl flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#EAE3D2] shrink-0 bg-[#FDFAF7]">
+        <div className="my-6 px-3 py-4 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-3">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/20 shrink-0 bg-white/5">
             <Image 
               src={settings.avatarUrl} 
               alt={settings.shopName} 
@@ -83,8 +83,8 @@ export default function Sidebar({ children }: SidebarProps) {
             />
           </div>
           <div className="min-w-0 flex-grow">
-            <h4 className="font-serif font-black text-xs text-gray-800 truncate leading-snug">{settings.shopName}</h4>
-            <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mt-0.5">Nghệ nhân</span>
+            <h4 className="font-serif font-black text-xs text-white truncate leading-snug">{settings.shopName}</h4>
+            <span className="text-[10px] text-[#A8988C] font-semibold uppercase tracking-wider block mt-0.5">Nghệ nhân</span>
           </div>
         </div>
       )}
@@ -101,11 +101,11 @@ export default function Sidebar({ children }: SidebarProps) {
               onClick={() => setShowMobileSidebar(false)}
               className={`flex items-center gap-3 px-4.5 py-3.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'bg-[#1E5C3F] text-white shadow-md shadow-[#1E5C3F]/10'
-                  : 'text-gray-650 hover:bg-[#F5EFE6]/35 hover:text-black border border-transparent'
+                  ? 'bg-[#F1641E] text-white shadow-md shadow-[#F1641E]/20'
+                  : 'text-[#C2B4AA] hover:bg-white/5 hover:text-white border border-transparent'
               }`}
             >
-              <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+              <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-white' : 'text-[#8A7E75]'}`} />
               <span>{item.name}</span>
             </Link>
           );
@@ -113,10 +113,10 @@ export default function Sidebar({ children }: SidebarProps) {
       </nav>
 
       {/* Back to buyer view */}
-      <div className="border-t border-[#EAE3D2]/50 pt-5 px-1 mt-auto">
+      <div className="border-t border-white/10 pt-5 px-1 mt-auto">
         <Link
           href="/"
-          className="flex items-center justify-between px-4 py-3 border border-[#222222] hover:bg-[#222222] hover:text-white rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
+          className="flex items-center justify-between px-4 py-3 border border-white/20 text-[#C2B4AA] hover:bg-white hover:text-black rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <ArrowLeftRight className="w-4 h-4 text-gray-500 hover:text-white" />
@@ -174,11 +174,11 @@ export default function Sidebar({ children }: SidebarProps) {
           {settings && (
             <div className="flex items-center space-x-3 md:space-x-6">
               {/* Wallet Stats */}
-              <div className="flex items-center gap-2 bg-[#EBF2EE] border border-[#1E5C3F]/15 px-3 py-1.5 rounded-full">
-                <Wallet className="w-4 h-4 text-[#1E5C3F]" />
+              <div className="flex items-center gap-2 bg-[#FFF2EB] border border-[#F1641E]/15 px-3 py-1.5 rounded-full">
+                <Wallet className="w-4 h-4 text-[#F1641E]" />
                 <div className="text-left leading-none">
                   <span className="text-[8.5px] font-bold text-gray-400 uppercase tracking-wide">Số dư ví</span>
-                  <p className="text-[11.5px] font-extrabold text-[#1E5C3F] mt-0.5">{formatVnd(settings.walletBalance)}</p>
+                  <p className="text-[11.5px] font-extrabold text-[#F1641E] mt-0.5">{formatVnd(settings.walletBalance)}</p>
                 </div>
               </div>
 

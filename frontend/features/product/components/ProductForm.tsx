@@ -283,7 +283,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
               <button
                 type="button"
                 onClick={handleAddAttribute}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1E5C3F] border border-[#1E5C3F]/20 hover:bg-[#EBF2EE] px-3 py-1.5 rounded-full transition-all"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#F1641E] border border-[#F1641E]/20 hover:bg-[#FFF2EB] px-3 py-1.5 rounded-full transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Thêm thuộc tính</span>
@@ -336,7 +336,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
               <button
                 type="button"
                 onClick={handleAddVariant}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1E5C3F] border border-[#1E5C3F]/20 hover:bg-[#EBF2EE] px-3 py-1.5 rounded-full transition-all"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#F1641E] border border-[#F1641E]/20 hover:bg-[#FFF2EB] px-3 py-1.5 rounded-full transition-all"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Thêm phân loại</span>

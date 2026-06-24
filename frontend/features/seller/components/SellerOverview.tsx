@@ -65,8 +65,8 @@ export default function SellerOverview() {
         );
       case 'PAID':
         return (
-          <span className="inline-flex items-center gap-1 bg-[#EBF2EE] text-[#1E5C3F] px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#1e5c3f]/25">
-            <Clock className="w-3 h-3 text-[#1E5C3F]" />
+          <span className="inline-flex items-center gap-1 bg-[#FFF2EB] text-[#F1641E] px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#F1641E]/25">
+            <Clock className="w-3 h-3 text-[#F1641E]" />
             Đã thanh toán
           </span>
         );
@@ -107,7 +107,7 @@ export default function SellerOverview() {
       
       {/* Welcome Banner */}
       {settings && (
-        <div className="bg-[#0e4a42] text-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-md relative overflow-hidden group">
+        <div className="bg-gradient-to-br from-[#2C2420] to-[#504037] text-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-md relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-20 -translate-y-20 blur-xl group-hover:scale-110 transition-transform duration-700" />
           <div className="space-y-3 relative z-10 text-left max-w-lg">
             <span className="text-[#FBBF24] font-extrabold text-[10px] uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full">
@@ -121,7 +121,7 @@ export default function SellerOverview() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3 shrink-0 relative z-10 w-full md:w-auto">
-            <Link href="/seller/products" className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 bg-[#FDFAF7] hover:bg-white text-[#0e4a42] font-bold text-xs px-5 py-3 rounded-full transition-all shadow-md">
+            <Link href="/seller/products" className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 bg-[#FDFAF7] hover:bg-white text-[#F1641E] font-bold text-xs px-5 py-3 rounded-full transition-all shadow-md">
               <Plus className="w-4 h-4" />
               Đăng bán tác phẩm
             </Link>
@@ -136,16 +136,16 @@ export default function SellerOverview() {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#1E5C3F]/30 hover:shadow-md transition-all duration-300">
+        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
           <div className="flex justify-between items-start">
             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Doanh thu tích luỹ</span>
-            <span className="p-2 bg-[#EBF2EE] text-[#1E5C3F] rounded-xl group-hover:scale-105 transition-all">
+            <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
               <TrendingUp className="w-4.5 h-4.5" />
             </span>
           </div>
           <div className="mt-4">
             <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{formatVnd(totalRevenue)}</h3>
-            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-[#1E5C3F] font-bold">
+            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-[#F1641E] font-bold">
               <span>+18.4%</span>
               <span className="text-gray-400 font-medium">so với tháng trước</span>
             </div>
@@ -170,10 +170,10 @@ export default function SellerOverview() {
         </div>
 
         {/* KPI 3 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#1E5C3F]/30 hover:shadow-md transition-all duration-300">
+        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
           <div className="flex justify-between items-start">
             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Tác phẩm đang bán</span>
-            <span className="p-2 bg-[#EBF2EE] text-[#1E5C3F] rounded-xl group-hover:scale-105 transition-all">
+            <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
               <Users className="w-4.5 h-4.5" />
             </span>
           </div>
@@ -213,7 +213,7 @@ export default function SellerOverview() {
               <h3 className="font-serif font-black text-base text-gray-800">Biểu đồ doanh thu 2026</h3>
               <p className="text-[10px] text-gray-450 mt-0.5">Thống kê theo 6 tháng đầu năm (triệu VNĐ)</p>
             </div>
-            <span className="text-[10.5px] bg-[#EBF2EE] text-[#1E5C3F] font-bold px-3 py-1 rounded-full border border-[#1e5c3f]/10">
+            <span className="text-[10.5px] bg-[#FFF2EB] text-[#F1641E] font-bold px-3 py-1 rounded-full border border-[#F1641E]/10">
               Tổng quan năm
             </span>
           </div>
@@ -239,18 +239,18 @@ export default function SellerOverview() {
               <path 
                 d="M 80 150 L 150 130 L 220 100 L 290 120 L 360 60 L 430 20" 
                 fill="none" 
-                stroke="#1E5C3F" 
+                stroke="#F1641E" 
                 strokeWidth="2.5" 
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
 
               {/* Data Points */}
-              <circle cx="80" cy="150" r="4.5" fill="#1E5C3F" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="150" cy="130" r="4.5" fill="#1E5C3F" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="220" cy="100" r="4.5" fill="#1E5C3F" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="290" cy="120" r="4.5" fill="#1E5C3F" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="360" cy="60" r="4.5" fill="#1E5C3F" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="80" cy="150" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="150" cy="130" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="220" cy="100" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="290" cy="120" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="360" cy="60" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
               <circle cx="430" cy="20" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
 
               {/* Value labels */}
@@ -272,7 +272,7 @@ export default function SellerOverview() {
               {/* Definitions */}
               <defs>
                 <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E5C3F" />
+                  <stop offset="0%" stopColor="#F1641E" />
                   <stop offset="100%" stopColor="#FDFAF7" />
                 </linearGradient>
               </defs>
@@ -295,7 +295,7 @@ export default function SellerOverview() {
                 <div key={p.id} className="flex items-center justify-between p-2.5 bg-[#FDFAF7] border border-[#EAE3D2]/40 rounded-xl">
                   <div className="min-w-0 flex-grow text-left">
                     <h4 className="font-semibold text-xs text-gray-850 truncate">{p.name}</h4>
-                    <span className="text-[9px] text-[#1E5C3F] bg-[#EBF2EE] font-bold px-2 py-0.5 rounded-sm inline-block mt-1">
+                    <span className="text-[9px] text-[#F1641E] bg-[#FFF2EB] font-bold px-2 py-0.5 rounded-sm inline-block mt-1">
                       {p.categoryName || 'Tác phẩm'}
                     </span>
                   </div>
@@ -325,8 +325,8 @@ export default function SellerOverview() {
                 <Plus className="w-5 h-5 text-[#F1641E] mb-1.5" />
                 <span className="text-[10px] font-bold text-gray-750">Thêm sản phẩm</span>
               </Link>
-              <Link href="/seller/vouchers" className="flex flex-col items-center justify-center p-3 border border-gray-150 hover:border-[#1E5C3F]/40 hover:bg-[#EBF2EE] rounded-2xl transition-all text-center group cursor-pointer">
-                <Ticket className="w-5 h-5 text-[#1E5C3F] mb-1.5" />
+              <Link href="/seller/vouchers" className="flex flex-col items-center justify-center p-3 border border-gray-150 hover:border-[#F1641E]/40 hover:bg-[#FFF2EB] rounded-2xl transition-all text-center group cursor-pointer">
+                <Ticket className="w-5 h-5 text-[#F1641E] mb-1.5" />
                 <span className="text-[10px] font-bold text-gray-750">Mã voucher</span>
               </Link>
               <Link href="/seller/settings" className="flex flex-col items-center justify-center p-3 border border-gray-150 hover:border-[#222222]/30 hover:bg-[#F5EFE6]/35 rounded-2xl transition-all text-center group cursor-pointer col-span-2">

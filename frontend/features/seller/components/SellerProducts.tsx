@@ -107,7 +107,7 @@ export default function SellerProducts() {
         </div>
         <button
           onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-1.5 bg-[#1E5C3F] hover:bg-[#123926] text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer shrink-0"
+          className="inline-flex items-center gap-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
           Đăng bán sản phẩm mới
@@ -199,7 +199,7 @@ export default function SellerProducts() {
                         <span className={`font-bold ${p.stock <= 15 ? 'text-red-500 font-extrabold' : 'text-gray-700'}`}>{p.stock}</span>
                       </td>
                       <td className="p-4 text-center">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold border bg-[#EBF2EE] text-[#1E5C3F] border-[#1e5c3f]/25">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold border bg-[#FFF2EB] text-[#F1641E] border-[#F1641E]/25">
                           <Eye className="w-3 h-3" />
                           <span>Đang bán</span>
                         </span>
@@ -209,7 +209,7 @@ export default function SellerProducts() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(p)}
-                            className="p-2 border border-gray-200 hover:border-[#1E5C3F]/30 hover:bg-gray-50 rounded-lg text-gray-650 hover:text-[#1E5C3F] transition-all cursor-pointer bg-white"
+                            className="p-2 border border-gray-200 hover:border-[#F1641E]/30 hover:bg-gray-50 rounded-lg text-gray-650 hover:text-[#F1641E] transition-all cursor-pointer bg-white"
                             title="Sửa sản phẩm"
                           >
                             <Edit2 className="w-3.5 h-3.5" />

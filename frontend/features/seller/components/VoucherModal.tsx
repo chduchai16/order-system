@@ -185,7 +185,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                     }}
                     className={`flex flex-col items-center justify-center p-3 border rounded-xl transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-[#EBF2EE] border-[#1E5C3F] text-[#1E5C3F]'
+                        ? 'bg-[#FFF2EB] border-[#F1641E] text-[#F1641E]'
                         : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -261,7 +261,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 id="voucher-active-chk"
                 checked={active}
                 onChange={e => setActive(e.target.checked)}
-                className="w-4.5 h-4.5 text-[#1E5C3F] border-gray-300 rounded-sm focus:ring-[#1E5C3F]"
+                className="w-4.5 h-4.5 text-[#F1641E] border-gray-300 rounded-sm focus:ring-[#F1641E]"
               />
               <label htmlFor="voucher-active-chk" className="text-xs font-bold text-gray-700 cursor-pointer">
                 Kích hoạt sử dụng ngay lập tức
@@ -311,7 +311,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-2.5 bg-[#1E5C3F] hover:bg-[#123b28] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full text-xs font-bold transition-all cursor-pointer shadow-md"
+              className="px-6 py-2.5 bg-[#F1641E] hover:bg-[#D64F13] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full text-xs font-bold transition-all cursor-pointer shadow-md"
             >
               {submitting ? 'Đang tạo...' : 'Tạo mã voucher'}
             </button>
