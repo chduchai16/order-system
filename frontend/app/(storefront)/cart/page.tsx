@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Check,
   CreditCard,
@@ -197,10 +198,11 @@ export default function CartPage() {
                     <article key={item.productId} className="p-5 flex gap-4">
                       {productImages[item.productId] ? (
                         <div className="w-16 h-16 rounded-xl overflow-hidden relative shrink-0 border border-[#EAE3D2]/40 bg-[#FDFAF7]/40 flex items-center justify-center">
-                          <img
+                          <Image
                             src={productImages[item.productId]}
                             alt={item.productName}
-                            className="w-full h-full object-contain p-1"
+                            fill
+                            className="object-contain p-1"
                           />
                         </div>
                       ) : (
@@ -279,10 +281,11 @@ export default function CartPage() {
                     <div className="flex gap-3 items-center min-w-0">
                       {productImages[item.productId] ? (
                         <div className="w-12 h-12 rounded-lg overflow-hidden relative shrink-0 border border-gray-100 bg-[#FDFAF7]/40 flex items-center justify-center">
-                          <img
+                          <Image
                             src={productImages[item.productId]}
                             alt={item.productName}
-                            className="w-full h-full object-contain p-0.5"
+                            fill
+                            className="object-contain p-0.5"
                           />
                         </div>
                       ) : (

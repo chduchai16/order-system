@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -28,8 +29,8 @@ export default function Sidebar({ children }: SidebarProps) {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [settings, setSettings] = useState<ShopSettings | null>(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSettings(sellerSettingsService.getShopSettings());
     
     // Add event listener to capture setting updates
@@ -74,10 +75,11 @@ export default function Sidebar({ children }: SidebarProps) {
       {settings && (
         <div className="my-6 px-3 py-4 bg-[#F5EFE6]/35 border border-[#EAE3D2]/50 rounded-2xl flex items-center gap-3">
           <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#EAE3D2] shrink-0 bg-[#FDFAF7]">
-            <img 
+            <Image 
               src={settings.avatarUrl} 
               alt={settings.shopName} 
-              className="w-full h-full object-cover" 
+              fill 
+              className="object-cover" 
             />
           </div>
           <div className="min-w-0 flex-grow">
@@ -194,8 +196,8 @@ export default function Sidebar({ children }: SidebarProps) {
 
               {/* Shop Badge */}
               <div className="flex items-center gap-2 cursor-pointer">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
-                  <img src={settings.avatarUrl} alt={settings.shopName} className="w-full h-full object-cover" />
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
+                  <Image src={settings.avatarUrl} alt={settings.shopName} fill className="object-cover" />
                 </div>
                 <span className="text-xs font-bold text-gray-700 hidden lg:inline max-w-[120px] truncate">{settings.shopName}</span>
               </div>

@@ -27,8 +27,8 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
   const [active, setActive] = useState(true);
 
   // Reset form when modal opens
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (isOpen) {
       setCode('');
       setName('');
@@ -55,6 +55,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
       setStartDate(formatDate(start));
       setEndDate(formatDate(end));
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [isOpen]);
 
   if (!isOpen) return null;

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowRight,
   Clock,
@@ -119,10 +120,11 @@ export default function StorefrontHomePage() {
           </div>
           {/* Image section inside the card */}
           <div className="w-full md:w-[280px] h-[220px] md:h-[320px] relative rounded-2xl overflow-hidden mt-6 md:mt-0 shrink-0 border border-white/10 shadow-2xl">
-            <img 
+            <Image 
               src="https://images.unsplash.com/photo-1542382156909-9ae37b3f56fd?w=800&auto=format&fit=crop&q=80" 
               alt="Quà Ngày của Cha" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-black/5"></div>
           </div>
@@ -130,10 +132,11 @@ export default function StorefrontHomePage() {
 
         {/* Right Hero */}
         <div className="rounded-2xl overflow-hidden relative min-h-[380px] md:min-h-[440px] flex flex-col justify-end p-8 md:p-10 text-white group shadow-sm">
-          <img 
+          <Image 
             src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?w=800&auto=format&fit=crop&q=80" 
             alt="Bộ sưu tập cung Song Tử" 
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/10"></div>
           <div className="relative z-10 space-y-4 text-left">
@@ -165,10 +168,11 @@ export default function StorefrontHomePage() {
           {interests.map((item) => (
             <Link key={item.name} href="/products" className="flex flex-col items-center text-center group cursor-pointer">
               <div className="w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden border border-[#EAE3D2]/60 hover:shadow-lg hover:border-[#F1641E]/40 transition-all duration-300 relative">
-                <img 
+                <Image 
                   src={item.imageUrl} 
                   alt={item.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black/5 hover:bg-black/10 transition-colors"></div>
               </div>
@@ -195,11 +199,12 @@ export default function StorefrontHomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {summerCollections.map((col) => (
             <Link key={col.name} href="/products" className="bg-white border border-[#EAE3D2]/50 rounded-2xl p-4 flex flex-col items-center justify-center text-center hover:shadow-md hover:border-[#F1641E]/30 transition-all duration-300 group cursor-pointer">
-              <div className="w-full aspect-square rounded-xl mb-4 overflow-hidden border border-gray-100">
-                <img 
+              <div className="w-full aspect-square rounded-xl mb-4 overflow-hidden border border-gray-100 relative">
+                <Image 
                   src={col.imageUrl} 
                   alt={col.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <span className="font-serif font-black text-xs md:text-sm group-hover:text-[#F1641E] transition-colors line-clamp-1 leading-snug">
@@ -234,10 +239,11 @@ export default function StorefrontHomePage() {
             {birthdayGifts.map((gift) => (
               <div key={gift.name} className="border border-gray-250 bg-[#FDFAF7]/40 rounded-xl overflow-hidden shadow-sm group">
                 <div className="aspect-[4/3] w-full overflow-hidden relative">
-                  <img 
+                  <Image 
                     src={gift.imageUrl} 
                     alt={gift.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-4 text-left">
@@ -259,7 +265,7 @@ export default function StorefrontHomePage() {
                   href="/products" 
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#EAE3D2] bg-white text-[11px] font-bold text-gray-700 hover:border-[#F1641E] hover:text-[#F1641E] transition-all duration-200"
                 >
-                  <img src={pill.imageUrl} alt={pill.title} className="w-5 h-5 rounded-full object-cover" />
+                  <Image src={pill.imageUrl} alt={pill.title} width={20} height={20} className="rounded-full object-cover" />
                   {pill.title}
                 </Link>
               ))}
@@ -282,11 +288,12 @@ export default function StorefrontHomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {vintageFinds.map((item) => (
             <Link key={item.title} href="/products" className="group flex flex-col cursor-pointer bg-white border border-[#EAE3D2]/40 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300">
-              <div className="aspect-[4/5] w-full overflow-hidden bg-gray-50 border-b border-gray-100">
-                <img 
+              <div className="aspect-[4/5] w-full overflow-hidden bg-gray-50 border-b border-gray-100 relative">
+                <Image 
                   src={item.imageUrl} 
                   alt={item.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-3 text-left">
@@ -331,10 +338,11 @@ export default function StorefrontHomePage() {
               </button>
               {/* Product Image */}
               <div className="aspect-square w-full overflow-hidden bg-gray-50/50 flex items-center justify-center relative border-b border-gray-100">
-                <img 
+                <Image 
                   src={product.imageUrl} 
                   alt={product.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-4 flex-grow flex flex-col justify-between text-left">
@@ -390,10 +398,11 @@ export default function StorefrontHomePage() {
           {personalizationGrid.map((item) => (
             <div key={item.title} className="flex flex-col bg-[#FDFAF7]/30 border border-[#EAE3D2]/45 rounded-xl overflow-hidden group shadow-sm">
               <div className="aspect-square w-full overflow-hidden relative">
-                <img 
+                <Image 
                   src={item.imageUrl} 
                   alt={item.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors"></div>
               </div>
@@ -416,10 +425,11 @@ export default function StorefrontHomePage() {
           {standoutStyles.map((item) => (
             <Link key={item.name} href="/products" className="flex flex-col items-center group cursor-pointer">
               <div className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-[#EAE3D2]/60 hover:shadow-lg transition-all duration-300 relative">
-                <img 
+                <Image 
                   src={item.imageUrl} 
                   alt={item.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <h4 className="font-semibold text-xs md:text-sm text-gray-700 mt-4 leading-tight group-hover:text-[#F1641E] transition-colors max-w-[140px] text-center">

@@ -5,6 +5,7 @@ import { Product, ProductFormPayload } from '@/features/product/types';
 import { productService } from '@/features/product/api';
 import ProductModal from './ProductModal';
 import { Plus, Search, Edit2, Trash2, Eye, Package, Layers, SlidersHorizontal } from 'lucide-react';
+import Image from 'next/image';
 
 function getProductImage(product: Product) {
   const primaryImage = product.images?.find((image) => image.isPrimary && image.url);
@@ -33,8 +34,8 @@ export default function SellerProducts() {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
   }, []);
 
@@ -183,7 +184,7 @@ export default function SellerProducts() {
                     <tr key={p.id} className="hover:bg-[#FDFAF7]/30 transition-all">
                       <td className="p-4 text-center shrink-0">
                         <div className="w-11 h-11 relative rounded-xl border border-gray-150 overflow-hidden bg-gray-50 flex items-center justify-center">
-                          {productImage ? <img src={productImage} alt={p.name} className="w-full h-full object-cover" /> : <Package className="w-5 h-5 text-gray-300" />}
+                          {productImage ? <Image src={productImage} alt={p.name} fill className="object-cover" /> : <Package className="w-5 h-5 text-gray-300" />}
                         </div>
                       </td>
                       <td className="p-4 font-semibold text-gray-800">

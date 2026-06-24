@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { sellerSettingsService } from '../api/settings';
+import Image from 'next/image';
 import { Save, Store, Mail, Phone, MapPin, Eye, Calendar, Sparkles } from 'lucide-react';
 
 export default function SellerSettings() {
@@ -259,7 +260,7 @@ export default function SellerSettings() {
             {/* Banner block */}
             <div className="relative h-28 w-full rounded-2xl overflow-hidden border border-gray-150 bg-gray-100 shadow-sm">
               {coverUrl ? (
-                <img src={coverUrl} alt="Cover Preview" className="w-full h-full object-cover" />
+                <Image src={coverUrl} alt="Cover Preview" fill className="object-cover" />
               ) : (
                 <div className="w-full h-full bg-slate-150 flex items-center justify-center text-gray-400">
                   Cover Banner
@@ -271,7 +272,7 @@ export default function SellerSettings() {
             <div className="flex gap-4.5 items-start">
               <div className="w-14 h-14 relative rounded-full overflow-hidden border border-[#EAE3D2] -mt-10 bg-white shadow-md shrink-0 flex items-center justify-center">
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar Preview" className="w-full h-full object-cover" />
+                  <Image src={avatarUrl} alt="Avatar Preview" fill className="object-cover" />
                 ) : (
                   <Store className="w-6 h-6 text-gray-300" />
                 )}

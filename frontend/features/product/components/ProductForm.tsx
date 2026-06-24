@@ -37,8 +37,8 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
   const [variants, setVariants] = useState<Omit<ProductVariant, 'id'>[]>([]);
 
   // Load product if editing
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (product) {
       setName(product.name);
       setDescription(product.description || '');
@@ -71,6 +71,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
       setVariants([]);
     }
     setActiveTab('basic');
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [product]);
 
   const isSubmitting = externalSubmitting !== undefined ? externalSubmitting : submitting;
