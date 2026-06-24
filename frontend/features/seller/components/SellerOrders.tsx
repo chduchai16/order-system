@@ -213,57 +213,57 @@ export default function SellerOrders() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
-      {/* Top dashboard summary header */}
-      <div className="bg-white border border-[#EAE3D2]/50 p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="text-left">
-          <h2 className="font-serif text-lg md:text-xl font-black text-gray-900">Quản lý Đơn hàng</h2>
-          <p className="text-[10px] text-gray-500 mt-0.5">Xử lý đóng gói, bàn giao vận chuyển và chăm sóc khách hàng</p>
-        </div>
-        <div className="flex items-center gap-2 text-xs font-bold bg-[#F5EFE6]/30 border border-[#EAE3D2]/50 px-4 py-2 rounded-xl">
-          <AlertCircle className="w-4 h-4 text-[#F1641E]" />
-          <span className="text-[#7D5C45]">{orders.filter(o => o.status === 'PAID').length} đơn cần chuẩn bị gấp</span>
-        </div>
-      </div>
+      {/* Combined Tabs, Search & Urgency Alert */}
+      <div className="bg-white border border-[#EAE3D2]/50 p-3 rounded-2xl shadow-sm">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+          {/* Tabs */}
+          <div className="flex overflow-x-auto no-scrollbar text-[11px] font-bold gap-1 bg-[#F5EFE6]/20 p-1 rounded-xl shrink-0">
+            {tabs.map((tab) => {
+              const count = tab.key === 'ALL' 
+                ? orders.length 
+                : orders.filter(o => o.status === tab.key).length;
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`py-1.5 px-3 rounded-lg whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isActive 
+                      ? 'bg-white text-[#F1641E] shadow-xs' 
+                      : 'text-gray-500 hover:text-black bg-transparent'
+                  }`}
+                  type="button"
+                >
+                  <span>{tab.label}</span>
+                  <span className={`text-[9px] px-1 rounded-full ${
+                    isActive ? 'bg-[#F1641E] text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-[#EAE3D2]/50 overflow-x-auto no-scrollbar text-xs font-bold gap-2 bg-white px-4 rounded-2xl py-1 border shadow-xs">
-        {tabs.map((tab) => {
-          const count = tab.key === 'ALL' 
-            ? orders.length 
-            : orders.filter(o => o.status === tab.key).length;
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`py-3.5 px-4.5 border-b-2 whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                isActive 
-                  ? 'border-[#F1641E] text-[#F1641E]' 
-                  : 'border-transparent text-gray-500 hover:text-black'
-              }`}
-              type="button"
-            >
-              <span>{tab.label}</span>
-              <span className={`text-[9.5px] px-1.5 py-0.5 rounded-full ${
-                isActive ? 'bg-[#F1641E] text-white' : 'bg-gray-155 text-gray-500'
-              }`}>{count}</span>
-            </button>
-          );
-        })}
-      </div>
+          {/* Search bar & Alert Pill */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 justify-end">
+            <div className="flex items-center justify-center gap-1.5 text-[10.5px] font-bold text-[#7D5C45] bg-[#F5EFE6]/30 border border-[#EAE3D2]/35 px-3 py-2 rounded-xl shrink-0">
+              <AlertCircle className="w-3.5 h-3.5 text-[#F1641E]" />
+              <span>{orders.filter(o => o.status === 'PAID').length} đơn chuẩn bị gấp</span>
+            </div>
 
-      {/* Search Filter bar */}
-      <div className="relative bg-white border border-[#EAE3D2]/50 p-4 rounded-2xl shadow-sm">
-        <input 
-          type="text" 
-          placeholder="Tìm đơn hàng theo mã đơn, địa chỉ người mua..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full text-xs pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
-        />
-        <Search className="w-4.5 h-4.5 text-gray-400 absolute left-7 top-1/2 -translate-y-1/2" />
+            <div className="relative lg:w-72 flex-1 sm:flex-none">
+              <input 
+                type="text" 
+                placeholder="Tìm đơn hàng theo mã đơn, địa chỉ người mua..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full text-xs pl-8 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
+              />
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Orders Table list */}

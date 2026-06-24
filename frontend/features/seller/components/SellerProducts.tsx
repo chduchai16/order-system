@@ -99,62 +99,59 @@ export default function SellerProducts() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-[#EAE3D2]/50 p-4 rounded-2xl shadow-sm">
-        <div className="text-left">
-          <h2 className="font-serif text-lg md:text-xl font-black text-gray-900">Danh sách tác phẩm</h2>
-          <p className="text-[10px] text-gray-500 mt-0.5">Tổng số {filteredProducts.length} tác phẩm đang hiển thị trong bộ lọc</p>
-        </div>
-        <button
-          onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          Đăng bán sản phẩm mới
-        </button>
-      </div>
+    <div className="space-y-4">
+      {/* Combined Search, Filters & Add CTA */}
+      <div className="bg-white border border-[#EAE3D2]/50 p-3 rounded-2xl shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_auto] gap-3 items-center">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Tìm kiếm theo tên sản phẩm, mã SKU..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full text-xs pl-8 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
+            />
+            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-3 bg-white border border-[#EAE3D2]/50 p-4 rounded-2xl shadow-sm">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Tìm kiếm theo tên sản phẩm, mã SKU..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full text-xs pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
-          />
-          <Search className="w-4.5 h-4.5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-        </div>
+          <div className="relative">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full text-xs pl-3 pr-8 py-2 border border-gray-300 rounded-xl bg-white text-[#222222] focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 appearance-none cursor-pointer transition-all duration-200"
+            >
+              <option value="all">Tất cả danh mục ngành</option>
+              {categoryNames.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            <Layers className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
 
-        <div className="relative">
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="w-full text-xs pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white text-[#222222] focus:border-[#F1641E] appearance-none cursor-pointer"
+          <div className="relative">
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="w-full text-xs pl-3 pr-8 py-2 border border-gray-300 rounded-xl bg-white text-[#222222] focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 appearance-none cursor-pointer transition-all duration-200"
+            >
+              <option value="newest">Sắp xếp: Mới nhất</option>
+              <option value="price-asc">Giá: Thấp đến cao</option>
+              <option value="price-desc">Giá: Cao đến thấp</option>
+              <option value="stock-asc">Kho hàng: Tăng dần</option>
+              <option value="stock-desc">Kho hàng: Giảm dần</option>
+            </select>
+            <SlidersHorizontal className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          <button
+            onClick={handleOpenAddModal}
+            className="inline-flex items-center justify-center gap-1.5 bg-[#F1641E] hover:bg-[#D64F13] text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer shrink-0 h-9 w-full sm:w-auto"
           >
-            <option value="all">Tất cả danh mục ngành</option>
-            {categoryNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <Layers className="w-4.5 h-4.5 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-        </div>
-
-        <div className="relative">
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="w-full text-xs pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl bg-white text-[#222222] focus:border-[#F1641E] appearance-none cursor-pointer"
-          >
-            <option value="newest">Sắp xếp: Mới nhất</option>
-            <option value="price-asc">Giá: Thấp đến cao</option>
-            <option value="price-desc">Giá: Cao đến thấp</option>
-            <option value="stock-asc">Kho hàng: Tăng dần</option>
-            <option value="stock-desc">Kho hàng: Giảm dần</option>
-          </select>
-          <SlidersHorizontal className="w-4.5 h-4.5 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Plus className="w-3.5 h-3.5" />
+            Đăng bán mới
+          </button>
         </div>
       </div>
 
