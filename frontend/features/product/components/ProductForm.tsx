@@ -197,7 +197,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                 onChange={e => setName(e.target.value)}
                 placeholder="Ví dụ: Bình gốm sứ Bát Tràng men hoả biến Lam Ngọc"
                 required
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200 bg-white text-[#222222]"
               />
             </div>
 
@@ -209,7 +209,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                 <select
                   value={categoryId}
                   onChange={e => setCategoryId(Number(e.target.value))}
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl bg-white text-[#222222] focus:border-[#F1641E]"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-xl bg-white text-[#222222] focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200"
                 >
                   {CATEGORIES.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -225,7 +225,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                   value={imageUrl} 
                   onChange={e => setImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/photo-..."
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200 bg-white text-[#222222]"
                 />
               </div>
             </div>
@@ -241,7 +241,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                   onChange={e => setPrice(Number(e.target.value))}
                   min={0}
                   required
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200 bg-white text-[#222222]"
                 />
               </div>
 
@@ -254,7 +254,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                   onChange={e => setStock(Number(e.target.value))}
                   min={0}
                   required
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200 bg-white text-[#222222]"
                 />
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function ProductForm({ product, onSave, onCancel, submitting: ext
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Mô tả chi tiết câu chuyện chế tác sản phẩm, nguồn gốc vật liệu, hướng dẫn bảo quản..."
                 rows={4}
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222] resize-none"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 transition-all duration-200 bg-white text-[#222222] resize-none"
               />
             </div>
           </div>

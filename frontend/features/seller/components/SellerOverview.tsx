@@ -136,69 +136,89 @@ export default function SellerOverview() {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* KPI 1 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Doanh thu tích luỹ</span>
-            <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
-              <TrendingUp className="w-4.5 h-4.5" />
-            </span>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{formatVnd(totalRevenue)}</h3>
-            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-[#F1641E] font-bold">
-              <span>+18.4%</span>
-              <span className="text-gray-400 font-medium">so với tháng trước</span>
+        <div className="bg-white border border-[#EAE3D2]/60 p-5 rounded-2xl relative overflow-hidden group hover:border-[#F1641E]/40 hover:-translate-y-1 hover:shadow-md hover:shadow-[#F1641E]/5 transition-all duration-300">
+          {/* Ambient Glow Blob */}
+          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-[#FFF2EB]/60 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-start">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Doanh thu tích luỹ</span>
+              <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all duration-300">
+                <TrendingUp className="w-4.5 h-4.5" />
+              </span>
+            </div>
+            <div className="mt-4 text-left">
+              <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{formatVnd(totalRevenue)}</h3>
+              <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-[#F1641E] font-bold">
+                <span>+18.4%</span>
+                <span className="text-gray-400 font-medium">so với tháng trước</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* KPI 2 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Đơn hàng nhận được</span>
-            <span className="p-2 bg-[#FDFAF7] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
-              <ShoppingBag className="w-4.5 h-4.5" />
-            </span>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{totalOrdersCount} đơn</h3>
-            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-green-600 font-bold">
-              <span>+12.0%</span>
-              <span className="text-gray-400 font-medium">tuần này</span>
+        <div className="bg-white border border-[#EAE3D2]/60 p-5 rounded-2xl relative overflow-hidden group hover:border-[#F1641E]/40 hover:-translate-y-1 hover:shadow-md hover:shadow-[#F1641E]/5 transition-all duration-300">
+          {/* Ambient Glow Blob */}
+          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-[#FFF2EB]/60 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-start">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Đơn hàng nhận được</span>
+              <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all duration-300">
+                <ShoppingBag className="w-4.5 h-4.5" />
+              </span>
+            </div>
+            <div className="mt-4 text-left">
+              <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{totalOrdersCount} đơn</h3>
+              <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-green-600 font-bold">
+                <span>+12.0%</span>
+                <span className="text-gray-400 font-medium">tuần này</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* KPI 3 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Tác phẩm đang bán</span>
-            <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
-              <Users className="w-4.5 h-4.5" />
-            </span>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{activeProductsCount} sản phẩm</h3>
-            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-gray-500 font-bold">
-              <span>98.6%</span>
-              <span className="text-gray-400 font-medium">tỷ lệ hiển thị</span>
+        <div className="bg-white border border-[#EAE3D2]/60 p-5 rounded-2xl relative overflow-hidden group hover:border-[#F1641E]/40 hover:-translate-y-1 hover:shadow-md hover:shadow-[#F1641E]/5 transition-all duration-300">
+          {/* Ambient Glow Blob */}
+          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-[#FFF2EB]/60 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-start">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Tác phẩm đang bán</span>
+              <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all duration-300">
+                <Users className="w-4.5 h-4.5" />
+              </span>
+            </div>
+            <div className="mt-4 text-left">
+              <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">{activeProductsCount} sản phẩm</h3>
+              <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-gray-500 font-bold">
+                <span>98.6%</span>
+                <span className="text-gray-400 font-medium">tỷ lệ hiển thị</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="bg-white border border-[#EAE3D2]/50 p-5 rounded-2xl shadow-sm text-left relative overflow-hidden group hover:border-[#F1641E]/30 hover:shadow-md transition-all duration-300">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Đơn hoàn tất</span>
-            <span className="p-2 bg-[#FDFAF7] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all">
-              <CheckCircle className="w-4.5 h-4.5" />
-            </span>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">85.5%</h3>
-            <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-red-500 font-bold">
-              <span>1 đơn bị huỷ</span>
-              <span className="text-gray-400 font-medium">trong tháng</span>
+        <div className="bg-white border border-[#EAE3D2]/60 p-5 rounded-2xl relative overflow-hidden group hover:border-[#F1641E]/40 hover:-translate-y-1 hover:shadow-md hover:shadow-[#F1641E]/5 transition-all duration-300">
+          {/* Ambient Glow Blob */}
+          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-[#FFF2EB]/60 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          
+          <div className="relative z-10">
+            <div className="flex justify-between items-start">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Đơn hoàn tất</span>
+              <span className="p-2 bg-[#FFF2EB] text-[#F1641E] rounded-xl group-hover:scale-105 transition-all duration-300">
+                <CheckCircle className="w-4.5 h-4.5" />
+              </span>
+            </div>
+            <div className="mt-4 text-left">
+              <h3 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">85.5%</h3>
+              <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-red-500 font-bold">
+                <span>1 đơn bị huỷ</span>
+                <span className="text-gray-400 font-medium">trong tháng</span>
+              </div>
             </div>
           </div>
         </div>
@@ -230,14 +250,14 @@ export default function SellerOverview() {
 
               {/* Area path */}
               <path 
-                d="M 80 180 L 80 150 L 150 130 L 220 100 L 290 120 L 360 60 L 430 20 L 430 180 Z" 
+                d="M 80 150 C 115 150, 115 130, 150 130 C 185 130, 185 100, 220 100 C 255 100, 255 120, 290 120 C 325 120, 325 60, 360 60 C 395 60, 395 20, 430 20 L 430 180 L 80 180 Z" 
                 fill="url(#area-gradient)" 
                 opacity="0.25" 
               />
 
               {/* Area line path */}
               <path 
-                d="M 80 150 L 150 130 L 220 100 L 290 120 L 360 60 L 430 20" 
+                d="M 80 150 C 115 150, 115 130, 150 130 C 185 130, 185 100, 220 100 C 255 100, 255 120, 290 120 C 325 120, 325 60, 360 60 C 395 60, 395 20, 430 20" 
                 fill="none" 
                 stroke="#F1641E" 
                 strokeWidth="2.5" 
@@ -246,12 +266,12 @@ export default function SellerOverview() {
               />
 
               {/* Data Points */}
-              <circle cx="80" cy="150" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="150" cy="130" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="220" cy="100" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="290" cy="120" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="360" cy="60" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
-              <circle cx="430" cy="20" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" />
+              <circle cx="80" cy="150" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
+              <circle cx="150" cy="130" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
+              <circle cx="220" cy="100" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
+              <circle cx="290" cy="120" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
+              <circle cx="360" cy="60" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
+              <circle cx="430" cy="20" r="4.5" fill="#F1641E" stroke="#FDFAF7" strokeWidth="1.5" className="hover:scale-150 origin-center transition-all duration-200 cursor-pointer" />
 
               {/* Value labels */}
               <text x="80" y="140" fontSize="9" fontWeight="bold" fill="#222222" textAnchor="middle">5M</text>
@@ -272,8 +292,8 @@ export default function SellerOverview() {
               {/* Definitions */}
               <defs>
                 <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#F1641E" />
-                  <stop offset="100%" stopColor="#FDFAF7" />
+                  <stop offset="0%" stopColor="#F1641E" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#F1641E" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
             </svg>

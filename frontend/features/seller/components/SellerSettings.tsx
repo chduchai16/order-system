@@ -89,7 +89,7 @@ export default function SellerSettings() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       {/* Settings Form - Left/Center Column */}
-      <div className="lg:col-span-2 bg-white border border-[#EAE3D2]/50 p-6 rounded-3xl shadow-sm text-left">
+      <div className="lg:col-span-2 bg-white border border-[#EAE3D2]/50 border-t-4 border-t-[#F1641E] p-6 rounded-3xl shadow-sm text-left">
         <div className="flex justify-between items-center mb-6 border-b border-[#EAE3D2]/40 pb-3">
           <div>
             <h3 className="font-serif font-black text-base text-gray-800 flex items-center gap-1.5">
@@ -110,7 +110,7 @@ export default function SellerSettings() {
               onChange={e => setShopName(e.target.value)}
               placeholder="Tên cửa hàng..."
               required
-              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function SellerSettings() {
               onChange={e => setDescription(e.target.value)}
               placeholder="Kể câu chuyện về thương hiệu của bạn, vật liệu chế tác, giá trị cốt lõi..."
               rows={3}
-              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222] resize-none"
+              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] resize-none transition-all duration-200"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default function SellerSettings() {
                 value={avatarUrl} 
                 onChange={e => setAvatarUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
             <div className="flex flex-col space-y-1">
@@ -145,7 +145,7 @@ export default function SellerSettings() {
                 value={coverUrl} 
                 onChange={e => setCoverUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function SellerSettings() {
                 value={phone} 
                 onChange={e => setPhone(e.target.value)}
                 placeholder="09xx.xxx.xxx"
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
             <div className="flex flex-col space-y-1">
@@ -175,7 +175,7 @@ export default function SellerSettings() {
                 value={email} 
                 onChange={e => setEmail(e.target.value)}
                 placeholder="email@cuahang.vn"
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
           </div>
@@ -193,37 +193,37 @@ export default function SellerSettings() {
                 value={street} 
                 onChange={e => setStreet(e.target.value)}
                 placeholder="Địa chỉ số nhà, ngõ/đường..."
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col space-y-1">
-                <input 
-                  type="text" 
-                  value={district} 
-                  onChange={e => setDistrict(e.target.value)}
-                  placeholder="Quận / Huyện"
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
-                />
+                  <input 
+                    type="text" 
+                    value={district} 
+                    onChange={e => setDistrict(e.target.value)}
+                    placeholder="Quận / Huyện"
+                    className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
+                  />
               </div>
               <div className="flex flex-col space-y-1">
-                <input 
-                  type="text" 
-                  value={city} 
-                  onChange={e => setCity(e.target.value)}
-                  placeholder="Tỉnh / Thành phố"
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
-                />
+                  <input 
+                    type="text" 
+                    value={city} 
+                    onChange={e => setCity(e.target.value)}
+                    placeholder="Tỉnh / Thành phố"
+                    className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
+                  />
               </div>
               <div className="flex flex-col space-y-1">
-                <input 
-                  type="text" 
-                  value={country} 
-                  onChange={e => setCountry(e.target.value)}
-                  placeholder="Quốc gia"
-                  className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
-                />
+                  <input 
+                    type="text" 
+                    value={country} 
+                    onChange={e => setCountry(e.target.value)}
+                    placeholder="Quốc gia"
+                    className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
+                  />
               </div>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function SellerSettings() {
       {/* Right Column: Profile Live Preview */}
       <div className="space-y-6">
         {/* Profile Card Preview */}
-        <div className="bg-white border border-[#EAE3D2]/50 rounded-3xl overflow-hidden shadow-sm text-left">
+        <div className="bg-white border border-[#EAE3D2]/50 border-t-4 border-t-[#F1641E] rounded-3xl overflow-hidden shadow-sm text-left hover:shadow-md transition-all duration-300">
           <div className="px-5 py-4 border-b border-[#EAE3D2]/40 bg-[#F5EFE6]/10 flex items-center justify-between">
             <h3 className="font-serif font-black text-xs md:text-sm text-gray-800 flex items-center gap-1.5">
               <Eye className="w-4 h-4 text-[#F1641E]" />
@@ -292,7 +292,7 @@ export default function SellerSettings() {
             </p>
 
             {/* Quick Stats list */}
-            <div className="border-t border-[#EAE3D2]/40 pt-4 grid grid-cols-2 gap-4 text-xs">
+            <div className="border-t border-dashed border-[#EAE3D2]/80 pt-4 grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-gray-400 block text-[9.5px] font-bold uppercase tracking-wider">Người bán được xác thực</span>
                 <span className="font-bold text-[#F1641E] flex items-center gap-1 mt-0.5">

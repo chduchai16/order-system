@@ -158,7 +158,7 @@ export default function SellerProducts() {
         </div>
       </div>
 
-      <div className="bg-white border border-[#EAE3D2]/50 rounded-3xl overflow-hidden shadow-sm text-left">
+      <div className="bg-white border border-[#EAE3D2]/50 border-t-4 border-t-[#F1641E] rounded-3xl overflow-hidden shadow-sm text-left">
         {loading ? (
           <div className="py-16 text-center text-xs font-semibold text-gray-400">Đang tải danh sách tác phẩm nghệ thuật...</div>
         ) : filteredProducts.length === 0 ? (
@@ -167,7 +167,7 @@ export default function SellerProducts() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F5EFE6]/30 border-b border-[#EAE3D2]/65 text-gray-600 font-bold">
+                <tr className="bg-[#FDFAF7] border-b border-[#EAE3D2]/50 text-gray-700 font-bold text-[10px] uppercase tracking-wider">
                   <th className="p-4 w-16 text-center">Ảnh</th>
                   <th className="p-4">Thông tin sản phẩm</th>
                   <th className="p-4 w-32">SKU Code</th>
@@ -196,7 +196,27 @@ export default function SellerProducts() {
                       <td className="p-4 font-mono font-medium text-gray-500 uppercase">{p.sku || `SKU-${p.id.toString().slice(-4)}`}</td>
                       <td className="p-4 font-bold text-[#F1641E]">{formatVnd(p.price)}</td>
                       <td className="p-4">
-                        <span className={`font-bold ${p.stock <= 15 ? 'text-red-500 font-extrabold' : 'text-gray-700'}`}>{p.stock}</span>
+                        <div className="space-y-1.5 text-left">
+                          {p.stock <= 0 ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-600 border border-red-200">
+                              Hết hàng
+                            </span>
+                          ) : p.stock <= 15 ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-250">
+                              Chỉ còn {p.stock}
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-50 text-green-700 border border-green-200">
+                              Còn {p.stock}
+                            </span>
+                          )}
+                          <div className="w-16 bg-gray-200 rounded-full h-1 overflow-hidden">
+                            <div 
+                              className={`h-1 rounded-full ${p.stock <= 15 ? 'bg-amber-500' : 'bg-[#F1641E]'}`} 
+                              style={{ width: `${Math.min(100, (p.stock / 100) * 100)}%` }} 
+                            />
+                          </div>
+                        </div>
                       </td>
                       <td className="p-4 text-center">
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold border bg-[#FFF2EB] text-[#F1641E] border-[#F1641E]/25">

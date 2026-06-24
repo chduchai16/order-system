@@ -134,7 +134,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 placeholder="Ví dụ: HE2026"
                 required
                 maxLength={20}
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222] font-mono font-bold"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] font-mono font-bold transition-all duration-200"
               />
             </div>
             <div className="flex flex-col space-y-1">
@@ -145,7 +145,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 onChange={e => setName(e.target.value)}
                 placeholder="Ví dụ: Giảm giá hè đón nắng"
                 required
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
               value={description} 
               onChange={e => setDescription(e.target.value)}
               placeholder="Ví dụ: Áp dụng cho đơn hàng gốm sứ từ 300k"
-              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+              className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
             />
           </div>
 
@@ -210,7 +210,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 onChange={e => setDiscountValue(Number(e.target.value))}
                 min={0}
                 disabled={discountType === 'FREESHIP'}
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222] disabled:bg-gray-100 disabled:text-gray-400"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200"
               />
             </div>
 
@@ -224,7 +224,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 placeholder="Không giới hạn"
                 disabled={discountType !== 'PERCENT'}
                 min={0}
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222] disabled:bg-gray-100 disabled:text-gray-400"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] disabled:bg-gray-100 disabled:text-gray-400 transition-all duration-200"
               />
             </div>
 
@@ -236,7 +236,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 value={minOrderValue} 
                 onChange={e => setMinOrderValue(Number(e.target.value))}
                 min={0}
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 onChange={e => setTotalQuantity(Number(e.target.value))}
                 min={1}
                 required
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
 
@@ -281,7 +281,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 value={startDate} 
                 onChange={e => setStartDate(e.target.value)}
                 required
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
             <div className="flex flex-col space-y-1">
@@ -294,7 +294,7 @@ export default function VoucherModal({ isOpen, onClose, onSave }: VoucherModalPr
                 value={endDate} 
                 onChange={e => setEndDate(e.target.value)}
                 required
-                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:border-[#F1641E] bg-white text-[#222222]"
+                className="w-full text-xs p-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#F1641E] focus:ring-4 focus:ring-[#F1641E]/10 bg-white text-[#222222] transition-all duration-200"
               />
             </div>
           </div>

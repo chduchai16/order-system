@@ -125,7 +125,7 @@ export default function SellerVouchers() {
       </div>
 
       {/* Main Vouchers Table */}
-      <div className="bg-white border border-[#EAE3D2]/50 rounded-3xl overflow-hidden shadow-sm text-left">
+      <div className="bg-white border border-[#EAE3D2]/50 border-t-4 border-t-[#F1641E] rounded-3xl overflow-hidden shadow-sm text-left">
         {loading ? (
           <div className="py-16 text-center text-xs font-semibold text-gray-400">Đang tải danh sách mã ưu đãi...</div>
         ) : filteredVouchers.length === 0 ? (
@@ -134,7 +134,7 @@ export default function SellerVouchers() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F5EFE6]/30 border-b border-[#EAE3D2]/65 text-gray-600 font-bold">
+                <tr className="bg-[#FDFAF7] border-b border-[#EAE3D2]/50 text-gray-700 font-bold text-[10px] uppercase tracking-wider">
                   <th className="p-4 w-28">Mã ưu đãi</th>
                   <th className="p-4">Tên chiến dịch / Mô tả điều kiện</th>
                   <th className="p-4 w-32">Chiết khấu</th>

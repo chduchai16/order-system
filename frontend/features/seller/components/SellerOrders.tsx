@@ -14,7 +14,9 @@ import {
   Calendar, 
   User, 
   X, 
-  AlertCircle 
+  AlertCircle,
+  Clock,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function SellerOrders() {
@@ -80,15 +82,40 @@ export default function SellerOrders() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'DELIVERED':
-        return <span className="bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã giao</span>;
+        return (
+          <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
+            <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+            Đã giao
+          </span>
+        );
       case 'PAID':
-        return <span className="bg-[#FFF2EB] text-[#F1641E] border border-[#F1641E]/20 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã thanh toán</span>;
+        return (
+          <span className="inline-flex items-center gap-1 bg-[#FFF2EB] text-[#F1641E] border border-[#F1641E]/20 px-2.5 py-1 rounded-full text-[10px] font-bold">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#F1641E]" />
+            Đã thanh toán
+          </span>
+        );
       case 'SHIPPING':
-        return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full text-[10px] font-bold">Đang giao</span>;
+        return (
+          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
+            <Truck className="w-3.5 h-3.5 text-blue-600" />
+            Đang giao
+          </span>
+        );
       case 'CANCELLED':
-        return <span className="bg-red-50 text-red-700 border border-red-200 px-2.5 py-1 rounded-full text-[10px] font-bold">Đã huỷ</span>;
+        return (
+          <span className="inline-flex items-center gap-1 bg-red-50 text-red-700 border border-red-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
+            <XCircle className="w-3.5 h-3.5 text-red-600" />
+            Đã huỷ
+          </span>
+        );
       default:
-        return <span className="bg-yellow-50 text-yellow-750 border border-yellow-250 px-2.5 py-1 rounded-full text-[10px] font-bold">Chờ xác nhận</span>;
+        return (
+          <span className="inline-flex items-center gap-1 bg-yellow-50 text-yellow-750 border border-yellow-250 px-2.5 py-1 rounded-full text-[10px] font-bold">
+            <Clock className="w-3.5 h-3.5 text-yellow-600" />
+            Chờ xác nhận
+          </span>
+        );
     }
   };
 
@@ -240,7 +267,7 @@ export default function SellerOrders() {
       </div>
 
       {/* Orders Table list */}
-      <div className="bg-white border border-[#EAE3D2]/50 rounded-3xl overflow-hidden shadow-sm text-left">
+      <div className="bg-white border border-[#EAE3D2]/50 border-t-4 border-t-[#F1641E] rounded-3xl overflow-hidden shadow-sm text-left">
         {loading ? (
           <div className="py-16 text-center text-xs font-semibold text-gray-400">Đang tải danh sách đơn hàng...</div>
         ) : filteredOrders.length === 0 ? (
@@ -249,7 +276,7 @@ export default function SellerOrders() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#F5EFE6]/30 border-b border-[#EAE3D2]/65 text-gray-600 font-bold">
+                <tr className="bg-[#FDFAF7] border-b border-[#EAE3D2]/50 text-gray-700 font-bold text-[10px] uppercase tracking-wider">
                   <th className="p-4">Mã đơn hàng</th>
                   <th className="p-4">Ngày đặt đơn</th>
                   <th className="p-4">Địa chỉ giao</th>
@@ -337,7 +364,7 @@ export default function SellerOrders() {
           <div className="bg-[#FDFAF7] border border-[#EAE3D2] rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden relative z-10 animate-fade-in flex flex-col max-h-[85vh] text-left font-sans">
             {/* Header */}
             <div className="px-6 py-4.5 border-b border-[#EAE3D2]/50 flex justify-between items-center bg-[#F5EFE6]/20">
-              <div>
+              <div className="border-l-4 border-l-[#F1641E] pl-3">
                 <h3 className="font-serif font-black text-base md:text-lg text-gray-800">
                   Chi tiết đơn hàng: {selectedOrder.orderNumber || `ORD-${selectedOrder.id}`}
                 </h3>
@@ -431,7 +458,7 @@ export default function SellerOrders() {
               </div>
 
               {/* Pricing breakdown summary */}
-              <div className="bg-[#F5EFE6]/15 border border-[#EAE3D2]/45 p-4.5 rounded-2xl space-y-2 text-xs">
+              <div className="bg-[#FDFAF7] border border-dashed border-[#EAE3D2]/80 p-5 rounded-2xl space-y-2.5 text-xs">
                 <div className="flex justify-between font-semibold text-gray-600">
                   <span>Tạm tính hàng hoá</span>
                   <span>{formatVnd(selectedOrder.totalPrice - (selectedOrder.shippingInfo?.shippingFee || 30000) + (selectedOrder.discount?.amount || 0))}</span>
@@ -446,7 +473,7 @@ export default function SellerOrders() {
                   <span>Chi phí vận chuyển</span>
                   <span>+{formatVnd(selectedOrder.shippingInfo?.shippingFee || 30000)}</span>
                 </div>
-                <div className="border-t border-[#EAE3D2]/60 pt-2 flex justify-between font-serif font-black text-sm text-gray-900">
+                <div className="border-t border-dashed border-[#EAE3D2]/80 pt-2.5 flex justify-between font-serif font-black text-sm text-gray-900">
                   <span>Tổng tiền thanh toán</span>
                   <span className="text-[#F1641E] text-base font-extrabold">{formatVnd(selectedOrder.totalPrice)}</span>
                 </div>
