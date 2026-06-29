@@ -43,7 +43,10 @@ export function ToastContainer() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!isMounted) return null;
@@ -51,20 +54,16 @@ export function ToastContainer() {
   return (
     <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-3 max-w-md w-full pointer-events-none">
       {toasts.map((toast) => {
-        let bgColor = 'bg-white border-green-500';
         let iconColor = 'text-green-500';
         let IconComponent = CheckCircle;
 
         if (toast.type === 'error') {
-          bgColor = 'bg-white border-red-500';
           iconColor = 'text-red-500';
           IconComponent = AlertCircle;
         } else if (toast.type === 'warning') {
-          bgColor = 'bg-white border-amber-500';
           iconColor = 'text-amber-500';
           IconComponent = AlertCircle;
         } else if (toast.type === 'info') {
-          bgColor = 'bg-white border-blue-500';
           iconColor = 'text-blue-500';
           IconComponent = Info;
         }

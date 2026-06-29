@@ -28,13 +28,7 @@ const formatDate = (date: string) => {
   }
 };
 
-function ProductIcon() {
-  return (
-    <div className="w-full aspect-square rounded-xl bg-[#F5EFE6]/50 flex items-center justify-center border border-[#EAE3D2]/35">
-      <Gift className="w-16 h-16 text-[#F1641E] opacity-75" />
-    </div>
-  );
-}
+
 
 export default function WishlistPage() {
   const addToCart = useCartStore((state) => state.addToCart);
