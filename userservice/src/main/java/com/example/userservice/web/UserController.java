@@ -3,6 +3,7 @@ package com.example.userservice.web;
 import com.example.userservice.application.services.IUserService;
 import com.example.userservice.domain.models.User;
 import com.example.userservice.application.dtos.UserResponse;
+import com.example.userservice.application.dtos.WishlistResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,21 @@ public class UserController {
         return ResponseEntity.ok(toResponse(user));
     }
 
+    @GetMapping("/{id}/wishlist")
+    public ResponseEntity<List<WishlistResponse>> getWishlist(@PathVariable Long id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+        List<WishlistResponse> wishlist = user.getWishlist() != null ? user.getWishlist().stream()
+                .map(w -> WishlistResponse.builder()
+                        .id(w.getId())
+                        .productId(w.getProductId())
+                        .productName(w.getProductName())
+                        .addedAt(w.getAddedAt())
+                        .build())
+                .collect(Collectors.toList()) : java.util.Collections.emptyList();
+        return ResponseEntity.ok(wishlist);
+    }
+
     private UserResponse toResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -69,7 +85,7 @@ public class UserController {
                                 .build())
                         .collect(Collectors.toList()) : null)
                 .wishlist(user.getWishlist() != null ? user.getWishlist().stream()
-                        .map(w -> com.example.userservice.application.dtos.WishlistResponse.builder()
+                        .map(w -> WishlistResponse.builder()
                                 .id(w.getId())
                                 .productId(w.getProductId())
                                 .productName(w.getProductName())
