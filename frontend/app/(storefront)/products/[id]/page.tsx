@@ -19,6 +19,9 @@ import {
 import { productService } from '@/features/product/api';
 import { useCartStore } from '@/features/cart/store';
 import { Product, ProductAttribute, ProductVariant } from '@/features/product/types';
+import { userService } from '@/features/account/api/userService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
+import { toast } from '@/components/layout/Toast';
 
 const colorOptions = [
   { name: 'Đen mờ', className: 'bg-[#2E2E2E]' },
@@ -119,6 +122,21 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const handleBuyNow = async () => {
     await handleAddToCart();
     router.push('/cart');
+  };
+
+  const handleAddToWishlist = async () => {
+    try {
+      const userId = tokenStore.getUserId();
+      if (!userId) {
+        toast.warning('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích!');
+        return;
+      }
+      await userService.addToWishlist(userId, Number(displayProduct.id), displayProduct.name);
+      toast.success('Đã thêm sản phẩm vào danh sách yêu thích!');
+    } catch (err) {
+      console.error('Failed to add to wishlist', err);
+      toast.error('Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích.');
+    }
   };
 
   if (loading) {
@@ -350,6 +368,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               </button>
               <button 
                 type="button" 
+                onClick={handleAddToWishlist}
                 className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-400 bg-white shadow-sm cursor-pointer transition-all duration-200" 
                 aria-label="Yêu thích"
               >

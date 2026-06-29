@@ -2,15 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Eye, Heart, ShoppingCart, Sparkles, Gift } from 'lucide-react';
+import Image from 'next/image';
+import { Eye, Heart, ShoppingCart, Sparkles, Gift, Trash2 } from 'lucide-react';
 import { userService } from '@/features/account/api/userService';
 import { useCartStore } from '@/features/cart/store';
 import { WishlistItem } from '@/components/types';
+import { productService } from '@/features/product/api';
+import { toast } from '@/components/layout/Toast';
 
-const fallbackWishlist: WishlistItem[] = [
-  { id: 1, productId: '1', productName: 'Nhẫn bạc đính đá thạch anh tự nhiên', addedAt: '2026-05-12T00:00:00Z' },
-  { id: 2, productId: '2', productName: 'Bát gốm tráng men mờ thủ công Nhật Bản', addedAt: '2026-05-08T00:00:00Z' },
-  { id: 3, productId: '3', productName: 'Ví da nam khắc tên theo yêu cầu', addedAt: '2026-05-01T00:00:00Z' },
+interface WishlistDisplayItem extends WishlistItem {
+  imageUrl?: string | null;
+}
+
+const fallbackWishlist: WishlistDisplayItem[] = [
+  { id: 1, productId: '1', productName: 'Nhẫn bạc đính đá thạch anh tự nhiên', addedAt: '2026-05-12T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&auto=format&fit=crop&q=80' },
+  { id: 2, productId: '2', productName: 'Ly gốm tráng men hoả biến mộc mạc', addedAt: '2026-05-08T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&auto=format&fit=crop&q=80' },
+  { id: 3, productId: '3', productName: 'Ví da nam khắc tên theo yêu cầu', addedAt: '2026-05-01T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&auto=format&fit=crop&q=80' },
 ];
 
 const formatDate = (date: string) => {
@@ -32,8 +39,13 @@ function ProductIcon() {
 export default function WishlistPage() {
   const addToCart = useCartStore((state) => state.addToCart);
   const initializeCart = useCartStore((state) => state.initializeCart);
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [wishlist, setWishlist] = useState<WishlistDisplayItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleRemoveFromWishlist = (productId: string) => {
+    setWishlist((prev) => prev.filter((item) => String(item.productId) !== productId));
+    toast.success('Đã xóa sản phẩm khỏi danh sách yêu thích!');
+  };
 
   useEffect(() => {
     void initializeCart();
@@ -41,7 +53,24 @@ export default function WishlistPage() {
     const fetchWishlist = async () => {
       try {
         const items = await userService.getWishlist();
-        setWishlist(items);
+        
+        // Fetch product details to retrieve image urls
+        const itemsWithDetails = await Promise.all(
+          items.map(async (item) => {
+            try {
+              const product = await productService.getProductById(String(item.productId));
+              const primaryImage = product.images?.find((img) => img.isPrimary && img.url);
+              const firstImage = product.images?.find((img) => img.url);
+              const imageUrl = primaryImage?.url ?? firstImage?.url ?? product.image ?? null;
+              return { ...item, imageUrl };
+            } catch (err) {
+              console.error(`Failed to fetch details for product ID ${item.productId}:`, err);
+              return { ...item, imageUrl: null };
+            }
+          })
+        );
+        
+        setWishlist(itemsWithDetails);
       } catch (err) {
         console.error('Failed to fetch wishlist', err);
         setWishlist(fallbackWishlist);
@@ -125,56 +154,89 @@ export default function WishlistPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-5">
-            {wishlist.map((item, index) => {
-              const price = 280000 + (index * 50000);
-              const oldPrice = Math.round(price * 1.45);
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-100 bg-[#F5EFE6]/5 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                  <th className="py-4 px-6">Sản phẩm</th>
+                  <th className="py-4 px-4">Giá bán</th>
+                  <th className="py-4 px-4">Ngày lưu</th>
+                  <th className="py-4 px-6 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {wishlist.map((item, index) => {
+                  const price = 280000 + (index * 50000);
+                  const oldPrice = Math.round(price * 1.45);
 
-              return (
-                <article key={item.id} className="border border-gray-100 rounded-xl overflow-hidden bg-white hover:shadow-md transition duration-300 group flex flex-col justify-between">
-                  <div className="relative">
-                    <span className="absolute top-2.5 left-2.5 z-10 bg-[#EBF2EE] text-[#1E5C3F] text-[10px] font-bold px-2 py-0.5 rounded-sm">
-                      Giảm 30%
-                    </span>
-                    <button type="button" className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white text-red-500 flex items-center justify-center shadow-sm cursor-pointer" aria-label="Đã yêu thích">
-                      <Heart className="w-4 h-4 fill-current" />
-                    </button>
-                    <ProductIcon />
-                  </div>
-
-                  <div className="p-4 flex-grow flex flex-col justify-between space-y-3">
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">ShopVN Tuyển chọn</span>
-                      <h3 className="font-bold text-xs md:text-sm line-clamp-2 h-10 text-gray-800 group-hover:text-[#F1641E] transition-colors leading-tight">
-                        {item.productName}
-                      </h3>
-                      <p className="text-[10px] text-gray-400">Đã lưu ngày {formatDate(item.addedAt)}</p>
-                    </div>
-
-                    <div className="space-y-3 pt-1">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-base font-bold text-[#F1641E]">{price.toLocaleString('vi-VN')}đ</span>
-                        <span className="text-xs text-gray-400 line-through">{oldPrice.toLocaleString('vi-VN')}đ</span>
-                      </div>
-
-                      <div className="grid grid-cols-[1fr_auto] gap-2 pt-1 border-t border-gray-50">
-                        <button
-                          type="button"
-                          onClick={() => handleAddToCart(item)}
-                          className="h-9 border border-[#222222] hover:bg-[#222222] hover:text-white rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer"
-                        >
-                          <ShoppingCart className="w-3.5 h-3.5" />
-                          Thêm vào giỏ
-                        </button>
-                        <Link href={`/products/${item.productId}`} className="w-9 h-9 border border-gray-300 hover:border-[#222222] hover:text-[#222222] rounded-full flex items-center justify-center transition-colors" title="Xem chi tiết">
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+                  return (
+                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-14 h-14 rounded-xl border border-[#EAE3D2]/40 bg-[#FDFAF7]/60 overflow-hidden flex items-center justify-center p-2 shrink-0 shadow-inner">
+                            {item.imageUrl ? (
+                              <Image
+                                src={item.imageUrl}
+                                alt={item.productName}
+                                fill
+                                className="object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <Gift className="w-6 h-6 text-[#F1641E] opacity-75" />
+                            )}
+                          </div>
+                          <div className="space-y-1">
+                            <span className="inline-flex text-[9px] text-[#1E5C3F] bg-[#EBF2EE] font-bold px-1.5 py-0.5 rounded-sm">
+                              Giảm 30%
+                            </span>
+                            <h3 className="font-bold text-xs md:text-sm text-gray-800 line-clamp-1 max-w-[280px] hover:text-[#F1641E] transition-colors leading-tight">
+                              <Link href={`/products/${item.productId}`}>{item.productName}</Link>
+                            </h3>
+                            <span className="text-[10px] text-gray-400 font-semibold block">ShopVN Tuyển chọn</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-[#F1641E]">{price.toLocaleString('vi-VN')}đ</span>
+                          <span className="text-[10px] text-gray-400 line-through">{oldPrice.toLocaleString('vi-VN')}đ</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-xs text-gray-505 font-medium">
+                        {formatDate(item.addedAt)}
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleAddToCart(item)}
+                            className="h-8 px-4 border border-[#222222] hover:bg-[#222222] hover:text-white rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer"
+                          >
+                            <ShoppingCart className="w-3.5 h-3.5" />
+                            Thêm vào giỏ
+                          </button>
+                          <Link 
+                            href={`/products/${item.productId}`} 
+                            className="w-8 h-8 border border-gray-300 hover:border-[#222222] hover:text-[#222222] rounded-full flex items-center justify-center transition-colors text-gray-500 hover:text-[#222222]" 
+                            title="Xem chi tiết"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFromWishlist(String(item.productId))}
+                            className="w-8 h-8 border border-red-100 hover:border-red-500 text-red-500 rounded-full flex items-center justify-center bg-red-50/20 hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Xóa khỏi yêu thích"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </section>
       )}

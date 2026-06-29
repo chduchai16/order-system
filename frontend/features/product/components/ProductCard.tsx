@@ -6,6 +6,9 @@ import { useCartStore } from '@/features/cart/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { userService } from '@/features/account/api/userService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
+import { toast } from '@/components/layout/Toast';
 
 interface ProductCardProps {
   product: Product;
@@ -47,6 +50,23 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
     });
   };
 
+  const handleAddToWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const userId = tokenStore.getUserId();
+      if (!userId) {
+        toast.warning('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích!');
+        return;
+      }
+      await userService.addToWishlist(userId, Number(product.id), product.name);
+      toast.success('Đã thêm sản phẩm vào danh sách yêu thích!');
+    } catch (err) {
+      console.error('Failed to add to wishlist', err);
+      toast.error('Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích.');
+    }
+  };
+
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
   const formatVnd = (price: number) => `${Math.round(price).toLocaleString('vi-VN')}đ`;
@@ -81,7 +101,12 @@ export default function ProductCard({ product, variant = 'standard' }: ProductCa
       </div>
 
       {/* Wishlist Heart Button */}
-      <button className="absolute top-2.5 right-2.5 z-10 bg-white p-1.5 rounded-full shadow-sm text-gray-400 hover:text-red-500 hover:scale-105 transition-all duration-200 cursor-pointer" aria-label="Yêu thích">
+      <button 
+        type="button"
+        onClick={handleAddToWishlist}
+        className="absolute top-2.5 right-2.5 z-10 bg-white p-1.5 rounded-full shadow-sm text-gray-400 hover:text-red-500 hover:scale-105 transition-all duration-200 cursor-pointer" 
+        aria-label="Yêu thích"
+      >
         <Heart className="w-4 h-4" />
       </button>
 

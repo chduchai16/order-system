@@ -25,6 +25,12 @@ import { orderService } from '@/features/order/api';
 import { userService } from '@/features/account/api/userService';
 import { tokenStore } from '@/lib/auth';
 import { Address, Order, User as UserProfile, WishlistItem } from '@/components/types';
+import { productService } from '@/features/product/api';
+import Image from 'next/image';
+
+interface WishlistDisplayItem extends WishlistItem {
+  imageUrl?: string | null;
+}
 
 type SectionKey = 'overview' | 'orders' | 'wishlist' | 'profile' | 'addresses' | 'payments' | 'settings';
 type OrderStatus = 'processing' | 'shipping' | 'completed' | 'cancelled';
@@ -84,9 +90,9 @@ const fallbackAddresses: Address[] = [
   },
 ];
 
-const fallbackWishlist: WishlistItem[] = [
-  { id: 1, productId: '1', productName: 'Nhẫn bạc đính đá thạch anh tự nhiên', addedAt: '2026-05-12T00:00:00Z' },
-  { id: 2, productId: '2', productName: 'Bát gốm tráng men mờ thủ công Nhật Bản', addedAt: '2026-05-08T00:00:00Z' },
+const fallbackWishlist: WishlistDisplayItem[] = [
+  { id: 1, productId: '1', productName: 'Nhẫn bạc đính đá thạch anh tự nhiên', addedAt: '2026-05-12T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&auto=format&fit=crop&q=80' },
+  { id: 2, productId: '2', productName: 'Ly gốm tráng men hoả biến mộc mạc', addedAt: '2026-05-08T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&auto=format&fit=crop&q=80' },
 ];
 
 const fallbackProfile: UserProfile = {
@@ -169,7 +175,7 @@ export default function AccountOrdersView() {
   const [selectedSection, setSelectedSection] = useState<SectionKey>('overview');
   const [orders, setOrders] = useState<DisplayOrder[]>(fallbackOrders);
   const [addresses, setAddresses] = useState<Address[]>(fallbackAddresses);
-  const [wishlist, setWishlist] = useState<WishlistItem[]>(fallbackWishlist);
+  const [wishlist, setWishlist] = useState<WishlistDisplayItem[]>(fallbackWishlist);
   const [profile, setProfile] = useState<UserProfile>(fallbackProfile);
   const [loading, setLoading] = useState(true);
   const [profileForm, setProfileForm] = useState({
@@ -208,7 +214,21 @@ export default function AccountOrdersView() {
         }
 
         if (wishlistData.status === 'fulfilled' && wishlistData.value.length > 0) {
-          setWishlist(wishlistData.value);
+          const detailedWishlist = await Promise.all(
+            wishlistData.value.map(async (item) => {
+              try {
+                const product = await productService.getProductById(String(item.productId));
+                const primaryImage = product.images?.find((img) => img.isPrimary && img.url);
+                const firstImage = product.images?.find((img) => img.url);
+                const imageUrl = primaryImage?.url ?? firstImage?.url ?? product.image ?? null;
+                return { ...item, imageUrl };
+              } catch (err) {
+                console.error(`Failed to fetch product details for ${item.productId}:`, err);
+                return { ...item, imageUrl: null };
+              }
+            })
+          );
+          setWishlist(detailedWishlist);
         }
       } catch (error) {
         console.error('Fetch account data error:', error);
@@ -403,8 +423,17 @@ export default function AccountOrdersView() {
                   {wishlist.map((item) => (
                     <article key={item.id} className="rounded-2xl border border-gray-100 bg-white p-4 flex flex-col justify-between group hover:shadow-md transition duration-200">
                       <div>
-                        <div className="mb-3.5 flex aspect-[4/3] items-center justify-center rounded-xl bg-[#F5EFE6]/50 border border-gray-50/50">
-                          <Heart className="h-8 w-8 text-[#F1641E]" />
+                        <div className="relative mb-3.5 flex aspect-[4/3] items-center justify-center rounded-xl bg-[#FDFAF7]/60 border border-gray-100 overflow-hidden p-2">
+                          {item.imageUrl ? (
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.productName}
+                              fill
+                              className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <Heart className="h-8 w-8 text-[#F1641E] shrink-0" />
+                          )}
                         </div>
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#F1641E]">ShopVN</span>
                         <h3 className="mt-1 font-bold text-xs md:text-sm text-[#222222] line-clamp-2 h-10 group-hover:text-[#F1641E] transition-colors leading-tight">{item.productName}</h3>

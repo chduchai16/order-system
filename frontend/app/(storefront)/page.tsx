@@ -13,6 +13,9 @@ import {
   Gift,
   ArrowUpRight,
 } from 'lucide-react';
+import { userService } from '@/features/account/api/userService';
+import { tokenStore } from '@/features/shared/api/tokenStore';
+import { toast } from '@/components/layout/Toast';
 
 const interests = [
   {
@@ -98,6 +101,23 @@ const benefits = [
 ];
 
 export default function StorefrontHomePage() {
+  const handleAddToWishlist = async (e: React.MouseEvent, productId: string, productName: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const userId = tokenStore.getUserId();
+      if (!userId) {
+        toast.warning('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích!');
+        return;
+      }
+      await userService.addToWishlist(userId, Number(productId), productName);
+      toast.success('Đã thêm sản phẩm vào danh sách yêu thích!');
+    } catch (err) {
+      console.error('Failed to add to wishlist', err);
+      toast.error('Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích.');
+    }
+  };
+
   return (
     <div className="space-y-16">
       {/* Double Hero Split-Screen Banner */}
@@ -333,7 +353,12 @@ export default function StorefrontHomePage() {
               <span className="absolute top-2.5 left-2.5 z-10 bg-[#EBF2EE] text-[#1E5C3F] text-[10px] font-bold px-2.5 py-0.5 rounded-sm">
                 Giảm {product.discount}
               </span>
-              <button type="button" className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white text-gray-400 flex items-center justify-center shadow-sm hover:text-red-500 transition-colors cursor-pointer" aria-label="Yêu thích">
+              <button 
+                type="button" 
+                onClick={(e) => handleAddToWishlist(e, product.id, product.name)}
+                className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white text-gray-400 flex items-center justify-center shadow-sm hover:text-red-500 transition-colors cursor-pointer" 
+                aria-label="Yêu thích"
+              >
                 <Heart className="w-4 h-4" />
               </button>
               {/* Product Image */}
