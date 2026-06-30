@@ -24,7 +24,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(user -> ResponseEntity.ok(toResponse(user)))
-                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
