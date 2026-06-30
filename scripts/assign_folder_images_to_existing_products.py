@@ -3,6 +3,8 @@ import json
 import mimetypes
 import sys
 import subprocess
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import requests
@@ -11,6 +13,15 @@ import requests
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 IMAGES_PER_PRODUCT = 5
 PRODUCTS_PER_FOLDER = 20
+
+# Thread-safe print lock to avoid interleaved output
+_print_lock = threading.Lock()
+
+
+def tprint(*args, **kwargs):
+    """Thread-safe print."""
+    with _print_lock:
+        print(*args, **kwargs)
 
 
 def is_image_file(path: Path) -> bool:
@@ -67,24 +78,24 @@ def clear_existing_product_images(media_base_url: str, product_id: int, user_age
     result = subprocess.run(query_command, capture_output=True, text=True)
     if result.returncode != 0:
         # If DB is not available or query fails, skip checking
-        print(f"  warning: could not read existing images for product {product_id}")
+        tprint(f"  warning: could not read existing images for product {product_id}")
         return
 
     media_ids = [line.strip() for line in result.stdout.splitlines() if line.strip()]
     if not media_ids:
-        print("  no existing images to clear")
+        tprint("  no existing images to clear")
         return
 
-    print(f"  clearing {len(media_ids)} existing images")
+    tprint(f"  clearing {len(media_ids)} existing images")
     for media_id in media_ids:
         if dry_run:
-            print(f"  dry-run delete mediaId={media_id}")
+            tprint(f"  dry-run delete mediaId={media_id}")
             continue
         try:
             delete_media(media_base_url, int(media_id), user_agent)
-            print(f"  deleted old mediaId={media_id}")
+            tprint(f"  deleted old mediaId={media_id}")
         except Exception as exc:
-            print(f"  warning: failed to delete old mediaId={media_id}: {exc}")
+            tprint(f"  warning: failed to delete old mediaId={media_id}: {exc}")
 
 
 def replace_product_images_in_db(product_id: int, media_ids: list[int]) -> None:
@@ -278,6 +289,86 @@ def clear_db_tables(dry_run: bool) -> None:
     print("  success: database tables cleared")
 
 
+def upload_image_with_index(
+    index: int,
+    image_path: Path,
+    media_base_url: str,
+    user_agent: str,
+    dry_run: bool,
+) -> tuple[int, int, dict]:
+    """Upload a single image and return (original_index, media_id, metadata).
+    Returns original_index so callers can reassemble results in order."""
+    if dry_run:
+        fake_id = index + 1
+        tprint(f"    success: dry-run mediaId={fake_id} file={image_path.name}")
+        return index, fake_id, {"file": image_path.name, "id": fake_id, "dry_run": True}
+    else:
+        tprint(f"    uploading: {image_path.name}")
+        media = upload_media(media_base_url, image_path, user_agent)
+        media_id = int(media["id"])
+        tprint(f"    success: uploaded file={image_path.name} mediaId={media_id}")
+        return index, media_id, {"file": image_path.name, "media": media}
+
+
+def process_product(
+    product: dict,
+    image_group: list[Path],
+    folder_name: str,
+    media_base_url: str,
+    user_agent: str,
+    dry_run: bool,
+    image_workers: int,
+) -> dict | None:
+    """Process a single product: clear old images, upload new ones in parallel, update DB.
+    Returns a result dict on success, or None on failure."""
+    product_id = product["id"]
+    product_name = product["name"]
+
+    tprint(f"  product id={product_id} name='{product_name}' ({len(image_group)} images)")
+    if len(image_group) < IMAGES_PER_PRODUCT:
+        tprint(f"    warning: expected {IMAGES_PER_PRODUCT} images, found {len(image_group)}")
+
+    try:
+        clear_existing_product_images(media_base_url, product_id, user_agent, dry_run)
+
+        # Upload all images concurrently, then sort by original index to preserve display_order
+        results_by_index: list[tuple[int, int, dict]] = []
+        with ThreadPoolExecutor(max_workers=image_workers) as img_pool:
+            futures = {
+                img_pool.submit(
+                    upload_image_with_index,
+                    idx, image_path, media_base_url, user_agent, dry_run,
+                ): idx
+                for idx, image_path in enumerate(image_group)
+            }
+            for future in as_completed(futures):
+                results_by_index.append(future.result())  # raises on exception
+
+        # Sort by original index so display_order is deterministic
+        results_by_index.sort(key=lambda t: t[0])
+        media_ids = [t[1] for t in results_by_index]
+        uploaded_media = [t[2] for t in results_by_index]
+
+        if dry_run:
+            updated_product = {"dry_run": True, "product_id": product_id, "product_name": product_name, "media_ids": media_ids}
+            tprint(f"    success: dry-run update product id={product_id}")
+        else:
+            replace_product_images_in_db(product_id, media_ids)
+            tprint(f"    success: updated product id={product_id}")
+
+        return {
+            "folder": folder_name,
+            "product_id": product_id,
+            "product_name": product_name,
+            "uploaded_media": uploaded_media,
+            "product": updated_product if dry_run else {"product_id": product_id, "media_ids": media_ids},
+        }
+
+    except Exception as exc:
+        tprint(f"    failed: folder={folder_name} product_id={product_id} error={exc}", file=sys.stderr)
+        return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Upload 5 images per folder and assign them to existing products.")
     parser.add_argument("--images-dir", required=True, help="Root directory containing numeric folders like 001, 002...")
@@ -285,6 +376,12 @@ def main() -> None:
     parser.add_argument("--user-agent", default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
     parser.add_argument("--dry-run", action="store_true", help="Do not call APIs, only print what would happen")
     parser.add_argument("--clear-db-data", action="store_true", help="Truncate product_images and medias before importing")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=4,
+        help="Number of products to process in parallel (default: 4). Images within each product are uploaded with up to IMAGES_PER_PRODUCT concurrent threads.",
+    )
     args = parser.parse_args()
 
     images_dir = Path(args.images_dir)
@@ -296,7 +393,7 @@ def main() -> None:
         raise SystemExit(f"No numeric folders found in: {images_dir}")
 
     print(f"start: images_dir={images_dir}")
-    print(f"config: media_base_url={args.media_base_url}, dry_run={args.dry_run}, clear_db_data={args.clear_db_data}")
+    print(f"config: media_base_url={args.media_base_url}, dry_run={args.dry_run}, clear_db_data={args.clear_db_data}, workers={args.workers}")
 
     if args.clear_db_data:
         clear_db_tables(args.dry_run)
@@ -304,7 +401,8 @@ def main() -> None:
     categories_map = get_categories_from_db()
     print(f"Loaded category map from database: {categories_map}")
 
-    results = []
+    # Build a flat list of (product, image_group, folder_name) tasks across all folders
+    tasks: list[tuple[dict, list[Path], str]] = []
     for folder in folders:
         images = read_images(folder)
         image_groups = chunk_images(images, IMAGES_PER_PRODUCT)
@@ -331,53 +429,28 @@ def main() -> None:
             if local_index >= len(products):
                 print(f"  warning: more image groups ({len(image_groups)}) than products ({len(products)}), stopping.")
                 break
+            tasks.append((products[local_index], image_group, folder.name))
 
-            product = products[local_index]
-            product_id = product["id"]
-            product_name = product["name"]
+    print(f"\nProcessing {len(tasks)} products with {args.workers} parallel workers ...\n")
 
-            print(f"  product id={product_id} name='{product_name}' ({len(image_group)} images)")
-            if len(image_group) < IMAGES_PER_PRODUCT:
-                print(f"    warning: expected {IMAGES_PER_PRODUCT} images, found {len(image_group)}")
+    results: list[dict] = []
+    results_lock = threading.Lock()
 
-            media_ids = []
-            uploaded_media = []
-            try:
-                clear_existing_product_images(args.media_base_url, product_id, args.user_agent, args.dry_run)
-                for image_path in image_group:
-                    print(f"    uploading: {image_path.name}")
-                    if args.dry_run:
-                        fake_id = len(media_ids) + 1
-                        media_ids.append(fake_id)
-                        uploaded_media.append({"file": image_path.name, "id": fake_id, "dry_run": True})
-                        print(f"    success: dry-run mediaId={fake_id} file={image_path.name}")
-                    else:
-                        media = upload_media(args.media_base_url, image_path, args.user_agent)
-                        media_id = int(media["id"])
-                        media_ids.append(media_id)
-                        uploaded_media.append({"file": image_path.name, "media": media})
-                        print(f"    success: uploaded file={image_path.name} mediaId={media_id}")
-
-                if args.dry_run:
-                    updated_product = {"dry_run": True, "product_id": product_id, "product_name": product_name, "media_ids": media_ids}
-                    print(f"    success: dry-run update product id={product_id}")
-                else:
-                    replace_product_images_in_db(product_id, media_ids)
-                    print(f"    success: updated product id={product_id}")
-
-                results.append(
-                    {
-                        "folder": folder.name,
-                        "product_id": product_id,
-                        "product_name": product_name,
-                        "uploaded_media": uploaded_media,
-                        "product": updated_product if args.dry_run else {"product_id": product_id, "media_ids": media_ids},
-                    }
-                )
-            except Exception as exc:
-                print(f"    failed: folder={folder.name} product_id={product_id} error={exc}", file=sys.stderr)
-                if not args.dry_run:
-                    continue
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {
+            pool.submit(
+                process_product,
+                product, image_group, folder_name,
+                args.media_base_url, args.user_agent, args.dry_run,
+                IMAGES_PER_PRODUCT,  # image_workers: up to 5 concurrent uploads per product
+            ): (product["id"], folder_name)
+            for product, image_group, folder_name in tasks
+        }
+        for future in as_completed(futures):
+            result = future.result()
+            if result is not None:
+                with results_lock:
+                    results.append(result)
 
     print(f"\ndone: processed={len(results)}")
     print(json.dumps(results, ensure_ascii=False, indent=2))
