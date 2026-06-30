@@ -48,7 +48,7 @@ export default function Footer() {
     <footer className="bg-[#231F2D] text-gray-300 font-sans border-t border-[#342F42]">
       {/* Newsletter / Subscription banner */}
       <div className="bg-[#302B3E] py-8 px-4 border-b border-[#3E384D]">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="max-w-xl text-center md:text-left">
             <h3 className="text-white font-serif text-lg md:text-xl font-bold mb-1">
               Nhận thông tin cập nhật từ ShopVN!
@@ -73,7 +73,7 @@ export default function Footer() {
 
       {/* Top Banner Guarantees */}
       <div className="bg-[#231F2D] border-b border-[#302B3E] py-4 px-4">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-around gap-4 text-xs font-semibold text-gray-300">
+        <div className="max-w-screen-2xl mx-auto flex flex-wrap justify-around gap-4 text-xs font-semibold text-gray-300">
           <span className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#F1641E]" />
             Thanh toán an toàn 256-bit
@@ -90,7 +90,7 @@ export default function Footer() {
       </div>
 
       {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-screen-2xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_2.8fr] gap-12">
           {/* Brand Col */}
           <div className="space-y-4">
