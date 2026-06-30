@@ -46,3 +46,20 @@ export interface ProductFormPayload {
   attributes?: ProductAttribute[];
   variants?: Omit<ProductVariant, 'id'>[];
 }
+
+export interface ProductReviewImage {
+  id: number;
+  mediaId: number;
+}
+
+export interface ProductReview {
+  id: number;
+  productId: number;
+  userId: number;
+  rating: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt?: string;
+  images?: ProductReviewImage[];
+}

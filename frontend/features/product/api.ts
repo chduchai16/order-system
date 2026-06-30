@@ -1,5 +1,5 @@
 import apiClient from '@/lib/axios';
-import { Product, ProductImage, ProductAttribute, ProductVariant, ProductFormPayload } from './types';
+import { Product, ProductImage, ProductAttribute, ProductVariant, ProductFormPayload, ProductReview } from './types';
 
 const PRODUCTS_OVERLAY_KEY = 'shop_vn_seller_products_overlay';
 
@@ -200,5 +200,29 @@ export const productService = {
     }
     overlay[id]._isDeleted = true;
     saveOverlay(PRODUCTS_OVERLAY_KEY, overlay);
+  },
+
+  getProductReviews: async (productId: string, page = 0, size = 10): Promise<{
+    content: ProductReview[];
+    totalElements: number;
+    totalPages: number;
+  }> => {
+    const response = await apiClient.get(`/api/products/${productId}/reviews`, {
+      params: { page, size }
+    });
+    return response.data;
+  },
+
+  createProductReview: async (productId: string, rating: number, title: string, content: string): Promise<ProductReview> => {
+    const response = await apiClient.post(`/api/products/${productId}/reviews`, {
+      rating,
+      title,
+      content
+    });
+    return response.data;
+  },
+
+  deleteProductReview: async (reviewId: number): Promise<void> => {
+    await apiClient.delete(`/api/products/reviews/${reviewId}`);
   },
 };
