@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  ChevronDown,
   Heart,
   Minus,
   Plus,
@@ -68,12 +67,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [totalReviews, setTotalReviews] = useState(0);
-  const [averageRating, setAverageRating] = useState(4.8);
   const [newRating, setNewRating] = useState(5);
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
+  const currentUserId = useMemo<number | null>(() => {
+    const userId = tokenStore.getUserId();
+    return userId ? Number(userId) : null;
+  }, []);
 
   useEffect(() => {
     void initializeCart();
@@ -102,12 +104,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     fetchProduct();
   }, [productId]);
 
-  useEffect(() => {
-    const userId = tokenStore.getUserId();
-    if (userId) {
-      setCurrentUserId(Number(userId));
-    }
-  }, []);
+  const averageRating = useMemo(() => {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+    return Math.round((sum / reviews.length) * 10) / 10;
+  }, [reviews]);
 
   useEffect(() => {
     if (activeTab !== 'reviews') return;
@@ -168,15 +169,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     }
   };
 
-  // Recalculate average rating whenever reviews array changes
-  useEffect(() => {
-    if (reviews.length > 0) {
-      const sum = reviews.reduce((acc, curr) => acc + curr.rating, 0);
-      setAverageRating(Math.round((sum / reviews.length) * 10) / 10);
-    } else {
-      setAverageRating(0);
-    }
-  }, [reviews]);
+
 
   const displayProduct = useMemo<Product>(
     () =>
