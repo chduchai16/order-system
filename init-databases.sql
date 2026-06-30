@@ -254,6 +254,35 @@ SELECT setval('products_id_seq', (SELECT MAX(id) FROM products));
 SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories));
 SELECT setval('product_variants_id_seq', (SELECT MAX(id) FROM product_variants));
 
+-- ================================================================
+-- PRODUCT REVIEWS SCHEMA & SEED DATA
+-- ================================================================
+CREATE TABLE IF NOT EXISTS product_reviews (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    title VARCHAR(255),
+    content TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS product_review_images (
+    id SERIAL PRIMARY KEY,
+    media_id BIGINT NOT NULL,
+    review_id INTEGER NOT NULL REFERENCES product_reviews(id) ON DELETE CASCADE
+);
+
+INSERT INTO product_reviews (product_id, user_id, rating, title, content, created_at, updated_at) VALUES
+    (1, 1, 5, 'Rất ngon và dẻo', 'Xoài sấy dẻo ngọt vừa phải, không bị xơ, rất đáng tiền mua thử.', NOW() - INTERVAL '5 days', NOW() - INTERVAL '5 days'),
+    (1, 2, 4, 'Chất lượng ổn', 'Đóng gói đẹp mắt, xoài thơm ngon dẻo dẻo. Sẽ mua lại lần sau.', NOW() - INTERVAL '4 days', NOW() - INTERVAL '4 days'),
+    (21, 3, 5, 'Cốc sứ đẹp tinh xảo', 'Cốc làm thủ công rất tinh tế, cầm đầm tay, giữ nhiệt tốt.', NOW() - INTERVAL '3 days', NOW() - INTERVAL '3 days'),
+    (41, 1, 5, 'Túi da rất sang trọng', 'Da thật mềm mại, đường chỉ khâu tỉ mỉ và chắc chắn, để đồ đi làm thoải mái.', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
+    (81, 2, 4, 'Áo oxford vừa vặn', 'Vải dày dặn, mặc đứng dáng và rất thoáng mát.', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day');
+
+SELECT setval('product_reviews_id_seq', (SELECT MAX(id) FROM product_reviews));
+
 -- Note: product_images table intentionally left empty here as images are assigned dynamically via assign script.
 
 
