@@ -1,0 +1,23 @@
+meta {
+  name: Create Product Review
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/products/{{productId}}/reviews
+  body: json
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "rating": 5,
+    "title": "Sản phẩm rất tốt",
+    "content": "Chất lượng vượt mức mong đợi, đóng gói cẩn thận, giao hàng nhanh.",
+    "images": []
+  }
+}

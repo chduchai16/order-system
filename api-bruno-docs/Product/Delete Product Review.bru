@@ -1,0 +1,13 @@
+meta {
+  name: Delete Product Review
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/products/reviews/{{reviewId}}
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
