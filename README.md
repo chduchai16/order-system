@@ -1,4 +1,4 @@
-# Hệ thống đặt hàng Microservices (Order System)
+﻿# Hệ thống đặt hàng Microservices (Order System)
 
 Đây là hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc microservices hướng sự kiện, sử dụng Spring Boot và Spring Cloud ở backend, Next.js ở frontend.
 
@@ -34,8 +34,6 @@
 
 ## DB Schema
 
-Các sơ đồ dưới đây mô tả các bảng chính đang được khởi tạo trong `init-databases.sql`, tách riêng theo từng service để dễ đọc hơn trên GitHub.
-
 ### User Service (`user_db`)
 
 ```mermaid
@@ -44,43 +42,6 @@ erDiagram
     USERS ||--o{ USER_ADDRESSES : owns
     USERS ||--o{ USER_WISHLISTS : saves
     USERS ||--o{ REFRESH_TOKENS : receives
-
-    ROLES {
-        int id
-        string name
-    }
-
-    USERS {
-        int id
-        string username
-        string email
-        int role_id
-        boolean active
-    }
-
-    USER_ADDRESSES {
-        int id
-        int user_id
-        string label
-        string city
-        string district
-        boolean is_default
-    }
-
-    USER_WISHLISTS {
-        int id
-        int user_id
-        bigint product_id
-        string product_name
-    }
-
-    REFRESH_TOKENS {
-        int id
-        int user_id
-        string token_hash
-        timestamp expires_at
-        boolean revoked
-    }
 ```
 
 ### Product Service (`product_db`)
@@ -91,46 +52,9 @@ erDiagram
     PRODUCTS ||--o{ PRODUCT_VARIANTS : has
     PRODUCTS ||--o{ PRODUCT_ATTRIBUTES : describes
     PRODUCTS ||--o{ STOCK_MOVEMENTS : tracks
-
-    CATEGORIES {
-        int id
-        string name
-        string description
-    }
-
-    PRODUCTS {
-        int id
-        string sku
-        string name
-        int category_id
-        decimal price
-        int stock
-        int reserved_stock
-        boolean active
-    }
-
-    PRODUCT_VARIANTS {
-        int id
-        int product_id
-        string sku_code
-        string name
-        decimal price
-        int total_stock
-    }
-
-    PRODUCT_ATTRIBUTES {
-        int product_id
-        string name
-        string value
-    }
-
-    STOCK_MOVEMENTS {
-        int id
-        bigint product_id
-        bigint variant_id
-        int quantity
-        string type
-    }
+    PRODUCTS ||--o{ PRODUCT_IMAGES : displays
+    PRODUCTS ||--o{ PRODUCT_REVIEWS : receives
+    PRODUCT_REVIEWS ||--o{ PRODUCT_REVIEW_IMAGES : has
 ```
 
 ### Order Service (`order_db`)
@@ -141,56 +65,7 @@ erDiagram
     ORDERS ||--o{ ORDER_STATUS_HISTORY : logs
     VOUCHERS ||--o{ VOUCHER_CONDITIONS : defines
     VOUCHERS ||--o{ VOUCHER_USAGES : records
-
-    ORDERS {
-        int id
-        string order_number
-        bigint user_id
-        decimal total_price
-        string status
-        bigint voucher_id
-        string voucher_code
-    }
-
-    ORDER_ITEMS {
-        int id
-        int order_id
-        bigint product_id
-        string product_name
-        int quantity
-        decimal unit_price
-    }
-
-    ORDER_STATUS_HISTORY {
-        int id
-        int order_id
-        string from_status
-        string to_status
-        timestamp changed_at
-    }
-
-    VOUCHERS {
-        int id
-        string code
-        string discount_type
-        decimal discount_value
-        boolean is_active
-    }
-
-    VOUCHER_CONDITIONS {
-        int id
-        bigint voucher_id
-        string condition_type
-        string value
-    }
-
-    VOUCHER_USAGES {
-        int id
-        bigint voucher_id
-        bigint user_id
-        bigint order_id
-        decimal discount_amount
-    }
+    ORDERS }o--|| VOUCHERS : uses
 ```
 
 ### Payment Service (`payment_db`)
@@ -198,27 +73,12 @@ erDiagram
 ```mermaid
 erDiagram
     PAYMENTS ||--o{ PAYMENT_TRANSACTIONS : logs
-
-    PAYMENTS {
-        bigint order_id
-        bigint user_id
-        string payment_code
-        decimal amount
-        string payment_method
-        string status
-    }
-
-    PAYMENT_TRANSACTIONS {
-        bigint order_id
-        string transaction_id
-        string gateway_provider
-        string status
-    }
 ```
 
-### Media Service
+### Media Service (`media_db`)
 
-`mediaservice` đã có module Maven nhưng hiện chưa có schema database trong `init-databases.sql`.
+- Bảng `MEDIAS` lưu metadata ảnh upload lên Cloudinary như `url`, `public_id`, `format`, `size_bytes`.
+- Không có quan hệ FK nội bộ trong `media_db`.
 
 ## Port mặc định trong docker-compose
 
