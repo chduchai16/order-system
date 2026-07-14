@@ -22,23 +22,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache dependency-check NVD data
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: dependency-check-data-${{ github.run_id }}
-          restore-keys: |
-            dependency-check-data-
-
       - name: Run dependency-check
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'order-system'
           path: '.'
           format: 'JSON'
-          args: >
-            --nvdApiKey ${{ secrets.NVD_API_KEY }}
-            --data /home/runner/.m2/repository/org/owasp/dependency-check-data
+          args: ${{ secrets.NVD_API_KEY != '' && format('--nvdApiKey {0}', secrets.NVD_API_KEY) || '' }}
 
       - name: Upload dependency-check results
         uses: actions/upload-artifact@v4
@@ -70,11 +60,14 @@ jobs:
             dependency-check-data-
 
       - name: Run OWASP Maven plugin
-        run: >
-          mvn -B org.owasp:dependency-check-maven:check
-          -DnvdApiKey=${{ secrets.NVD_API_KEY }}
-          -DdataDirectory=/home/runner/.m2/repository/org/owasp/dependency-check-data
-          || true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          ARGS="-DdataDirectory=/home/runner/.m2/repository/org/owasp/dependency-check-data"
+          if [ -n "$NVD_API_KEY" ]; then
+            ARGS="$ARGS -DnvdApiKey=$NVD_API_KEY"
+          fi
+          mvn -B org.owasp:dependency-check-maven:check $ARGS || true
 
       - name: Upload OWASP results
         if: always()
