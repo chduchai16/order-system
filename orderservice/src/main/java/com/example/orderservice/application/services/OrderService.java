@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.example.commonlib.events.cart.CartItemDto;
 import com.example.commonlib.events.order.OrderCancelledEvent;
 import com.example.commonlib.events.order.OrderCreatedEvent;
+import com.example.commonlib.events.order.OrderPaidEvent;
 import com.example.commonlib.events.payment.PaymentCompletedEvent;
+import com.example.commonlib.events.stock.StockReservedEvent;
 import com.example.orderservice.application.dtos.requests.order.OrderRequest;
 import com.example.orderservice.application.dtos.responses.order.OrderResponse;
 import com.example.orderservice.application.mappers.OrderResponseMapper;
@@ -199,6 +201,22 @@ public class OrderService implements IOrderService {
 
     @Override
     @Transactional
+    public void handleStockReserved(StockReservedEvent event) {
+        Order order = orderRepository.findById(event.getOrderId())
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        if (order.getStatus() == OrderStatus.STOCK_RESERVED
+                || order.getStatus() == OrderStatus.PAID
+                || order.getStatus() == OrderStatus.COMPLETED) {
+            return;
+        }
+
+        order.markAsStockReserved();
+        orderRepository.save(order);
+    }
+
+    @Override
+    @Transactional
     public void handlePaymentCompleted(PaymentCompletedEvent event) {
         // Lấy đơn hàng theo payment event
         Order order = orderRepository.findById(event.getOrderId())
@@ -210,7 +228,21 @@ public class OrderService implements IOrderService {
 
         // Đánh dấu đơn hàng đã thanh toán
         order.markAsPaid();
-        orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+
+        orderEventProducer.publishOrderPaid(new OrderPaidEvent(
+                savedOrder.getId(),
+                savedOrder.getOrderNumber() != null ? savedOrder.getOrderNumber().getValue() : null,
+                savedOrder.getUserId(),
+                savedOrder.getItems().stream()
+                        .map(item -> CartItemDto.builder()
+                                .productId(item.getProductId())
+                                .productName(item.getProductName())
+                                .quantity(item.getQuantity())
+                                .unitPrice(item.getUnitPrice())
+                                .build())
+                        .toList()
+        ));
     }
 
     private OrderNumber nextOrderNumber() {

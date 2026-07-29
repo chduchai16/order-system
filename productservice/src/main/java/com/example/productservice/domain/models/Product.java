@@ -69,10 +69,15 @@ public class Product {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than 0");
         }
-        if (!hasStock(quantity)) {
+        int currentStock = stock != null ? stock : 0;
+        int currentReserved = reservedStock != null ? reservedStock : 0;
+        if (currentReserved < quantity) {
+            throw new RuntimeException("Insufficient reserved stock for product: " + name);
+        }
+        if (currentStock < quantity) {
             throw new RuntimeException("Insufficient stock for product: " + name);
         }
-        this.stock = (stock != null ? stock : 0) - quantity;
+        this.stock = currentStock - quantity;
         releaseStock(quantity);
     }
 

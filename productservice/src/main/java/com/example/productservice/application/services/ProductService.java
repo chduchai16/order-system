@@ -282,6 +282,28 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
+    public void confirmStockForOrder(Long orderId, List<CartItemDto> items) {
+        for (CartItemDto item : items) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
+
+            product.confirmStock(item.getQuantity());
+            productRepository.save(product);
+
+            stockMovementRepository.save(StockMovementEntity.builder()
+                    .productId(item.getProductId())
+                    .quantity(item.getQuantity())
+                    .type(StockMovementEntity.MovementType.EXPORT)
+                    .reason("Order paid: " + orderId)
+                    .build());
+
+            log.info("Confirmed stock for orderId: {}, productId: {}, quantity: {}",
+                    orderId, item.getProductId(), item.getQuantity());
+        }
+    }
+
+    @Override
+    @Transactional
     public void releaseStock(Long productId, Integer quantity) {
         // giải phóng kho và log movement
         Product product = productRepository.findById(productId)
