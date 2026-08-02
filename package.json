@@ -1,5 +1,25 @@
 {
   "dependencies": {
     "lucide-react": "^1.14.0"
-  }
+  },
+  "name": "order-system",
+  "version": "1.0.0",
+  "description": "Đây là hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc microservices hướng sự kiện, sử dụng Spring Boot và Spring Cloud ở backend, Next.js ở frontend.",
+  "main": ".restore_products.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chduchai16/order-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chduchai16/order-system/issues"
+  },
+  "homepage": "https://github.com/chduchai16/order-system#readme"
 }

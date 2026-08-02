@@ -26,7 +26,11 @@ public class MediaServiceAdapter implements MediaService {
         String joinedIds = ids.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
-        return mediaClient.getByIds(joinedIds).stream()
+        List<MediaResponse> responses = mediaClient.getByIds(joinedIds).getData();
+        if (responses == null) {
+            return List.of();
+        }
+        return responses.stream()
                 .map(MediaServiceAdapter::toDomain)
                 .toList();
     }

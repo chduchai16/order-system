@@ -81,7 +81,7 @@ public class ProductReviewService implements IProductReviewService {
         // Fallback to Feign client call on Cache Miss
         if (user == null) {
             try {
-                user = userClient.getUserById(userId);
+                user = userClient.getUserById(userId).getData();
                 if (user != null) {
                     // Update cache for subsequent requests
                     redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(user), Duration.ofSeconds(CACHE_TTL_SECONDS));

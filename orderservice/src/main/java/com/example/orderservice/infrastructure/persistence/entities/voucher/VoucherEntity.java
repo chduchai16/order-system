@@ -59,8 +59,7 @@ public class VoucherEntity {
     @JoinColumn(name = "voucher_id")
     private List<VoucherConditionEntity> conditions ;
 
-    @OneToMany(cascade = CascadeType.ALL ,  orphanRemoval = true )
-    @JoinColumn(name = "voucher_id")
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL ,  orphanRemoval = true )
     private List<VoucherUsageEntity>  usages ;
 
 }

@@ -1,10 +1,12 @@
 package com.example.orderservice.infrastructure.mappers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.orderservice.domain.models.voucher.Voucher;
 import com.example.orderservice.infrastructure.persistence.entities.voucher.VoucherEntity;
+import com.example.orderservice.infrastructure.persistence.entities.voucher.VoucherUsageEntity;
 
 public class VoucherMapper {
 
@@ -62,9 +64,11 @@ public class VoucherMapper {
         entity.setConditions(domain.getConditions() != null
                 ? domain.getConditions().stream().map(VoucherConditionMapper::toEntity).collect(Collectors.toList())
                 : new ArrayList<>());
-        entity.setUsages(domain.getUsages() != null
+        List<VoucherUsageEntity> usages = domain.getUsages() != null
                 ? domain.getUsages().stream().map(VoucherUsageMapper::toEntity).collect(Collectors.toList())
-                : new ArrayList<>());
+                : new ArrayList<>();
+        usages.forEach(usage -> usage.setVoucher(entity));
+        entity.setUsages(usages);
         return entity;
     }
 }

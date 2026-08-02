@@ -1,5 +1,6 @@
 package com.example.productservice.infrastructure.adapters.clients;
 
+import com.example.commonlib.response.ApiResponse;
 import com.example.productservice.infrastructure.adapters.clients.dtos.MediaResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,6 @@ import java.util.List;
 public interface MediaClient {
 
     @GetMapping("/api/media")
-    List<MediaResponse> getByIds(@RequestParam("ids") String ids) ;
+    ApiResponse<List<MediaResponse>> getByIds(@RequestParam("ids") String ids) ;
 
 }

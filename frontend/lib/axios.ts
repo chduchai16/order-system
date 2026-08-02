@@ -1,6 +1,13 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { tokenStore } from './auth';
 
+type ApiResponse<T> = {
+  status: number;
+  title: string;
+  message: string;
+  data: T;
+};
+
 const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8080',
   headers: {
@@ -9,6 +16,21 @@ const apiClient: AxiosInstance = axios.create({
 });
 
 let refreshPromise: Promise<string | null> | null = null;
+
+const isApiResponse = <T = unknown>(payload: unknown): payload is ApiResponse<T> => {
+  return (
+    payload !== null &&
+    typeof payload === 'object' &&
+    'status' in payload &&
+    'title' in payload &&
+    'message' in payload &&
+    'data' in payload
+  );
+};
+
+const unwrapApiResponse = <T = unknown>(payload: unknown): T => {
+  return isApiResponse<T>(payload) ? payload.data : (payload as T);
+};
 
 const refreshAccessToken = async (): Promise<string | null> => {
   const refreshToken = tokenStore.getRefreshToken();
@@ -22,8 +44,12 @@ const refreshAccessToken = async (): Promise<string | null> => {
         { headers: { 'Content-Type': 'application/json' } }
       )
       .then((response) => {
-        const accessToken = response.data.access_token;
-        const newRefreshToken = response.data.refresh_token;
+        const tokenResponse = unwrapApiResponse<Record<string, string>>(response.data);
+        const accessToken = tokenResponse.accessToken ?? tokenResponse.access_token;
+        const newRefreshToken = tokenResponse.refreshToken ?? tokenResponse.refresh_token;
+        if (!accessToken || !newRefreshToken) {
+          throw new Error('Invalid refresh token response');
+        }
         tokenStore.setTokens(accessToken, newRefreshToken);
         return accessToken;
       })
@@ -58,7 +84,10 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    response.data = unwrapApiResponse(response.data);
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const isAuthRequest = originalRequest?.url?.startsWith('/api/auth/');

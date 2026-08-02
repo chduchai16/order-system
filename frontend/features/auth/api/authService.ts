@@ -20,15 +20,29 @@ export interface TokenResponse {
   expires_in: number;
 }
 
+type BackendTokenResponse = TokenResponse & {
+  accessToken?: string;
+  refreshToken?: string;
+  tokenType?: string;
+  expiresIn?: number;
+};
+
+const normalizeTokenResponse = (tokens: BackendTokenResponse): TokenResponse => ({
+  access_token: tokens.access_token ?? tokens.accessToken ?? '',
+  refresh_token: tokens.refresh_token ?? tokens.refreshToken ?? '',
+  token_type: tokens.token_type ?? tokens.tokenType ?? 'Bearer',
+  expires_in: tokens.expires_in ?? tokens.expiresIn ?? 0,
+});
+
 export const authService = {
   login: async (request: LoginRequest): Promise<TokenResponse> => {
-    const response = await apiClient.post<TokenResponse>('/api/auth/login', request);
-    return response.data;
+    const response = await apiClient.post<BackendTokenResponse>('/api/auth/login', request);
+    return normalizeTokenResponse(response.data);
   },
 
   register: async (request: RegisterRequest): Promise<TokenResponse> => {
-    const response = await apiClient.post<TokenResponse>('/api/auth/register', request);
-    return response.data;
+    const response = await apiClient.post<BackendTokenResponse>('/api/auth/register', request);
+    return normalizeTokenResponse(response.data);
   },
 
   logout: async (refreshToken: string): Promise<void> => {

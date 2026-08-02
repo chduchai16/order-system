@@ -3,7 +3,9 @@ package com.example.orderservice.infrastructure.persistence.entities.voucher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,4 +32,10 @@ public class VoucherUsageEntity {
 
     @Column(nullable = false , name = "used_at")
     private LocalDateTime usedAt ;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private VoucherEntity voucher;
 }

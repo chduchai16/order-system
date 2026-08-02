@@ -3,7 +3,7 @@ package com.example.mediaservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.example")
 public class MediaserviceApplication {
 
 	public static void main(String[] args) {

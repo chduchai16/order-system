@@ -1,20 +1,7 @@
 package com.example.commonlib.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.commonlib.response.ApiResponse;
 
-import java.time.LocalDateTime;
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ErrorResponse {
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
-    private String path;
+@Deprecated
+public class ErrorResponse extends ApiResponse<Void> {
 }
