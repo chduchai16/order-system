@@ -1,8 +1,7 @@
 package com.example.orderservice.infrastructure.adapters;
 
-import com.example.orderservice.domain.models.order.Order;
+import com.example.orderservice.domain.entity.order.Order;
 import com.example.orderservice.domain.ports.external.PaymentService;
-
 import com.example.orderservice.infrastructure.adapters.clients.PaymentClient;
 import com.example.orderservice.infrastructure.adapters.clients.dtos.PaymentRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class PaymentServiceAdapter implements PaymentService {
                 .paymentMethod("BANK_TRANSFER")
                 .build();
 
-        
         paymentClient.processPayment(request);
     }
 

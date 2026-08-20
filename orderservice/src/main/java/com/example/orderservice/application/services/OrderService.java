@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.commonlib.events.cart.CartItemDto;
 import com.example.commonlib.events.order.OrderCancelledEvent;
@@ -18,20 +19,19 @@ import com.example.commonlib.events.stock.StockReservedEvent;
 import com.example.orderservice.application.dtos.requests.order.OrderRequest;
 import com.example.orderservice.application.dtos.responses.order.OrderResponse;
 import com.example.orderservice.application.mappers.OrderResponseMapper;
-import com.example.orderservice.domain.models.order.Address;
-import com.example.orderservice.domain.models.order.Order;
-import com.example.orderservice.domain.models.order.OrderDiscount;
-import com.example.orderservice.domain.models.order.OrderItem;
-import com.example.orderservice.domain.models.order.OrderNumber;
-import com.example.orderservice.domain.models.order.OrderStatus;
-import com.example.orderservice.domain.models.order.ShippingInfo;
-import com.example.orderservice.domain.models.order.TaxInfo;
-import com.example.orderservice.domain.models.voucher.Voucher;
-import com.example.orderservice.domain.ports.persistence.OrderRepository;
-import com.example.orderservice.domain.ports.persistence.VoucherRepository;
+import com.example.orderservice.domain.entity.order.Order;
+import com.example.orderservice.domain.entity.order.OrderItem;
+import com.example.orderservice.domain.entity.order.OrderStatus;
+import com.example.orderservice.domain.entity.order.valueobject.Address;
+import com.example.orderservice.domain.entity.order.valueobject.OrderDiscount;
+import com.example.orderservice.domain.entity.order.valueobject.OrderNumber;
+import com.example.orderservice.domain.entity.order.valueobject.ShippingInfo;
+import com.example.orderservice.domain.entity.order.valueobject.TaxInfo;
+import com.example.orderservice.domain.entity.voucher.Voucher;
 import com.example.orderservice.infrastructure.adapters.producers.OrderEventProducer;
+import com.example.orderservice.infrastructure.repository.order.OrderRepository;
+import com.example.orderservice.infrastructure.repository.voucher.VoucherRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +52,6 @@ public class OrderService implements IOrderService {
     public OrderResponse createOrder(OrderRequest request) {
         log.info("Creating order for user {}", request.getUserId());
 
-        // Tạo địa chỉ giao hàng từ request
         Address shippingAddress = new Address(
                 request.getStreet(),
                 request.getCity(),
@@ -60,7 +59,6 @@ public class OrderService implements IOrderService {
                 request.getCountry()
         );
 
-        // Chuyển item từ request sang order item
         List<OrderItem> items = request.getItems().stream()
                 .map(item -> OrderItem.builder()
                         .productId(item.getProductId())
@@ -70,28 +68,26 @@ public class OrderService implements IOrderService {
                         .build())
                 .collect(Collectors.toList());
 
-        // Khởi tạo đơn hàng với trạng thái ban đầu
         Order order = Order.builder()
-                .orderNumber(nextOrderNumber())
+                .orderNumber(nextOrderNumber().getValue())
                 .userId(request.getUserId())
-                .items(items)
+                .items(new ArrayList<>())
                 .status(OrderStatus.PENDING)
-                .shippingAddress(shippingAddress)
-                .shippingInfo(ShippingInfo.builder()
-                        .carrier(request.getShippingCarrier())
-                        .estimatedDelivery(request.getEstimatedDelivery())
-                        .shippingFee(DEFAULT_SHIPPING_FEE)
-                        .build())
-                .discount(OrderDiscount.builder()
-                        .code(request.getDiscountCode())
-                        .amount(BigDecimal.ZERO)
-                        .build())
+                .shippingStreet(request.getStreet())
+                .shippingCity(request.getCity())
+                .shippingDistrict(request.getDistrict())
+                .shippingCountry(request.getCountry())
+                .shippingCarrier(request.getShippingCarrier())
+                .estimatedDelivery(request.getEstimatedDelivery())
+                .shippingFee(DEFAULT_SHIPPING_FEE)
+                .discountCode(request.getDiscountCode())
+                .discountAmount(BigDecimal.ZERO)
                 .statusHistory(new ArrayList<>())
                 .build();
-        order.calculateTotalPrice();
+
+        items.forEach(order::addItem);
 
         Voucher voucher = null;
-        // Kiểm tra và áp dụng voucher trước khi lưu đơn
         if (request.getDiscountCode() != null && !request.getDiscountCode().isBlank()) {
             voucher = voucherRepository.findByCode(request.getDiscountCode())
                     .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + request.getDiscountCode()));
@@ -106,7 +102,6 @@ public class OrderService implements IOrderService {
             }
         }
 
-        // Tính thuế cho tổng tiền hiện tại
         BigDecimal taxAmount = order.getTotalPrice().multiply(VAT_RATE);
         order.setTax(TaxInfo.builder()
                 .amount(taxAmount)
@@ -114,10 +109,8 @@ public class OrderService implements IOrderService {
                 .rate(VAT_RATE)
                 .build());
 
-        // Lưu đơn hàng trước để lấy các trường sinh tự động
         Order createdOrder = orderRepository.save(order);
 
-        // Trừ voucher sau khi đơn hàng đã được tạo
         if (voucher != null) {
             try {
                 voucher.redeem(
@@ -131,7 +124,6 @@ public class OrderService implements IOrderService {
             voucherRepository.save(voucher);
         }
 
-        // Chuẩn bị dữ liệu item cho event
         List<CartItemDto> itemDtos = createdOrder.getItems().stream()
                 .map(item -> CartItemDto.builder()
                         .productId(item.getProductId())
@@ -141,7 +133,6 @@ public class OrderService implements IOrderService {
                         .build())
                 .toList();
 
-        // Phát event tạo đơn hàng cho hệ thống khác
         OrderCreatedEvent event = new OrderCreatedEvent(
                 createdOrder.getId(),
                 createdOrder.getUserId(),
@@ -162,24 +153,20 @@ public class OrderService implements IOrderService {
     @Override
     @Transactional
     public void cancelOrder(Long orderId, String reason) {
-        // Tìm đơn hàng cần hủy
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
 
-        // Bỏ qua nếu đơn hàng đã bị hủy
         if (order.getStatus() == OrderStatus.CANCELLED) {
             log.info("Order {} already cancelled", orderId);
             return;
         }
 
-        // Đánh dấu hủy và lưu lại
         order.markAsCancelled(reason);
         Order savedOrder = orderRepository.save(order);
 
-        // Phát event hủy đơn hàng
         orderEventProducer.publishOrderCancelled(new OrderCancelledEvent(
                 savedOrder.getId(),
-                savedOrder.getOrderNumber() != null ? savedOrder.getOrderNumber().getValue() : null,
+                savedOrder.getOrderNumber(),
                 reason,
                 savedOrder.getItems().stream()
                         .map(item -> CartItemDto.builder()
@@ -218,21 +205,19 @@ public class OrderService implements IOrderService {
     @Override
     @Transactional
     public void handlePaymentCompleted(PaymentCompletedEvent event) {
-        // Lấy đơn hàng theo payment event
         Order order = orderRepository.findById(event.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        // Bỏ qua nếu đã thanh toán hoặc hoàn tất
+
         if (order.getStatus() == OrderStatus.PAID || order.getStatus() == OrderStatus.COMPLETED) {
             return;
         }
 
-        // Đánh dấu đơn hàng đã thanh toán
         order.markAsPaid();
         Order savedOrder = orderRepository.save(order);
 
         orderEventProducer.publishOrderPaid(new OrderPaidEvent(
                 savedOrder.getId(),
-                savedOrder.getOrderNumber() != null ? savedOrder.getOrderNumber().getValue() : null,
+                savedOrder.getOrderNumber(),
                 savedOrder.getUserId(),
                 savedOrder.getItems().stream()
                         .map(item -> CartItemDto.builder()

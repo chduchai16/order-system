@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.example.orderservice.application.dtos.responses.order.OrderItemResponse;
 import com.example.orderservice.application.dtos.responses.order.OrderResponse;
 import com.example.orderservice.application.dtos.responses.order.StatusHistoryResponse;
-import com.example.orderservice.domain.models.order.Order;
+import com.example.orderservice.domain.entity.order.Order;
 
 public class OrderResponseMapper {
 
@@ -41,7 +41,7 @@ public class OrderResponseMapper {
 
         return OrderResponse.builder()
                 .id(order.getId())
-                .orderNumber(order.getOrderNumber() != null ? order.getOrderNumber().getValue() : null)
+                .orderNumber(order.getOrderNumber())
                 .userId(order.getUserId())
                 .items(items)
                 .totalPrice(order.getTotalPrice())

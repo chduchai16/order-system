@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.models.order;
+package com.example.orderservice.domain.entity.order.valueobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShippingInfo {
-    private String carrier; // GHTK, GHN, etc.
+    private String carrier;
     private String trackingNumber;
     private BigDecimal shippingFee;
     private String estimatedDelivery;

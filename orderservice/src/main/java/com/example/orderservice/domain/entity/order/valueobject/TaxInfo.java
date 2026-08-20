@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.models.order;
+package com.example.orderservice.domain.entity.order.valueobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaxInfo {
-    private String type; // VAT, GST
-    private BigDecimal rate; // e.g. 0.10 for 10%
+    private String type;
+    private BigDecimal rate;
     private BigDecimal amount;
 }

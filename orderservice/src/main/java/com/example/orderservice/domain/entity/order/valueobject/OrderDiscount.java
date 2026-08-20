@@ -1,4 +1,4 @@
-package com.example.orderservice.domain.models.order;
+package com.example.orderservice.domain.entity.order.valueobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
