@@ -407,6 +407,31 @@ CREATE TABLE IF NOT EXISTS order_status_history (
     changed_at TIMESTAMP NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS carts (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id BIGINT,
+    total_price DECIMAL(19, 2) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+    id BIGSERIAL PRIMARY KEY,
+    cart_id VARCHAR(255) NOT NULL REFERENCES carts(id) ON DELETE CASCADE,
+    product_id BIGINT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    sku VARCHAR(100),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    unit_price DECIMAL(19, 2) NOT NULL,
+    is_saved_for_later BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    CONSTRAINT uq_cart_product_saved UNIQUE (cart_id, product_id, is_saved_for_later)
+);
+
+CREATE INDEX IF NOT EXISTS idx_cart_items_cart_id ON cart_items(cart_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_product_id ON cart_items(product_id);
+
 CREATE TABLE IF NOT EXISTS vouchers (
     id SERIAL PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
