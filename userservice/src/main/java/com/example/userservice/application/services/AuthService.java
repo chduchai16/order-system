@@ -4,10 +4,10 @@ import com.example.userservice.application.dtos.LoginRequest;
 import com.example.userservice.application.dtos.RefreshTokenRequest;
 import com.example.userservice.application.dtos.RegisterRequest;
 import com.example.userservice.application.dtos.TokenResponse;
-import com.example.userservice.infrastructure.persistence.entities.RoleEntity;
-import com.example.userservice.infrastructure.persistence.entities.UserEntity;
-import com.example.userservice.infrastructure.persistence.jpas.JpaUserRepository;
-import com.example.userservice.infrastructure.persistence.jpas.RoleRepository;
+import com.example.userservice.domain.entity.role.Role;
+import com.example.userservice.domain.entity.user.User;
+import com.example.userservice.infrastructure.repository.role.RoleRepository;
+import com.example.userservice.infrastructure.repository.user.UserRepository;
 import com.example.userservice.infrastructure.security.JwtService;
 import com.example.userservice.infrastructure.security.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private static final String DEFAULT_ROLE = "CUSTOMER";
 
-    private final JpaUserRepository userRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -28,41 +28,43 @@ public class AuthService {
 
     @Transactional
     public TokenResponse register(RegisterRequest request) {
-        userRepository.findByUsername(request.getUsername()).ifPresent(user -> {
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
-        });
-        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
-        });
+        }
 
-        RoleEntity role = roleRepository.findByName(DEFAULT_ROLE)
+        Role role = roleRepository.findByName(DEFAULT_ROLE)
                 .orElseGet(() -> {
-                    RoleEntity entity = new RoleEntity();
-                    entity.setName(DEFAULT_ROLE);
+                    Role entity = Role.builder().name(DEFAULT_ROLE).build();
                     return roleRepository.save(entity);
                 });
 
-        UserEntity user = new UserEntity();
-        user.setUsername(request.getUsername());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setRole(role);
-        user.setActive(true);
+        User user = User.builder()
+                .username(request.getUsername())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .role(role)
+                .active(true)
+                .build();
 
         return issueTokens(userRepository.save(user));
     }
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
-        UserEntity user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
 
-        if (!user.isActive()
-                || user.getPasswordHash() == null
-                || !passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new IllegalArgumentException("Invalid username or password");
+        }
+
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("User account is disabled");
         }
 
         return issueTokens(user);
@@ -70,7 +72,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse refresh(RefreshTokenRequest request) {
-        UserEntity user = refreshTokenService.consumeRefreshToken(request.getRefreshToken());
+        User user = refreshTokenService.consumeRefreshToken(request.getRefreshToken());
         return issueTokens(user);
     }
 
@@ -79,10 +81,13 @@ public class AuthService {
         refreshTokenService.revokeRefreshToken(request.getRefreshToken());
     }
 
-    private TokenResponse issueTokens(UserEntity user) {
+    private TokenResponse issueTokens(User user) {
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = refreshTokenService.createRefreshToken(user);
+
         return TokenResponse.builder()
-                .accessToken(jwtService.generateAccessToken(user))
-                .refreshToken(refreshTokenService.createRefreshToken(user))
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .tokenType("Bearer")
                 .expiresIn(jwtService.getAccessTokenTtlSeconds())
                 .build();

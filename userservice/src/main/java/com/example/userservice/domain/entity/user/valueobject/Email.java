@@ -1,4 +1,4 @@
-package com.example.userservice.domain.models;
+package com.example.userservice.domain.entity.user.valueobject;
 
 import lombok.Value;
 
@@ -11,5 +11,10 @@ public class Email {
             throw new RuntimeException("Invalid email format");
         }
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

@@ -1,7 +1,9 @@
 package com.example.userservice.web;
 
 import com.example.userservice.application.services.IUserService;
-import com.example.userservice.domain.models.User;
+import com.example.userservice.domain.entity.user.User;
+import com.example.userservice.application.dtos.AddressRequest;
+import com.example.userservice.application.dtos.AddressResponse;
 import com.example.userservice.application.dtos.UserResponse;
 import com.example.userservice.application.dtos.WishlistResponse;
 
@@ -10,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +40,13 @@ public class UserController {
     }
 
     @PostMapping("/{id}/addresses")
-    public ResponseEntity<UserResponse> addAddress(@PathVariable Long id, @RequestBody com.example.userservice.application.dtos.AddressRequest request) {
-        // thêm địa chỉ mới
+    public ResponseEntity<UserResponse> addAddress(@PathVariable Long id, @RequestBody AddressRequest request) {
         User user = userService.addAddress(id, request);
         return ResponseEntity.ok(toResponse(user));
     }
 
     @PostMapping("/{id}/wishlist")
     public ResponseEntity<UserResponse> addToWishlist(@PathVariable Long id, @RequestParam Long productId, @RequestParam String productName) {
-        // thêm vào wishlist
         User user = userService.addToWishlist(id, productId, productName);
         return ResponseEntity.ok(toResponse(user));
     }
@@ -61,7 +62,7 @@ public class UserController {
                         .productName(w.getProductName())
                         .addedAt(w.getAddedAt())
                         .build())
-                .collect(Collectors.toList()) : java.util.Collections.emptyList();
+                .collect(Collectors.toList()) : Collections.emptyList();
         return ResponseEntity.ok(wishlist);
     }
 
@@ -69,18 +70,18 @@ public class UserController {
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .email(user.getEmail() != null ? user.getEmail().getValue() : null)
-                .firstName(user.getFullName() != null ? user.getFullName().getFirstName() : null)
-                .lastName(user.getFullName() != null ? user.getFullName().getLastName() : null)
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .active(user.isActive())
                 .addresses(user.getAddresses() != null ? user.getAddresses().stream()
-                        .map(a -> com.example.userservice.application.dtos.AddressResponse.builder()
+                        .map(a -> AddressResponse.builder()
                                 .id(a.getId())
                                 .label(a.getLabel())
-                                .street(a.getAddress() != null ? a.getAddress().getStreet() : null)
-                                .city(a.getAddress() != null ? a.getAddress().getCity() : null)
-                                .district(a.getAddress() != null ? a.getAddress().getDistrict() : null)
-                                .country(a.getAddress() != null ? a.getAddress().getCountry() : null)
+                                .street(a.getStreet())
+                                .city(a.getCity())
+                                .district(a.getDistrict())
+                                .country(a.getCountry())
                                 .isDefault(a.isDefault())
                                 .build())
                         .collect(Collectors.toList()) : null)

@@ -1,4 +1,4 @@
-package com.example.userservice.domain.models;
+package com.example.userservice.domain.entity.user.valueobject;
 
 import lombok.Value;
 

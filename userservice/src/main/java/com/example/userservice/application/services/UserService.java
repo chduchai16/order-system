@@ -1,13 +1,16 @@
 package com.example.userservice.application.services;
 
 import com.example.userservice.application.dtos.AddressRequest;
-import com.example.userservice.domain.models.*;
-import com.example.userservice.domain.ports.persistence.UserRepository;
+import com.example.userservice.domain.entity.user.AddressBook;
+import com.example.userservice.domain.entity.user.User;
+import com.example.userservice.domain.entity.user.UserWishlist;
+import com.example.userservice.infrastructure.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
@@ -55,46 +58,46 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User addAddress(Long userId, AddressRequest request) {
-        User user = getUserById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-        
-        user.addAddress(AddressBookEntry.builder()
+
+        AddressBook entry = AddressBook.builder()
                 .label(request.getLabel())
-                .address(Address.builder()
-                        .street(request.getStreet())
-                        .city(request.getCity())
-                        .district(request.getDistrict())
-                        .country(request.getCountry())
-                        .build())
+                .street(request.getStreet())
+                .city(request.getCity())
+                .district(request.getDistrict())
+                .country(request.getCountry())
                 .isDefault(request.isDefault())
-                .build());
-        
+                .build();
+
+        user.addAddress(entry);
         User savedUser = userRepository.save(user);
-        evictCache(userId);
+
+        // Invalidate redis cache
+        redisTemplate.delete(CACHE_KEY_PREFIX + userId);
+
         return savedUser;
     }
 
     @Override
+    @Transactional
     public User addToWishlist(Long userId, Long productId, String productName) {
-        User user = getUserById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-        
-        user.addToWishlist(UserWishlistEntry.builder()
+
+        UserWishlist item = UserWishlist.builder()
                 .productId(productId)
                 .productName(productName)
-                .build());
-        
-        User savedUser = userRepository.save(user);
-        evictCache(userId);
-        return savedUser;
-    }
+                .build();
 
-    private void evictCache(Long userId) {
-        try {
-            redisTemplate.delete(CACHE_KEY_PREFIX + userId);
-        } catch (Exception e) {
-            log.error("Failed to evict user cache for id: {}", userId, e);
-        }
+        user.addToWishlist(item);
+        User savedUser = userRepository.save(user);
+
+        // Invalidate redis cache
+        redisTemplate.delete(CACHE_KEY_PREFIX + userId);
+
+        return savedUser;
     }
 }

@@ -1,5 +1,6 @@
-package com.example.userservice.infrastructure.persistence.entities;
+package com.example.userservice.domain.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +15,16 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserWishlistEntity {
+public class UserWishlist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_id")
     private Long productId;
+
+    @Column(name = "product_name")
     private String productName;
 
     @Column(name = "added_at")
@@ -27,10 +32,13 @@ public class UserWishlistEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @JsonIgnore
+    private User user;
 
     @PrePersist
     protected void onCreate() {
-        addedAt = LocalDateTime.now();
+        if (addedAt == null) {
+            addedAt = LocalDateTime.now();
+        }
     }
 }

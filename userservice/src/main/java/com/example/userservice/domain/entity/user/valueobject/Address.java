@@ -1,11 +1,13 @@
-package com.example.userservice.domain.models;
+package com.example.userservice.domain.entity.user.valueobject;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Embeddable
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

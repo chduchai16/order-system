@@ -1,6 +1,6 @@
 package com.example.userservice.infrastructure.security;
 
-import com.example.userservice.infrastructure.persistence.entities.UserEntity;
+import com.example.userservice.domain.entity.user.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -25,7 +25,7 @@ public class JwtService {
         this.accessTokenTtlSeconds = accessTokenTtlSeconds;
     }
 
-    public String generateAccessToken(UserEntity user) {
+    public String generateAccessToken(User user) {
         Instant now = Instant.now();
         Instant expiresAt = now.plusSeconds(accessTokenTtlSeconds);
         String role = user.getRole() != null ? user.getRole().getName() : "CUSTOMER";
