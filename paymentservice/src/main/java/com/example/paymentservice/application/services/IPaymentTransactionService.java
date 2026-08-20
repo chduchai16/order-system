@@ -1,6 +1,6 @@
 package com.example.paymentservice.application.services;
 
-import com.example.paymentservice.domain.models.PaymentTransaction;
+import com.example.paymentservice.domain.entity.transaction.PaymentTransaction;
 import java.util.List;
 
 public interface IPaymentTransactionService {

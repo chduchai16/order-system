@@ -1,7 +1,7 @@
 package com.example.paymentservice.web;
 
 import com.example.paymentservice.application.services.IPaymentTransactionService;
-import com.example.paymentservice.domain.models.PaymentTransaction;
+import com.example.paymentservice.domain.entity.transaction.PaymentTransaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
