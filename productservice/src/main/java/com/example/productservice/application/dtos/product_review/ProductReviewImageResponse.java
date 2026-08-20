@@ -1,13 +1,15 @@
 package com.example.productservice.application.dtos.product_review;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductReviewImageResponse {
-    private Long id ;
-    private Long mediaId ;
+    private Long id;
+    private Long mediaId;
 }

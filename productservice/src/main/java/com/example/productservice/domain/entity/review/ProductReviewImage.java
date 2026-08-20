@@ -1,5 +1,6 @@
-package com.example.productservice.infrastructure.persistence.entities;
+package com.example.productservice.domain.entity.review;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +13,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductReviewImageEntity {
+public class ProductReviewImage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
 
-    @Column(name = "media_id" , nullable = false)
-    private Long mediaId ;
+    @Column(name = "media_id", nullable = false)
+    private Long mediaId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
-    private ProductReviewEntity productReview;
+    @JsonIgnore
+    private ProductReview productReview;
 }

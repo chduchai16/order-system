@@ -2,7 +2,7 @@ package com.example.productservice.application.services;
 
 import com.example.productservice.application.dtos.product_review.ProductReviewRequest;
 import com.example.productservice.application.dtos.product_review.ProductReviewResponse;
-import com.example.productservice.domain.models.ProductReview;
+import com.example.productservice.domain.entity.review.ProductReview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

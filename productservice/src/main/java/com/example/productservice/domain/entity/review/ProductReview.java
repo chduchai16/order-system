@@ -1,4 +1,4 @@
-package com.example.productservice.infrastructure.persistence.entities;
+package com.example.productservice.domain.entity.review;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductReviewEntity {
+public class ProductReview {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,21 +27,22 @@ public class ProductReviewEntity {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "user_id" , nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
-    private int rating ;
-    private String title ;
-    private String content ;
+
+    private int rating;
+    private String title;
+    private String content;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt ;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt ;
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "productReview", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ProductReviewImageEntity> images = new ArrayList<>();
+    private List<ProductReviewImage> images = new ArrayList<>();
 }
