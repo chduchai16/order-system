@@ -5,19 +5,17 @@ import com.example.orderservice.domain.ports.persistence.CartRepository;
 import com.example.orderservice.infrastructure.persistence.cart.entities.CartEntity;
 import com.example.orderservice.infrastructure.persistence.cart.jpas.JpaCartRepository;
 import com.example.orderservice.infrastructure.persistence.cart.mappers.CartMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class CartRepositoryAdapter implements CartRepository {
 
     private final JpaCartRepository jpaCartRepository;
-
-    public CartRepositoryAdapter(JpaCartRepository jpaCartRepository) {
-        this.jpaCartRepository = jpaCartRepository;
-    }
 
     @Override
     public Optional<Cart> findById(String id) {
