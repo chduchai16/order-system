@@ -2,10 +2,11 @@ package com.example.productservice.web;
 
 import com.example.productservice.application.dtos.product.*;
 import com.example.productservice.application.services.IProductService;
-import com.example.productservice.domain.models.Product;
-import com.example.productservice.domain.models.StockMovement;
-import com.example.productservice.domain.models.external.MediaInfo;
-import com.example.productservice.domain.ports.externals.MediaService;
+import com.example.productservice.domain.entity.inventory.StockMovement;
+import com.example.productservice.domain.entity.product.Product;
+import com.example.productservice.domain.entity.product.ProductImage;
+import com.example.productservice.infrastructure.adapters.clients.MediaClient;
+import com.example.productservice.infrastructure.adapters.clients.dtos.MediaResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,17 @@ import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
+
     private final IProductService productService;
-    private final MediaService mediaService;
+    private final MediaClient mediaClient;
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
@@ -84,25 +88,23 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updatePrice(
             @PathVariable Long id,
             @RequestParam BigDecimal price) {
-        // cập nhật giá
         Product product = productService.updatePrice(id, price);
         return ResponseEntity.ok(toResponse(product));
     }
 
     @GetMapping("/{id}/stock-movements")
     public ResponseEntity<List<StockMovement>> getStockMovements(@PathVariable Long id) {
-        // lấy lịch sử kho
         return ResponseEntity.ok(productService.getStockMovements(id));
     }
 
     private ProductResponse toResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
-                .sku(product.getSku() != null ? product.getSku().getValue() : null)
+                .sku(product.getSku())
                 .name(product.getName())
                 .description(product.getDescription())
                 .categoryName(product.getCategory() != null ? product.getCategory().getName() : null)
-                .price(product.getPrice() != null ? product.getPrice().getAmount() : null)
+                .price(product.getPrice())
                 .stock(product.getStock())
                 .reservedStock(product.getReservedStock())
                 .availableStock(product.getAvailableStock())
@@ -133,17 +135,27 @@ public class ProductController {
         }
 
         List<Long> mediaIds = product.getImages().stream()
-                .map(com.example.productservice.domain.models.ProductImage::getMediaId)
-                .filter(java.util.Objects::nonNull)
+                .map(ProductImage::getMediaId)
+                .filter(Objects::nonNull)
                 .distinct()
                 .toList();
 
-        List<MediaInfo> mediaInfos = mediaService.getByIds(mediaIds);
+        Map<Long, MediaResponse> mediaInfoMap = Map.of();
+        try {
+            if (!mediaIds.isEmpty()) {
+                String joinedIds = mediaIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+                var resp = mediaClient.getByIds(joinedIds);
+                if (resp != null && resp.getData() != null) {
+                    mediaInfoMap = resp.getData().stream()
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toMap(MediaResponse::getId, item -> item, (left, right) -> left));
+                }
+            }
+        } catch (Exception e) {
+            // fallback if media service unreachable
+        }
 
-        java.util.Map<Long, MediaInfo> mediaInfoMap = mediaInfos.stream()
-                .filter(java.util.Objects::nonNull)
-                .collect(java.util.stream.Collectors.toMap(MediaInfo::getId, item -> item, (left, right) -> left));
-
+        Map<Long, MediaResponse> finalMediaMap = mediaInfoMap;
         return product.getImages().stream()
                 .map(image -> ProductImageResponse.builder()
                         .id(image.getId())
@@ -151,8 +163,8 @@ public class ProductController {
                         .productId(image.getProductId())
                         .displayOrder(image.getDisplayOrder())
                         .isPrimary(image.isPrimary())
-                        .url(mediaInfoMap.get(image.getMediaId()) != null ? mediaInfoMap.get(image.getMediaId()).getUrl() : null)
+                        .url(finalMediaMap.get(image.getMediaId()) != null ? finalMediaMap.get(image.getMediaId()).getUrl() : null)
                         .build())
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.productservice.domain.models;
+package com.example.productservice.domain.entity.product.valueobject;
 
 import lombok.Value;
 import java.math.BigDecimal;

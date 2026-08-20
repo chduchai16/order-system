@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -16,22 +14,17 @@ import com.example.commonlib.events.stock.StockReservedEvent;
 import com.example.productservice.application.dtos.product.ProductRequest;
 import com.example.productservice.application.dtos.product.UpdateProductImageRequest;
 import com.example.productservice.application.dtos.product.UpdateProductRequest;
-import com.example.productservice.domain.models.Category;
-import com.example.productservice.domain.models.Money;
-import com.example.productservice.domain.models.Product;
-import com.example.productservice.domain.models.ProductAttribute;
-import com.example.productservice.domain.models.ProductImage;
-import com.example.productservice.domain.models.ProductVariant;
-import com.example.productservice.domain.models.SKU;
-import com.example.productservice.domain.models.StockMovement;
-import com.example.productservice.domain.models.external.MediaInfo;
-import com.example.productservice.domain.ports.externals.MediaService;
-import com.example.productservice.domain.ports.persistence.CategoryRepository;
-import com.example.productservice.domain.ports.persistence.ProductRepository;
+import com.example.productservice.domain.entity.category.Category;
+import com.example.productservice.domain.entity.inventory.StockMovement;
+import com.example.productservice.domain.entity.product.Product;
+import com.example.productservice.domain.entity.product.ProductAttribute;
+import com.example.productservice.domain.entity.product.ProductImage;
+import com.example.productservice.domain.entity.product.ProductVariant;
+import com.example.productservice.domain.entity.product.valueobject.SKU;
 import com.example.productservice.infrastructure.adapters.producers.ProductEventProducer;
-import com.example.productservice.infrastructure.mappers.ProductMapper;
-import com.example.productservice.infrastructure.persistence.entities.StockMovementEntity;
-import com.example.productservice.infrastructure.persistence.jpas.StockMovementRepository;
+import com.example.productservice.infrastructure.repository.category.CategoryRepository;
+import com.example.productservice.infrastructure.repository.inventory.StockMovementRepository;
+import com.example.productservice.infrastructure.repository.product.ProductRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,166 +41,126 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final StockMovementRepository stockMovementRepository;
     private final ProductEventProducer productEventProducer;
-    private final MediaService mediaService;
 
     @Override
     @Transactional
     public Product createProduct(ProductRequest productRequest) {
-        // tạo sản phẩm mới kèm variants và attributes, images
         log.info("Creating product: {}", productRequest.getName());
 
         Category category = null;
         if (productRequest.getCategoryId() != null) {
             category = categoryRepository.findById(productRequest.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found: " + productRequest.getCategoryId()));
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
         }
 
-        // tạo model product
         Product product = Product.builder()
-                .sku(SKU.generate())
+                .sku(SKU.generate().getValue())
                 .name(productRequest.getName())
                 .description(productRequest.getDescription())
                 .category(category)
-                .price(new Money(productRequest.getPrice()))
+                .price(productRequest.getPrice())
                 .stock(productRequest.getStock())
-                .reservedStock(0)
                 .active(true)
                 .build();
 
-        // map product variant
         if (productRequest.getVariants() != null) {
-            product.setVariants(productRequest.getVariants().stream()
-                    .map(v -> ProductVariant.builder()
-                            .skuCode(v.getSkuCode())
-                            .name(v.getName())
-                            .price(v.getPrice())
-                            .totalStock(v.getStock())
-                            .reservedStock(0)
-                            .build())
-                    .collect(Collectors.toList()));
+            for (var v : productRequest.getVariants()) {
+                ProductVariant variant = ProductVariant.builder()
+                        .skuCode(v.getSkuCode())
+                        .name(v.getName())
+                        .price(v.getPrice())
+                        .totalStock(v.getStock())
+                        .reservedStock(0)
+                        .build();
+                product.addProductVariant(variant);
+            }
         }
 
-        // map product attribute
         if (productRequest.getAttributes() != null) {
-            product.setAttributes(productRequest.getAttributes().stream()
-                    .map(a -> ProductAttribute.builder()
-                            .name(a.getName())
-                            .value(a.getValue())
-                            .build())
-                    .collect(Collectors.toList()));
+            for (var a : productRequest.getAttributes()) {
+                ProductAttribute attr = ProductAttribute.builder()
+                        .name(a.getName())
+                        .value(a.getValue())
+                        .build();
+                product.addProductAttribute(attr);
+            }
         }
 
-        // map product image
-        validateMediaIds(productRequest.getImages() != null
-                ? productRequest.getImages().stream().map(image -> image.getMediaId()).toList()
-                : null);
-
-        if(productRequest.getImages() != null) {
-            product.setImages(productRequest.getImages().stream().map(
-                    image -> ProductImage.builder()
-                            .mediaId(image.getMediaId())
-                            .displayOrder(image.getDisplayOrder())
-                            .isPrimary(image.isPrimary())
-                            .build()
-            ).toList());
+        if (productRequest.getImages() != null) {
+            for (var img : productRequest.getImages()) {
+                ProductImage image = ProductImage.builder()
+                        .mediaId(img.getMediaId())
+                        .displayOrder(img.getDisplayOrder())
+                        .isPrimary(img.isPrimary())
+                        .build();
+                product.addProductImage(image);
+            }
         }
 
         Product savedProduct = productRepository.save(product);
 
-        // ghi log nhập kho ban đầu
-        if (savedProduct.getStock() > 0) {
-            stockMovementRepository.save(StockMovementEntity.builder()
+        if (productRequest.getStock() != null && productRequest.getStock() > 0) {
+            StockMovement movement = StockMovement.builder()
                     .productId(savedProduct.getId())
-                    .quantity(savedProduct.getStock())
-                    .type(StockMovementEntity.MovementType.IMPORT)
-                    .reason("Initial stock import on creation")
-                    .build());
+                    .quantity(productRequest.getStock())
+                    .type(StockMovement.MovementType.IMPORT)
+                    .reason("Initial stock for new product")
+                    .build();
+            stockMovementRepository.save(movement);
         }
 
-        if (savedProduct.getVariants() != null) {
-            savedProduct.getVariants().forEach(v -> {
-                if (v.getTotalStock() > 0) {
-                    stockMovementRepository.save(StockMovementEntity.builder()
-                            .productId(savedProduct.getId())
-                            .variantId(v.getId())
-                            .quantity(v.getTotalStock())
-                            .type(StockMovementEntity.MovementType.IMPORT)
-                            .reason("Initial variant stock import")
-                            .build());
-                }
-            });
-        }
         return savedProduct;
     }
 
     @Override
-    public Product updateProduct(UpdateProductRequest productRequest) {
-        log.info("Update product: {}", productRequest.getName());
+    @Transactional
+    public Product updateProduct(UpdateProductRequest request) {
+        log.info("Updating product: {}", request.getId());
+        Product product = productRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // product tồn tại
-        Product product = productRepository.findById(productRequest.getId())
-                .orElseThrow(() -> new RuntimeException("Product not found: " + productRequest.getId()));
-
-        Category category = null;
-        if (productRequest.getCategoryId() != null) {
-            category = categoryRepository.findById(productRequest.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found: " + productRequest.getCategoryId()));
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            product.setCategory(category);
         }
 
-        product.setName(productRequest.getName());
-        product.setDescription(productRequest.getDescription());
-        product.setCategory(category);
-        if(productRequest.getPrice()!= null) {
-            product.setPrice(new Money(productRequest.getPrice()));
-        }
-        product.setStock(productRequest.getStock());
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
 
-        // map product variant
-        if(productRequest.getVariants() != null) {
-            product.setVariants(productRequest.getVariants()
-                    .stream()
-                    .map(
-                    var -> ProductVariant
-                            .builder()
-                            .skuCode(var.getSkuCode())
-                            .name(var.getName())
-                            .price(var.getPrice())
-                            .totalStock(var.getTotalStock())
-                            .reservedStock(var.getReservedStock())
-                            .build()
-            ).toList());
+        if (request.getPrice() != null && !request.getPrice().equals(product.getPrice())) {
+            updatePrice(product.getId(), request.getPrice());
         }
 
-        // map product attribute
-        if(productRequest.getAttributes() != null) {
-            product.setAttributes(productRequest.getAttributes()
-                    .stream()
-                    .map(
-                            attr -> ProductAttribute
-                                    .builder()
-                                    .name(attr.getName())
-                                    .value(attr.getValue())
-                                    .build()
-                    ).toList());
+        if (request.getAttributes() != null) {
+            for (var attrReq : request.getAttributes()) {
+                ProductAttribute newAttr = ProductAttribute.builder()
+                        .name(attrReq.getName())
+                        .value(attrReq.getValue())
+                        .build();
+                try {
+                    product.updateAttribute(newAttr.getName(), newAttr);
+                } catch (Exception e) {
+                    product.addProductAttribute(newAttr);
+                }
+            }
         }
 
-        // map product image
-        validateMediaIds(productRequest.getImages() != null
-                ? productRequest.getImages().stream().map(UpdateProductImageRequest::getMediaId).toList()
-                : null);
-
-        if(productRequest.getImages() != null) {
-            product.setImages(productRequest.getImages()
-                    .stream()
-                    .map(
-                            image -> ProductImage
-                                    .builder()
-                                    .mediaId(image.getMediaId())
-                                    .displayOrder(image.getDisplayOrder())
-                                    .isPrimary(image.isPrimary())
-                                    .build()
-                    )
-                    .toList());
+        if (request.getVariants() != null) {
+            for (var variantReq : request.getVariants()) {
+                ProductVariant newVariant = ProductVariant.builder()
+                        .id(variantReq.getId())
+                        .skuCode(variantReq.getSkuCode())
+                        .name(variantReq.getName())
+                        .price(variantReq.getPrice())
+                        .totalStock(variantReq.getTotalStock())
+                        .build();
+                if (newVariant.getId() != null) {
+                    product.updateVariant(newVariant.getId(), newVariant);
+                } else {
+                    product.addProductVariant(newVariant);
+                }
+            }
         }
 
         return productRepository.save(product);
@@ -215,16 +168,10 @@ public class ProductService implements IProductService {
 
     @Override
     public Optional<Product> getProductById(Long id) {
-        // lấy chi tiết sản phẩm
         return productRepository.findById(id);
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        // lấy danh sách sản phẩm
-        return productRepository.findAll();
-    }
-
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
     }
@@ -232,133 +179,130 @@ public class ProductService implements IProductService {
     @Override
     @Transactional
     public void reserveStock(Long productId, Integer quantity) {
-        // thực hiện giữ chỗ kho và log movement
+        log.info("Reserving stock for product: {}, quantity: {}", productId, quantity);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
+
         product.reserveStock(quantity);
         productRepository.save(product);
 
-        stockMovementRepository.save(StockMovementEntity.builder()
+        StockMovement movement = StockMovement.builder()
                 .productId(productId)
                 .quantity(quantity)
-                .type(StockMovementEntity.MovementType.RESERVE)
-                .reason("Order reservation")
-                .build());
+                .type(StockMovement.MovementType.RESERVE)
+                .reason("Reserved stock for order")
+                .build();
+        stockMovementRepository.save(movement);
     }
 
+    @Override
+    @Transactional
+    public void releaseStock(Long productId, Integer quantity) {
+        log.info("Releasing stock for product: {}, quantity: {}", productId, quantity);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
 
-    // trừ stock , nếu lỗi thì thực hiện cộng stock
+        product.releaseStock(quantity);
+        productRepository.save(product);
+
+        StockMovement movement = StockMovement.builder()
+                .productId(productId)
+                .quantity(quantity)
+                .type(StockMovement.MovementType.RELEASE)
+                .reason("Released reserved stock")
+                .build();
+        stockMovementRepository.save(movement);
+    }
+
+    @Override
+    @Transactional
+    public void confirmStock(Long productId, Integer quantity) {
+        log.info("Confirming stock deduction for product: {}, quantity: {}", productId, quantity);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
+
+        product.confirmStock(quantity);
+        productRepository.save(product);
+
+        StockMovement movement = StockMovement.builder()
+                .productId(productId)
+                .quantity(quantity)
+                .type(StockMovement.MovementType.EXPORT)
+                .reason("Confirmed order stock deduction")
+                .build();
+        stockMovementRepository.save(movement);
+    }
+
+    @Override
+    @Transactional
+    public Product updatePrice(Long productId, BigDecimal newPrice) {
+        log.info("Updating price for product: {}, new price: {}", productId, newPrice);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        BigDecimal oldPrice = product.getPrice();
+        product.updatePrice(newPrice);
+        Product savedProduct = productRepository.save(product);
+
+        ProductPriceChangedEvent event = new ProductPriceChangedEvent(
+                productId,
+                oldPrice,
+                newPrice
+        );
+        productEventProducer.publishProductPriceChanged(event);
+
+        return savedProduct;
+    }
+
+    @Override
+    @Transactional
+    public void updateImages(Long productId, List<UpdateProductImageRequest> images) {
+        log.info("Updating images for product: {}", productId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (images != null) {
+            for (var imgReq : images) {
+                ProductImage newImage = ProductImage.builder()
+                        .mediaId(imgReq.getMediaId())
+                        .displayOrder(imgReq.getDisplayOrder())
+                        .isPrimary(imgReq.isPrimary())
+                        .build();
+                product.addProductImage(newImage);
+            }
+        }
+
+        productRepository.save(product);
+    }
+
+    @Override
+    public List<StockMovement> getStockMovements(Long productId) {
+        return stockMovementRepository.findByProductId(productId);
+    }
+
     @Override
     @Transactional
     public void reserveStockForOrder(Long orderId, Long userId, List<CartItemDto> items, BigDecimal totalPrice) {
+        log.info("Handling OrderCreatedEvent for order: {}, items count: {}", orderId, items.size());
         try {
             for (CartItemDto item : items) {
                 reserveStock(item.getProductId(), item.getQuantity());
-                log.info("Reserved stock for productId: {}, quantity: {}", item.getProductId(), item.getQuantity());
             }
-
-            StockReservedEvent event = new StockReservedEvent(
-                    orderId,
-                    userId,
-                    items,
-                    totalPrice,
-                    LocalDateTime.now()
-            );
-            productEventProducer.publishStockReserved(event);
-            log.info("Published StockReservedEvent for orderId: {}", orderId);
+            log.info("Successfully reserved stock for order: {}", orderId);
+            productEventProducer.publishStockReserved(new StockReservedEvent(orderId, userId, items, totalPrice, LocalDateTime.now()));
         } catch (Exception e) {
-            StockReservationFailedEvent failedEvent = new StockReservationFailedEvent(
-                    orderId,
-                    userId,
-                    items,
-                    "Stock reservation failed: " + e.getMessage(),
-                    LocalDateTime.now()
-            );
-            productEventProducer.publishStockReservationFailed(failedEvent);
-            log.info("Published StockReservationFailedEvent for orderId: {}", orderId);
-            throw e;
+            log.error("Failed to reserve stock for order: {}, reason: {}", orderId, e.getMessage());
+            productEventProducer.publishStockReservationFailed(new StockReservationFailedEvent(orderId, userId, items, e.getMessage(), LocalDateTime.now()));
         }
     }
 
     @Override
     @Transactional
     public void confirmStockForOrder(Long orderId, List<CartItemDto> items) {
+        log.info("Handling OrderPaidEvent for order: {}, items count: {}", orderId, items.size());
         for (CartItemDto item : items) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
-
-            product.confirmStock(item.getQuantity());
-            productRepository.save(product);
-
-            stockMovementRepository.save(StockMovementEntity.builder()
-                    .productId(item.getProductId())
-                    .quantity(item.getQuantity())
-                    .type(StockMovementEntity.MovementType.EXPORT)
-                    .reason("Order paid: " + orderId)
-                    .build());
-
-            log.info("Confirmed stock for orderId: {}, productId: {}, quantity: {}",
-                    orderId, item.getProductId(), item.getQuantity());
+            confirmStock(item.getProductId(), item.getQuantity());
         }
-    }
-
-    @Override
-    @Transactional
-    public void releaseStock(Long productId, Integer quantity) {
-        // giải phóng kho và log movement
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
-        product.releaseStock(quantity);
-        productRepository.save(product);
-
-        stockMovementRepository.save(StockMovementEntity.builder()
-                .productId(productId)
-                .quantity(quantity)
-                .type(StockMovementEntity.MovementType.RELEASE)
-                .reason("Order cancellation or adjustment")
-                .build());
-    }
-
-    @Override
-    @Transactional
-    public Product updatePrice(Long productId, BigDecimal newPrice) {
-        // cập nhật giá và publish event
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
-        BigDecimal oldPrice = product.getPrice().getAmount();
-        product.updatePrice(new Money(newPrice));
-        Product savedProduct = productRepository.save(product);
-        
-        ProductPriceChangedEvent event = new ProductPriceChangedEvent(productId, oldPrice, newPrice);
-        productEventProducer.publishProductPriceChanged(event);
-        
-        return savedProduct;
-    }
-
-    @Override
-    public List<StockMovement> getStockMovements(Long productId) {
-        // lấy danh sách lịch sử kho
-        return stockMovementRepository.findByProductId(productId).stream()
-                .map(ProductMapper::toDomain)
-                .collect(Collectors.toList());
-    }
-
-    private void validateMediaIds(List<Long> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return;
-        }
-
-        List<MediaInfo> mediaInfos = mediaService.getByIds(ids);
-        Set<Long> foundIds = mediaInfos.stream()
-                .map(MediaInfo::getId)
-                .collect(Collectors.toSet());
-
-        List<Long> missingIds = ids.stream()
-                .filter(id -> !foundIds.contains(id))
-                .toList();
-
-        if (!missingIds.isEmpty()) {
-            throw new RuntimeException("Media not found for ids: " + missingIds);
-        }
+        log.info("Successfully confirmed stock deduction for paid order: {}", orderId);
     }
 }

@@ -1,23 +1,46 @@
-package com.example.productservice.domain.models;
+package com.example.productservice.domain.entity.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Getter
+@Entity
+@Table(name = "product_variants")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductVariant {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "sku_code", nullable = false)
     private String skuCode;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
+    @Column(name = "total_stock", nullable = false)
     private Integer totalStock;
-    private Integer reservedStock;
+
+    @Column(name = "reserved_stock", nullable = false)
+    @Builder.Default
+    private Integer reservedStock = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    @JsonIgnore
+    private Product product;
 
     public Integer getAvailableStock() {
         int currentTotal = totalStock != null ? totalStock : 0;
