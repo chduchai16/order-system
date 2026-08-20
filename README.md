@@ -1,4 +1,4 @@
-﻿# Hệ thống đặt hàng Microservices (Order System)
+# Hệ thống đặt hàng Microservices (Order System)
 
 Đây là hệ thống đặt hàng trực tuyến được thiết kế theo kiến trúc microservices hướng sự kiện, sử dụng Spring Boot và Spring Cloud ở backend, Next.js ở frontend.
 
@@ -7,18 +7,17 @@
 - `apigateway`: Cổng vào duy nhất, định tuyến request và xử lý JWT.
 - `userservice`: Đăng ký, đăng nhập, thông tin người dùng.
 - `productservice`: Danh mục sản phẩm và tồn kho.
-- `cartservice`: Giỏ hàng, lưu trên Redis.
-- `orderservice`: Xử lý đặt hàng.
+- `orderservice`: Xử lý giỏ hàng (lưu trên Redis) và đặt hàng.
 - `paymentservice`: Thanh toán và webhook SePay.
-- `mediaservice`: Module media mới, đã được thêm vào Maven reactor để build cùng backend.
+- `mediaservice`: Module media mới, lưu trữ ảnh trên Cloudinary.
 - `commonlib`: DTO, event và thành phần dùng chung.
 - `frontend`: Giao diện Next.js.
 
 ## Trạng thái hiện tại
 
 - `notificationservice` đã bị loại bỏ khỏi repo.
-- `mediaservice` đã có trong Maven modules.
-- `mediaservice` chưa được khai báo runtime trong `docker-compose.yml`.
+- `cartservice` đã được tích hợp trực tiếp vào `orderservice`.
+- `mediaservice` đã có trong Maven modules và docker-compose.yml.
 
 ## Công nghệ
 
@@ -85,17 +84,13 @@ erDiagram
 - `apigateway`: `8080`
 - `userservice`: `8081`
 - `productservice`: `8082`
-- `orderservice`: `8083`
+- `orderservice`: `8083` (bao gồm Giỏ hàng & Đơn hàng)
 - `paymentservice`: `8084`
-- `cartservice`: `8085`
+- `mediaservice`: `8086`
 - `frontend`: `3000`
 - `postgres`: `5432`
 - `redis`: `6380`
 - `kafka`: `9092`, `9094`
-
-Lưu ý:
-
-- `mediaservice` hiện chưa có port/runtime trong `docker-compose.yml`.
 
 ## Build backend
 

@@ -150,6 +150,8 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       PRODUCT_SERVICE_URL: "${DOCKER_PRODUCT_SERVICE_URL:-http://host.docker.internal:8082}"
       PAYMENT_SERVICE_URL: "${DOCKER_PAYMENT_SERVICE_URL:-http://host.docker.internal:8084}"
@@ -160,6 +162,7 @@ services:
     depends_on:
       - postgres
       - kafka
+      - redis
     networks:
       - order-network
 
@@ -211,26 +214,6 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - postgres
-    networks:
-      - order-network
-
-  cartservice:
-    build:
-      context: .
-      dockerfile: ./cartservice/Dockerfile
-    container_name: order-system-cartservice
-    ports:
-      - "8085:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATA_REDIS_HOST: redis
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      JAVA_TOOL_OPTIONS: "-Xms128M -Xmx256M -XX:+UseSerialGC -Xss256K"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - redis
-      - kafka
     networks:
       - order-network
 

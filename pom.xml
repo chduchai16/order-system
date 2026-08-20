@@ -21,7 +21,6 @@
         <module>productservice</module>
         <module>orderservice</module>
         <module>paymentservice</module>
-        <module>cartservice</module>
         <module>mediaservice</module>
 
     </modules>
