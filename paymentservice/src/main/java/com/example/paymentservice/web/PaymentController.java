@@ -3,7 +3,7 @@ package com.example.paymentservice.web;
 import com.example.paymentservice.application.dtos.PaymentRequest;
 import com.example.paymentservice.application.dtos.PaymentResponse;
 import com.example.paymentservice.application.services.IPaymentService;
-import com.example.paymentservice.domain.models.Payment;
+import com.example.paymentservice.domain.entity.payment.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +77,7 @@ public class PaymentController {
                 .id(payment.getId())
                 .paymentCode(payment.getPaymentCode())
                 .orderId(payment.getOrderId())
-                .amount(payment.getAmount() != null ? payment.getAmount().getAmount() : null)
+                .amount(payment.getAmount())
                 .currency("VND")
                 .paymentMethod(payment.getPaymentMethod())
                 .status(payment.getStatus())

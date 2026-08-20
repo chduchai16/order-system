@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import com.example.paymentservice.domain.models.PaymentMethod;
+import com.example.paymentservice.domain.entity.payment.PaymentMethod;
 
 @Data
 @Builder

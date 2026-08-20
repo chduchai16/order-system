@@ -3,7 +3,7 @@ package com.example.paymentservice.infrastructure.adapters.listeners;
 import com.example.commonlib.events.stock.StockReservedEvent;
 import com.example.paymentservice.application.dtos.PaymentRequest;
 import com.example.paymentservice.application.services.IPaymentService;
-import com.example.paymentservice.domain.models.PaymentMethod;
+import com.example.paymentservice.domain.entity.payment.PaymentMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

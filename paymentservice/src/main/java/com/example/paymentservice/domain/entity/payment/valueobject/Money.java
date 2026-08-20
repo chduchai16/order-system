@@ -1,4 +1,4 @@
-package com.example.paymentservice.domain.models;
+package com.example.paymentservice.domain.entity.payment.valueobject;
 
 import lombok.Value;
 import java.math.BigDecimal;

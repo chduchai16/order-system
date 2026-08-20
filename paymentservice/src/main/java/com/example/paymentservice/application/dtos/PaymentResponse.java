@@ -1,7 +1,7 @@
 package com.example.paymentservice.application.dtos;
 
-import com.example.paymentservice.domain.models.PaymentMethod;
-import com.example.paymentservice.domain.models.PaymentStatus;
+import com.example.paymentservice.domain.entity.payment.PaymentMethod;
+import com.example.paymentservice.domain.entity.payment.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
