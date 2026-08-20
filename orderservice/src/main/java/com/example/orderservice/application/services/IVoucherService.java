@@ -2,7 +2,7 @@ package com.example.orderservice.application.services;
 
 import com.example.orderservice.application.dtos.requests.voucher.VoucherRequest;
 import com.example.orderservice.application.dtos.responses.voucher.VoucherResponse;
-import com.example.orderservice.domain.models.voucher.Voucher;
+import com.example.orderservice.domain.entity.voucher.Voucher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -3,8 +3,8 @@ package com.example.orderservice.application.mappers;
 import java.util.List;
 
 import com.example.orderservice.application.dtos.requests.voucher.VoucherRequest;
-import com.example.orderservice.domain.models.voucher.DiscountType;
-import com.example.orderservice.domain.models.voucher.Voucher;
+import com.example.orderservice.domain.entity.voucher.DiscountType;
+import com.example.orderservice.domain.entity.voucher.Voucher;
 
 public class VoucherRequestMapper {
 

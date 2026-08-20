@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.orderservice.application.dtos.responses.voucher.VoucherResponse;
-import com.example.orderservice.domain.models.voucher.Voucher;
+import com.example.orderservice.domain.entity.voucher.Voucher;
 
 public class VoucherResponseMapper {
 

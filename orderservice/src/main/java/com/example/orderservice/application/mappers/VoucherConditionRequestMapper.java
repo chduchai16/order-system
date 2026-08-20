@@ -1,7 +1,7 @@
 package com.example.orderservice.application.mappers;
 
 import com.example.orderservice.application.dtos.requests.voucher.VoucherConditionRequest;
-import com.example.orderservice.domain.models.voucher.VoucherCondition;
+import com.example.orderservice.domain.entity.voucher.VoucherCondition;
 
 public class VoucherConditionRequestMapper {
 

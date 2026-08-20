@@ -4,8 +4,8 @@ import com.example.orderservice.application.dtos.requests.voucher.VoucherRequest
 import com.example.orderservice.application.dtos.responses.voucher.VoucherResponse;
 import com.example.orderservice.application.mappers.VoucherRequestMapper;
 import com.example.orderservice.application.mappers.VoucherResponseMapper;
-import com.example.orderservice.domain.models.voucher.Voucher;
-import com.example.orderservice.domain.ports.persistence.VoucherRepository;
+import com.example.orderservice.domain.entity.voucher.Voucher;
+import com.example.orderservice.infrastructure.repository.voucher.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VoucherService implements IVoucherService {
 
-    private final VoucherRepository voucherRepository ;
+    private final VoucherRepository voucherRepository;
 
     @Override
     public VoucherResponse createVoucher(VoucherRequest request) {

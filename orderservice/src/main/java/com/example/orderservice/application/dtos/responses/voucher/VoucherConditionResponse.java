@@ -1,6 +1,6 @@
 package com.example.orderservice.application.dtos.responses.voucher;
 
-import com.example.orderservice.domain.models.voucher.ConditionType;
+import com.example.orderservice.domain.entity.voucher.ConditionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

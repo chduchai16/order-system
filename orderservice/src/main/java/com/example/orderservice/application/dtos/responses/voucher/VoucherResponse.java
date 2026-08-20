@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.orderservice.domain.models.voucher.DiscountType;
+import com.example.orderservice.domain.entity.voucher.DiscountType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
