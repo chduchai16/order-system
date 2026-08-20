@@ -2,37 +2,54 @@ package com.example.orderservice.infrastructure.persistence.cart.adapters;
 
 import com.example.orderservice.domain.models.cart.Cart;
 import com.example.orderservice.domain.ports.persistence.CartRepository;
-import com.example.orderservice.infrastructure.persistence.cart.mappers.CartMapper;
 import com.example.orderservice.infrastructure.persistence.cart.entities.CartEntity;
-import com.example.orderservice.infrastructure.persistence.cart.jpas.RedisCartRepository;
-import lombok.RequiredArgsConstructor;
+import com.example.orderservice.infrastructure.persistence.cart.jpas.JpaCartRepository;
+import com.example.orderservice.infrastructure.persistence.cart.mappers.CartMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Repository
 public class CartRepositoryAdapter implements CartRepository {
 
-    private final RedisCartRepository redisRepository;
+    private final JpaCartRepository jpaCartRepository;
 
-    public CartRepositoryAdapter(RedisCartRepository redisRepository) {
-        this.redisRepository = redisRepository;
+    public CartRepositoryAdapter(JpaCartRepository jpaCartRepository) {
+        this.jpaCartRepository = jpaCartRepository;
     }
 
     @Override
     public Optional<Cart> findById(String id) {
-        return redisRepository.findById(id).map(CartMapper::toDomain);
+        return jpaCartRepository.findById(id).map(CartMapper::toDomain);
     }
 
     @Override
+    @Transactional
     public Cart save(Cart cart) {
-        CartEntity entity = CartMapper.toEntity(cart);
-        CartEntity savedEntity = redisRepository.save(entity);
-        return CartMapper.toDomain(savedEntity);
+        // Tìm entity hiện tại hoặc tạo mới
+        CartEntity existingEntity = jpaCartRepository.findById(cart.getId()).orElse(null);
+
+        CartEntity newEntity = CartMapper.toEntity(cart);
+
+        if (existingEntity != null) {
+            // Xóa hết cart items cũ và gán mới (orphanRemoval sẽ xóa bản ghi cũ)
+            existingEntity.getCartItems().clear();
+            existingEntity.getCartItems().addAll(newEntity.getCartItems());
+            // Gán lại cart reference cho các items mới
+            existingEntity.getCartItems().forEach(item -> item.setCart(existingEntity));
+            existingEntity.setTotalPrice(newEntity.getTotalPrice());
+            CartEntity savedEntity = jpaCartRepository.save(existingEntity);
+            return CartMapper.toDomain(savedEntity);
+        } else {
+            CartEntity savedEntity = jpaCartRepository.save(newEntity);
+            return CartMapper.toDomain(savedEntity);
+        }
     }
 
     @Override
+    @Transactional
     public void deleteById(String id) {
-        redisRepository.deleteById(id);
+        jpaCartRepository.deleteById(id);
     }
 }
