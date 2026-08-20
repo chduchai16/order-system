@@ -1,4 +1,4 @@
-package com.example.productservice.infrastructure.persistence.entities;
+package com.example.productservice.domain.entity.inventory;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,13 +14,18 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockMovementEntity {
+public class StockMovement {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_id")
     private Long productId;
+
+    @Column(name = "variant_id")
     private Long variantId;
+
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
