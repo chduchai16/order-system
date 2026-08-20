@@ -1,5 +1,6 @@
-package com.example.orderservice.infrastructure.persistence.cart.entities;
+package com.example.orderservice.domain.entity.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "cart_items")
-public class CartItemEntity {
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,8 @@ public class CartItemEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
-    private CartEntity cart;
+    @JsonIgnore
+    private Cart cart;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
@@ -49,6 +51,12 @@ public class CartItemEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Transient
+    public BigDecimal getSubTotal() {
+        if (unitPrice == null || quantity == null) return BigDecimal.ZERO;
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
 
     @PrePersist
     public void prePersist() {
