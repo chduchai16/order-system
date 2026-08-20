@@ -1,8 +1,8 @@
 package com.example.userservice.infrastructure.security;
 
-import com.example.userservice.infrastructure.persistence.entities.RefreshTokenEntity;
-import com.example.userservice.infrastructure.persistence.entities.UserEntity;
-import com.example.userservice.infrastructure.persistence.jpas.RefreshTokenRepository;
+import com.example.userservice.domain.entity.token.RefreshToken;
+import com.example.userservice.domain.entity.user.User;
+import com.example.userservice.infrastructure.repository.token.RefreshTokenRepository;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,22 +23,23 @@ public class RefreshTokenService {
     private long refreshTokenTtlDays;
 
     @Transactional
-    public String createRefreshToken(UserEntity user) {
+    public String createRefreshToken(User user) {
         String rawToken = UUID.randomUUID().toString();
 
-        RefreshTokenEntity entity = new RefreshTokenEntity();
-        entity.setTokenHash(hash(rawToken));
-        entity.setUser(user);
-        entity.setExpiresAt(LocalDateTime.now().plusDays(refreshTokenTtlDays));
-        entity.setRevoked(false);
+        RefreshToken entity = RefreshToken.builder()
+                .tokenHash(hash(rawToken))
+                .user(user)
+                .expiresAt(LocalDateTime.now().plusDays(refreshTokenTtlDays))
+                .revoked(false)
+                .build();
         refreshTokenRepository.save(entity);
 
         return rawToken;
     }
 
     @Transactional
-    public UserEntity consumeRefreshToken(String rawToken) {
-        RefreshTokenEntity entity = refreshTokenRepository.findByTokenHash(hash(rawToken))
+    public User consumeRefreshToken(String rawToken) {
+        RefreshToken entity = refreshTokenRepository.findByTokenHash(hash(rawToken))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
 
         if (entity.isRevoked() || entity.getExpiresAt().isBefore(LocalDateTime.now())) {
