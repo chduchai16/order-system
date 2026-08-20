@@ -150,8 +150,6 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/order_db"
       SPRING_DATASOURCE_USERNAME: "${POSTGRES_USER}"
       SPRING_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-      SPRING_DATA_REDIS_HOST: redis
-      SPRING_DATA_REDIS_PORT: 6379
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       PRODUCT_SERVICE_URL: "${DOCKER_PRODUCT_SERVICE_URL:-http://host.docker.internal:8082}"
       PAYMENT_SERVICE_URL: "${DOCKER_PAYMENT_SERVICE_URL:-http://host.docker.internal:8084}"
@@ -162,7 +160,6 @@ services:
     depends_on:
       - postgres
       - kafka
-      - redis
     networks:
       - order-network
 
